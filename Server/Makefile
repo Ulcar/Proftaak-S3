@@ -6,15 +6,14 @@ CXX=g++
 all: Socket Client Main
 
 clean:
-	@rm -rf client socket *.o
+	@rm -rf Server *.o
 
 Socket: socket.cpp
 	@$(CXX) -c -g $(CXXFLAGS_NORMAL) socket.cpp
-	@$(CXX) $(CXXFLAGS_NORMAL)  socket.o -o socket
 
 Client: client.cpp
 	@$(CXX) -c -g $(CXXFLAGS_NORMAL) client.cpp
-	@$(CXX) $(CXXFLAGS_NORMAL)  client.o -o client
 
 Main: main.cpp
 	@$(CC) -c -g $(CFLAGS_NORMAL) main.cpp
+	@$(CXX) $(CXXFLAGS_NORMAL)  main.o socket.o client.o -o Server
