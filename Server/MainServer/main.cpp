@@ -11,7 +11,7 @@ int main( void )
     Socket* socket = new Socket();
 
     socket->Send();
-    std::cout << "\n  Server Stopped...\n";
+    std::cout << "\nServer Stopped...\n\n";
     
     return 0;
 }
