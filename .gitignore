@@ -2,3 +2,5 @@ Server/MainServer/Server
 Server/MainServer/main.o
 Server/MainServer/client.o
 Server/MainServer/socket.o
+/Interface/Server_Interface/.vs/Server_Interface/v15/Server/sqlite3
+/Interface/Server_Interface/.vs/Server_Interface/v15/.suo
