@@ -16,7 +16,7 @@
 //Socket = machines (C++)
 
 bool quit;
-int PortNumber = 2018;
+int PortNumber = 2019;
 std::vector<Socket> sockets; 
 
 void setup(int *socketFd)
@@ -92,10 +92,34 @@ void readClient(int master)
     }
 }
 //-------------------------------------------------------------------------
-        
-static void HandleUserInput(std::string commando)
+
+std::vector<std::string> SplitString(std::string text, char split)
+{
+    text += " ";
+    std::vector<std::string> commando;
+
+    while(true)
+    {
+        size_t index = text.find_first_of(split, 0);
+        if(index > text.length())
+        {
+            break;
+        }
+        std::string ff = text.substr(0, index);
+        commando.push_back(text.substr(index + 1, text.length() - index));
+    }
+
+    return commando;
+}
+
+static void HandleUserInput()
 {   
+    std::cout << "command:\n";
+    std::string commando;
+    std::getline(std::cin, commando);
     //string[] commando = Console.ReadLine().ToLower().Split(' ');
+    
+    std::vector<std::string> commandos = SplitString(commando, ' ');
 
     try
     {
@@ -128,22 +152,13 @@ int main( void )
     
     setup(&socketFd);
     std::cout << "  Server started\n------------------\n";
+    
+while(true){
+    HandleUserInput();
+}
 
     while(!quit){
 
-        char x = std::getchar();
-        if(x == '\n')
-        {
-            HandleUserInput(buffer);
-            x = '\0';
-            buffer = "";
-        }
-        else
-        {
-            buffer += x;
-            x = '\0';
-        }
-        
         FD_ZERO(&master);
 
         FD_SET(socketFd, &master);
@@ -182,8 +197,10 @@ int main( void )
         }
     }
 
+    HandleUserInput();
 
-    std::cout << "\nServer Stopped...\n\n";
+
+    std::cout << "\n------------------\n  Server Stopped\n------------------\n\n";
     
     return 0;
 }
