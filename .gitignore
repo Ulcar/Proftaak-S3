@@ -3,3 +3,4 @@ Server/MainServer/main.o
 Server/MainServer/client.o
 Server/MainServer/socket.o
 Server/MainServer/.vscode
+Server/MainServer/protocol.o
