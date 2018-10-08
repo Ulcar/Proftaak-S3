@@ -1,6 +1,15 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+#include "enums.h"
+
+#include <arpa/inet.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <unistd.h>
+
 class Socket
 {
     public:
