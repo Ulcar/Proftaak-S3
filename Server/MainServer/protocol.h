@@ -15,6 +15,7 @@ class Protocol
 
     private:
         static const int port = 2018; //set port here
+        static std::string makeString(std::vector<std::string> message, std::string startChar, std::string endChar);
 
 };
 
