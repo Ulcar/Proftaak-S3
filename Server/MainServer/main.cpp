@@ -1,14 +1,16 @@
-#include <iostream>
+#include "client.h"
+#include "socket.h"
+#include "protocol.h"
+
 #include <arpa/inet.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <unistd.h>
 #include <vector>
 //#include <thread> 
 
-#include "client.h"
-#include "socket.h"
 
 #define SOCKET_SIZE 20
 
@@ -93,25 +95,6 @@ void readClient(int master)
 }
 //-------------------------------------------------------------------------
 
-std::vector<std::string> SplitString(std::string text, char split)
-{
-    text += " ";
-    std::vector<std::string> commando;
-
-    while(true)
-    {
-        size_t index = text.find_first_of(split, 0);
-        if(index > text.length())
-        {
-            break;
-        }
-        std::string ff = text.substr(0, index);
-        commando.push_back(text.substr(index + 1, text.length() - index));
-    }
-
-    return commando;
-}
-
 static void HandleUserInput()
 {   
     std::cout << "command:\n";
@@ -119,11 +102,11 @@ static void HandleUserInput()
     std::getline(std::cin, commando);
     //string[] commando = Console.ReadLine().ToLower().Split(' ');
     
-    std::vector<std::string> commandos = SplitString(commando, ' ');
+    std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
 
     try
     {
-        if ((commando == "exit") || (commando == "quit"))
+        if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit"))
         {
             quit = true;
         }
