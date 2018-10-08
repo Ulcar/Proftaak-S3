@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <arpa/inet.h>
 #include <cstdio>
 #include <cstdlib>
@@ -48,11 +47,10 @@ void setup(int *socketFd)
         close(*socketFd);
         exit(EXIT_FAILURE);
     }
-     std::cout << "------------------------\n     Server started<standard message>  \n------------------------ \n";
 }
 //----------------------------------------------------------------
 
-
+/*
 static void sendMessage(int *socketFd, std::string text)
 {
     size_t nrBytesRec = send(*socketFd, text.c_str(), text.length(), 0);
@@ -60,7 +58,7 @@ static void sendMessage(int *socketFd, std::string text)
     {
         std::cout << "not everything is sent (" << nrBytesRec << "/" << text.length() << " bytes sent)\n";
     }
-}
+}*/
 
 void connectClient(int socketFd, int max_sd)
 {
@@ -76,12 +74,12 @@ void connectClient(int socketFd, int max_sd)
     std::cout << "Connected to: " << connectFd << "\n";
 }
 
-void readClient(fd_set &master)
+void readClient(int master)
 {
-    for(int i = 0; i < sockets.size; i++)
+    for(size_t i = 0; i < sockets.size(); i++)
     {
         Socket* tempsocket = &sockets.at(i);
-        if(*tempsocket->getSocketFd == &master)
+        if(tempsocket->getSocketFd() == master)
         {   
             std::cout << "Client '" << i << "' || ";
             if(tempsocket->Read() == "")
@@ -95,57 +93,63 @@ void readClient(fd_set &master)
 }
 //-------------------------------------------------------------------------
         
-static void HandleUserInput()
-{
-    while(!quit)
-    {
-        std::string commando;
-        std::cin >> commando;
-        std::cin.ignore();
-        
-        //string[] commando = Console.ReadLine().ToLower().Split(' ');
+static void HandleUserInput(std::string commando)
+{   
+    //string[] commando = Console.ReadLine().ToLower().Split(' ');
 
-        try
+    try
+    {
+        if ((commando == "exit") || (commando == "quit"))
         {
-            if ((commando == "exit") || (commando == "quit"))
-            {
-                quit = true;
-            }
-            else
-            {
-                std::cout << "Invalid arg: " << commando;
-            }
+            quit = true;
         }
-        catch(std::exception)
+        else
         {
-            std::cout << "Exception: " << commando;
+            std::cout << "Invalid arg: " << commando << "\n";
         }
+    }
+    catch(std::exception)
+    {
+        std::cout << "Exception: " << commando << "/n";
     }
 }
 
 int main( void )
 {  
-    std::cout << "------------------\n  Setting up Server\n------------------\n";
+    std::cout << "------------------\n  Setting up Server\n";
     quit = false;
     //Client* client = new Client();
     //Socket* socket = new Socket();
     //std::thread inputThread (HandleUserInput); 
     int max_sd = 0;
-    int client_socket[SOCKET_SIZE];
+    std::string buffer;
     fd_set master;
     int socketFd;
     
     setup(&socketFd);
-    std::cout << "------------------\n  Server started\n------------------\n";
+    std::cout << "  Server started\n------------------\n";
 
     while(!quit){
 
+        char x = std::getchar();
+        if(x == '\n')
+        {
+            HandleUserInput(buffer);
+            x = '\0';
+            buffer = "";
+        }
+        else
+        {
+            buffer += x;
+            x = '\0';
+        }
+        
         FD_ZERO(&master);
 
         FD_SET(socketFd, &master);
         max_sd = socketFd;
 
-        for (size_t i = 0 ; i < sockets.size ; i++) 
+        for (size_t i = 0 ; i < sockets.size() ; i++) 
         {
             int sd = sockets.at(i).getSocketFd();;
              
@@ -155,8 +159,10 @@ int main( void )
             if(sd > max_sd)
                 max_sd = sd;
         }
+        timeval timer;
+        timer.tv_sec = 1;
 
-        int socketCount = select(max_sd + 1, &master, NULL, NULL, NULL);
+        int socketCount = select(max_sd + 1, &master, NULL, NULL, &timer);
 
         if (socketCount < 0) 
         {
@@ -171,12 +177,11 @@ int main( void )
             }
             else
             {
-                readClient(master);
+                readClient(socketFd);
             }
         }
     }
 
-    HandleUserInput();
 
     std::cout << "\nServer Stopped...\n\n";
     
