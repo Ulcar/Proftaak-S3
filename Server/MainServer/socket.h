@@ -4,14 +4,20 @@
 class Socket
 {
     public:
-        Socket();
+        Socket(int socketFd);
         ~Socket();
-        void Send();
+        void Send(std::string text);
+        std::string Read();
         int Ping();
+        int getSocketFd()
+        {
+            return socketFd;
+        }
 
     private:
         int error;
         int ETA;
+        int socketFd;
 };
 
 #endif
