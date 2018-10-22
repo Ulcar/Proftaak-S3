@@ -1,0 +1,96 @@
+#include "TcpClient.h"
+
+TcpClient::TcpClient()
+    : _connected(false)
+{
+    // Nothing...
+}
+
+TcpClient::~TcpClient()
+{
+    if (!IsConnected())
+    {
+        Disconnect();
+    }
+}
+
+void TcpClient::Connect(const std::string& host, int port)
+{
+    if (IsConnected())
+    {
+        throw std::logic_error("TcpClient is already connected.");
+    }
+
+    if ((_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1)
+    {
+        throw std::runtime_error("Unable to create a socket.");
+    }
+
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+
+    if (inet_pton(AF_INET, host.c_str(), &addr.sin_addr) != 1)
+    {
+        throw std::runtime_error("Could not convert IP address to network address structure.");
+    }
+
+    if (connect(_socket, (struct sockaddr*)&addr, sizeof(addr)) == -1)
+    {
+        throw std::runtime_error("Unable to create a connection.");
+    }
+
+    _connected = true;
+}
+
+void TcpClient::Disconnect()
+{
+    if (!IsConnected())
+    {
+        throw std::logic_error("There is no connection to close.");
+    }
+
+    if (close(_socket) != 0)
+    {
+        throw std::runtime_error("Failed to close the socket.");
+    }
+
+    _connected = false;
+}
+
+void TcpClient::Send(const std::string data)
+{
+    if (!IsConnected())
+    {
+        throw std::logic_error("There is no connection.");
+    }
+
+    if (send(_socket, data.c_str(), data.length(), 0) < 0)
+    {
+        throw std::runtime_error("Something went wrong while sending a message.");
+    }
+}
+
+std::string TcpClient::Read()
+{
+    if (!IsConnected())
+    {
+        throw std::logic_error("There is no connection.");
+    }
+
+    char buffer[READ_BUFFER_SIZE] = { 0 };
+
+    if (recv(_socket, buffer, READ_BUFFER_SIZE, 0) > 0)
+    {
+        return std::string(buffer);
+    }
+
+    throw std::runtime_error("Something went wrong while reading a message.");
+}
+
+bool TcpClient::IsConnected(void)
+{
+    return _connected;
+}
