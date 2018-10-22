@@ -1,4 +1,5 @@
 #include "TcpClient.h"
+#include "protocol.h"
 
 TcpClient::TcpClient()
     : _connected(false)
@@ -66,7 +67,21 @@ void TcpClient::Send(const std::string data)
         throw std::logic_error("There is no connection.");
     }
 
-    if (send(_socket, data.c_str(), data.length(), 0) < 0)
+    std::string dataToSend = Protocol::ToServer(data);
+    if (send(_socket, dataToSend.c_str(), dataToSend.length(), 0) < 0)
+    {
+        throw std::runtime_error("Something went wrong while sending a message.");
+    }
+}
+
+void TcpClient::Send(std::vector<std::string> data)
+{
+    if (!_connected)
+    {
+        throw std::logic_error("There is no connection.");
+    }
+    std::string dataToSend = Protocol::ToServer(data);
+    if (send(_socket, dataToSend.c_str(), dataToSend.length(), 0) < 0)
     {
         throw std::runtime_error("Something went wrong while sending a message.");
     }

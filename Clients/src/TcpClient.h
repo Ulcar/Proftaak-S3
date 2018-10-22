@@ -22,6 +22,7 @@ public:
     void Disconnect();
 
     void Send(const std::string data);
+    void Send(std::vector<std::string> data);
     std::string Read();
 
 private:
