@@ -3,12 +3,11 @@
 TcpClient::TcpClient()
     : _connected(false)
 {
-    // Nothing...
 }
 
 TcpClient::~TcpClient()
 {
-    if (!IsConnected())
+    if (!_connected)
     {
         Disconnect();
     }
@@ -16,7 +15,7 @@ TcpClient::~TcpClient()
 
 void TcpClient::Connect(const std::string& host, int port)
 {
-    if (IsConnected())
+    if (_connected)
     {
         throw std::logic_error("TcpClient is already connected.");
     }
@@ -47,7 +46,7 @@ void TcpClient::Connect(const std::string& host, int port)
 
 void TcpClient::Disconnect()
 {
-    if (!IsConnected())
+    if (!_connected)
     {
         throw std::logic_error("There is no connection to close.");
     }
@@ -62,7 +61,7 @@ void TcpClient::Disconnect()
 
 void TcpClient::Send(const std::string data)
 {
-    if (!IsConnected())
+    if (!_connected)
     {
         throw std::logic_error("There is no connection.");
     }
@@ -75,7 +74,7 @@ void TcpClient::Send(const std::string data)
 
 std::string TcpClient::Read()
 {
-    if (!IsConnected())
+    if (!_connected)
     {
         throw std::logic_error("There is no connection.");
     }
@@ -88,9 +87,4 @@ std::string TcpClient::Read()
     }
 
     throw std::runtime_error("Something went wrong while reading a message.");
-}
-
-bool TcpClient::IsConnected(void)
-{
-    return _connected;
 }

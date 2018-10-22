@@ -24,8 +24,6 @@ public:
     void Send(const std::string data);
     std::string Read();
 
-    bool IsConnected();
-
 private:
     bool _connected;
     int _socket;
