@@ -1,4 +1,4 @@
-CXXFLAGS_NORMAL=-Wall -Werror -pedantic -ggdb -O0 -std=c++98 -Iproduct
+CXXFLAGS_NORMAL=-Wall -Werror -pedantic -ggdb -O0 -std=c++11 -Iproduct -pthread
 CXX=g++
 
 .phony: all clean

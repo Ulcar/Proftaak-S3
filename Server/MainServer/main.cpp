@@ -7,9 +7,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <mutex>
 #include <unistd.h>
 #include <vector>
-//#include <thread> 
+#include <thread> 
 
 
 #define SOCKET_SIZE 20
@@ -17,9 +18,9 @@
 //Client == Interface (C#)
 //Socket = machines (C++)
 
-bool quit;
+bool quit = false;
 std::vector<Socket> sockets; 
-
+std::mutex mtx;
 
 
 void setup(int *socketFd)
@@ -86,28 +87,43 @@ void readClient(int master)
 }
 
 
+static void setQuit(){
+    std::unique_lock<std::mutex> lock (mtx);
+    quit = true;
+}
+
+static bool askQuit(){
+    std::unique_lock<std::mutex> lock (mtx);
+    return quit;
+}
+
+
 static void HandleUserInput()
 {   
-    std::cout << "command:\n";
-    std::string commando;
-    std::getline(std::cin, commando);
-    
-    std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
+    while(true)
+    {
+        std::cout << "command:\n";
+        std::string commando;
+        std::getline(std::cin, commando);
+        
+        std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
 
-    try
-    {
-        if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit"))
+        try
         {
-            quit = true;
+            if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit"))
+            {
+                setQuit();
+                return;
+            }
+            else
+            {
+                std::cout << "Invalid arg: " << commando << "\n";
+            }
         }
-        else
+        catch(std::exception)
         {
-            std::cout << "Invalid arg: " << commando << "\n";
+            std::cout << "Exception: " << commando << "/n";
         }
-    }
-    catch(std::exception)
-    {
-        std::cout << "Exception: " << commando << "/n";
     }
 }
 
@@ -117,25 +133,20 @@ static void HandleUserInput()
 int main( void )
 {  
     std::cout << "------------------\n  Setting up Server\n";
-    quit = false;
     //Client* client = new Client();
     //Socket* socket = new Socket();
-    //std::thread inputThread (HandleUserInput); 
+    
     int max_sd = 0;
     std::string buffer;
     fd_set master;
     int socketFd;
     
     setup(&socketFd);
+
+    std::thread inputThread (HandleUserInput); 
     std::cout << "  Server started\n------------------\n";
     
-    /*
-    //For userinput-handling
-    while(true){
-        HandleUserInput();
-    }*/
-
-    while(!quit){
+    while(!askQuit()){
 
         FD_ZERO(&master);
 
@@ -175,12 +186,11 @@ int main( void )
         }
     }
 
-    if(false)
-    {
-        HandleUserInput();
-    }
+    std::cout << "\n------------------\n  Stopping\n";
+    
+    inputThread.detach();
 
-    std::cout << "\n------------------\n  Server Stopped\n------------------\n\n";
+    std::cout << "  Server Stopped\n------------------\n\n";
     
     return 0;
 }
