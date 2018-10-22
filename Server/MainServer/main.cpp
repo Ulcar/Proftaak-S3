@@ -18,8 +18,9 @@
 //Socket = machines (C++)
 
 bool quit;
-int PortNumber = 2019;
 std::vector<Socket> sockets; 
+
+
 
 void setup(int *socketFd)
 {
@@ -33,7 +34,7 @@ void setup(int *socketFd)
     struct sockaddr_in sa;
     memset(&sa, 0, sizeof sa);
     sa.sin_family = AF_INET;
-    sa.sin_port = PortNumber;
+    sa.sin_port = Protocol::GetPort();
     sa.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(*socketFd, (struct sockaddr*)&sa, sizeof sa) < 0)
@@ -50,17 +51,7 @@ void setup(int *socketFd)
         exit(EXIT_FAILURE);
     }
 }
-//----------------------------------------------------------------
 
-/*
-static void sendMessage(int *socketFd, std::string text)
-{
-    size_t nrBytesRec = send(*socketFd, text.c_str(), text.length(), 0);
-    if (nrBytesRec != text.length())
-    {
-        std::cout << "not everything is sent (" << nrBytesRec << "/" << text.length() << " bytes sent)\n";
-    }
-}*/
 
 void connectClient(int socketFd, int max_sd)
 {
@@ -93,14 +84,13 @@ void readClient(int master)
         }
     }
 }
-//-------------------------------------------------------------------------
+
 
 static void HandleUserInput()
 {   
     std::cout << "command:\n";
     std::string commando;
     std::getline(std::cin, commando);
-    //string[] commando = Console.ReadLine().ToLower().Split(' ');
     
     std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
 
@@ -121,6 +111,9 @@ static void HandleUserInput()
     }
 }
 
+
+
+
 int main( void )
 {  
     std::cout << "------------------\n  Setting up Server\n";
@@ -136,9 +129,11 @@ int main( void )
     setup(&socketFd);
     std::cout << "  Server started\n------------------\n";
     
-while(true){
-    HandleUserInput();
-}
+    /*
+    //For userinput-handling
+    while(true){
+        HandleUserInput();
+    }*/
 
     while(!quit){
 
@@ -180,8 +175,10 @@ while(true){
         }
     }
 
-    HandleUserInput();
-
+    if(false)
+    {
+        HandleUserInput();
+    }
 
     std::cout << "\n------------------\n  Server Stopped\n------------------\n\n";
     
