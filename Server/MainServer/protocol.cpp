@@ -4,13 +4,24 @@ std::string Protocol::ToClient(std::vector<std::string> message)
 {
     std::string startChar = "#";
     std::string endChar = "&";
+
     std::string messageToClient = makeString(message, startChar, endChar);
     return messageToClient;
 }
 
-std::vector<std::string> Protocol::FromClient(std::string)
+std::vector<std::string> Protocol::FromClient(std::string message)
 {
     std::vector<std::string> vector;
+    std::string startChar = "&";
+    std::string endChar = "#";
+    char splitChar = ';';
+
+    if ((message.substr(0,1) == startChar) && (message.substr(message.length()-1 , 1) == endChar))
+    {
+        std::string text = message.substr(1, message.length() -2 );
+        vector = SplitString(text, splitChar);
+    }
+
     return vector;
 }
 
@@ -22,9 +33,19 @@ std::string Protocol::ToInterface(std::vector<std::string> message)
     return messageToInterface;
 }
 
-std::vector<std::string> Protocol::FromInterface(std::string)
+std::vector<std::string> Protocol::FromInterface(std::string message)
 {
     std::vector<std::string> vector;
+    std::string startChar = "$";
+    std::string endChar = "#";
+    char splitChar = ';';
+
+    if ((message.substr(0,1) == startChar) && (message.substr(message.length()-1 , 1) == endChar))
+    {
+        std::string text = message.substr(1, message.length() -2 );
+        vector = SplitString(text, splitChar);
+    }
+
     return vector;
 }
 
