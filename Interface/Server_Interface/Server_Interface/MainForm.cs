@@ -15,6 +15,7 @@ namespace Server_Interface
     {
         private TcpClient interfaceClient;
         private InputForm inputForm;
+        private NetworkStream stream;
 
         public MainForm()
         {
@@ -23,10 +24,10 @@ namespace Server_Interface
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            AskForData();
+            AskUserForIP();
         }
 
-        private void AskForData()
+        private void AskUserForIP()
         {
             bool error = false;
             bool succes = false;
@@ -51,15 +52,23 @@ namespace Server_Interface
         private bool Connect()
         {
             interfaceClient = new TcpClient();
-            interfaceClient.Connect(inputForm.ServerIPAdress, inputForm.ServerPort);
-
+            try
+            {
+                interfaceClient.Connect(inputForm.ServerIPAdress, inputForm.ServerPort);
+                stream = interfaceClient.GetStream();
+                SendData("interface");
             return interfaceClient.Connected;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void Disconnect_btn_Click(object sender, EventArgs e)
         {
             interfaceClient.Close();
-            AskForData();
+            AskUserForIP();
         }
 
         private void SendData_btn_Click(object sender, EventArgs e)
@@ -96,13 +105,11 @@ namespace Server_Interface
             }
         }
 
-        private void Disconnect_btn_Click_1(object sender, EventArgs e)
+        private void SendData(string text)
         {
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            interfaceClient.Close();
+            byte[] data = Encoding.ASCII.GetBytes(text);
+            Console.WriteLine("Sending message to the Server");
+            stream.Write(data, 0, data.Length);
         }
     }
 }
