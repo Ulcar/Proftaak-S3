@@ -4,3 +4,7 @@ Server/MainServer/client.o
 Server/MainServer/socket.o
 Server/MainServer/.vscode
 Server/MainServer/protocol.o
+/Interface/Server_Interface/.vs/Server_Interface/v15/Server/sqlite3
+/Interface/Server_Interface/.vs/Server_Interface/v15/.suo
+/Interface/Server_Interface/.vs/Server_Interface/DesignTimeBuild
+/Interface/Server_Interface/.vs/Server_Interface/obj/Debug
