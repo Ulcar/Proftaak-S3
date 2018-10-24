@@ -1,9 +1,9 @@
-CXXFLAGS_NORMAL=-Wall -Werror -pedantic -ggdb -O0 -std=c++98 -Iproduct
+CXXFLAGS_NORMAL=-Wall -Werror -pedantic -ggdb -O0 -std=c++11 -Iproduct -pthread
 CXX=g++
 
 .phony: all clean
 
-all: Socket Client Main
+all: Socket Client Protocol Main
 
 clean:
 	@rm -rf Server *.o
@@ -14,6 +14,9 @@ Socket: socket.cpp
 Client: client.cpp
 	@$(CXX) -c -g $(CXXFLAGS_NORMAL) client.cpp
 
+Protocol: protocol.cpp
+	@$(CXX) -c -g $(CXXFLAGS_NORMAL) protocol.cpp
+
 Main: main.cpp
-	@$(CC) -c -g $(CFLAGS_NORMAL) main.cpp
-	@$(CXX) $(CXXFLAGS_NORMAL)  main.o socket.o client.o -o Server
+	@$(CXX) -c -g $(CXXFLAGS_NORMAL) main.cpp 
+	@$(CXX) $(CXXFLAGS_NORMAL)  main.o socket.o client.o protocol.o -o Server
