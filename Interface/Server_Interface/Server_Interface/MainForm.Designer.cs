@@ -32,9 +32,9 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.SendData_btn = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.RecievedData_listBox = new System.Windows.Forms.ListBox();
             this.GetData_btn = new System.Windows.Forms.Button();
             this.Disconnect_btn = new System.Windows.Forms.Button();
-            this.RecievedData_listBox = new System.Windows.Forms.ListBox();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -55,12 +55,12 @@
             this.textBox3.Location = new System.Drawing.Point(6, 21);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(267, 352);
+            this.textBox3.Size = new System.Drawing.Size(267, 48);
             this.textBox3.TabIndex = 1;
             // 
             // SendData_btn
             // 
-            this.SendData_btn.Location = new System.Drawing.Point(99, 379);
+            this.SendData_btn.Location = new System.Drawing.Point(92, 75);
             this.SendData_btn.Name = "SendData_btn";
             this.SendData_btn.Size = new System.Drawing.Size(75, 23);
             this.SendData_btn.TabIndex = 0;
@@ -78,6 +78,14 @@
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "groupBox3";
+            // 
+            // RecievedData_listBox
+            // 
+            this.RecievedData_listBox.FormattingEnabled = true;
+            this.RecievedData_listBox.Location = new System.Drawing.Point(7, 20);
+            this.RecievedData_listBox.Name = "RecievedData_listBox";
+            this.RecievedData_listBox.Size = new System.Drawing.Size(280, 355);
+            this.RecievedData_listBox.TabIndex = 1;
             // 
             // GetData_btn
             // 
@@ -97,15 +105,6 @@
             this.Disconnect_btn.TabIndex = 5;
             this.Disconnect_btn.Text = "Disconnect";
             this.Disconnect_btn.UseVisualStyleBackColor = true;
-            this.Disconnect_btn.Click += new System.EventHandler(this.Disconnect_btn_Click_1);
-            // 
-            // RecievedData_listBox
-            // 
-            this.RecievedData_listBox.FormattingEnabled = true;
-            this.RecievedData_listBox.Location = new System.Drawing.Point(7, 20);
-            this.RecievedData_listBox.Name = "RecievedData_listBox";
-            this.RecievedData_listBox.Size = new System.Drawing.Size(280, 355);
-            this.RecievedData_listBox.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -117,7 +116,6 @@
             this.Controls.Add(this.groupBox2);
             this.Name = "MainForm";
             this.Text = "Form1";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
