@@ -66,7 +66,7 @@ void connectClient(int socketFd, int max_sd)
     }
     
     sockets.push_back(new Socket(connectFd));
-    std::cout << "Connected to: " << connectFd << "\n";
+    std::cout << "Socket " << connectFd - socketFd << " connected\n";
 }
 
 void readClient(int master)
@@ -74,13 +74,12 @@ void readClient(int master)
     for(size_t i = 0; i < sockets.size(); i++)
     {
         Socket* tempsocket = sockets.at(i);
-        if(tempsocket->getSocketFd() == master)
+        if(tempsocket->getSocketFd() != master)
         {   
             std::cout << "Client '" << i << "' || ";
             if(tempsocket->Read() == "")
             {
                 sockets.erase(sockets.begin() + i);
-                delete tempsocket;
                 continue;
             }
         }
@@ -134,9 +133,9 @@ static void HandleUserInput()
 int main( void )
 {  
     std::cout << "------------------\n  Setting up Server\n";
-    int listenFd;
+    int masterFd;
 
-    setup(&listenFd);
+    setup(&masterFd);
 
     std::thread Thread(HandleUserInput);
     std::cout << "  Server started\n------------------\n";
@@ -145,11 +144,11 @@ int main( void )
     {        
         fd_set readFds;
         FD_ZERO(&readFds);
-        FD_SET(listenFd, &readFds);
-        maxFd = listenFd;
+        FD_SET(masterFd, &readFds);
+        maxFd = masterFd;
 
-          for(uint i = 0; i < sockets.size(); i++)              
-            {
+        for(uint i = 0; i < sockets.size(); i++)              
+        {
                 int sd = sockets[i]->getSocketFd();
                  //if valid socket descriptor then add to read list
             if(sd > 0)
@@ -162,10 +161,10 @@ int main( void )
             {
                 maxFd = sd;
             }
-            }
+        }
 
         struct timeval timeout;
-        timeout.tv_sec = 2;
+        timeout.tv_sec = 1;
         timeout.tv_usec = 0;
 
         int nrSockets = select(maxFd + 1, &readFds, NULL, NULL, &timeout);
@@ -176,18 +175,18 @@ int main( void )
         }
         else if (nrSockets == 0) // timeout
         {
-            std::cout << "still listening\n";
+            std::cout << ".\n";
         }
 
          else // found activity, find outConnections
         {
-            if (FD_ISSET(listenFd, &readFds))
+            if (FD_ISSET(masterFd, &readFds))
             {
-                connectClient(listenFd, maxFd);
+                connectClient(masterFd, maxFd);
             }
             else
             {
-                readClient(listenFd);
+                readClient(masterFd);
             }
         }
     }
