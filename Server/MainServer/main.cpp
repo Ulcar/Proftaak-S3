@@ -37,6 +37,7 @@ void setup(int *socketFd)
     memset(&sa, 0, sizeof sa);
     sa.sin_family = AF_INET;
     sa.sin_port = Protocol::GetPort();
+    //sa.sin_port = htons(Protocol::GetPort());
     sa.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(*socketFd, (struct sockaddr*)&sa, sizeof sa) < 0)
