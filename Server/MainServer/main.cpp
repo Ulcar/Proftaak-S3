@@ -27,7 +27,7 @@ int maxFd;
 void setup(int *socketFd)
 {
     *socketFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (socketFd < 0)
+    if (*socketFd < 0)
     {
         perror("cannot create socket");
         exit(EXIT_FAILURE);
@@ -175,7 +175,7 @@ int main( void )
         }
         else if (nrSockets == 0) // timeout
         {
-            std::cout << ".\n";
+            //nothing
         }
 
          else // found activity, find outConnections
