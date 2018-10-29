@@ -133,35 +133,13 @@ static void HandleUserInput()
 
 int main( void )
 {  
-    
+    std::cout << "------------------\n  Setting up Server\n";
+    int listenFd;
+
+    setup(&listenFd);
+
     std::thread Thread(HandleUserInput);
-     int listenFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    maxFd = listenFd;
-    if (listenFd < 0)
-    {
-        perror("cannot create socket");
-        exit(EXIT_FAILURE);
-    }
-
-    struct sockaddr_in sa;
-    memset(&sa, 0, sizeof sa);
-    sa.sin_family = AF_INET;
-    sa.sin_port = htons(2018);
-    sa.sin_addr.s_addr = htonl(INADDR_ANY);
-
-    if (bind(listenFd, (struct sockaddr*)&sa, sizeof sa) < 0)
-    {
-        perror("bind failed");
-        close(listenFd);
-        exit(EXIT_FAILURE);
-    }
-
-    if (listen(listenFd, 20) < 0)
-    {
-        perror("listen failed");
-        close(listenFd);
-        exit(EXIT_FAILURE);
-    }
+    std::cout << "  Server started\n------------------\n";
 
     while (!askQuit())
     {        
@@ -205,27 +183,20 @@ int main( void )
         {
             if (FD_ISSET(listenFd, &readFds))
             {
-                int communicationFd = accept(listenFd, NULL, NULL);;
-                if (communicationFd < 0)
-                {
-                    perror("accept failed");
-                    close(listenFd);
-                    exit(EXIT_FAILURE);
-                }
-                if(communicationFd > maxFd)
-                {
-                    maxFd = communicationFd;
-                }
-                Socket* data = new Socket(communicationFd);
-                sockets.push_back(data);
-                std::cout << "client connected";
+                connectClient(listenFd, maxFd);
             }
             else
             {
-
+                readClient(listenFd);
             }
         }
     }
 
+    std::cout << "\n------------------\n  Stopping\n";
+    
     Thread.detach();
+
+    std::cout << "  Server Stopped\n------------------\n\n";
+
+    return 0;
 }
