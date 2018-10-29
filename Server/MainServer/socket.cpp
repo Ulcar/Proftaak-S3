@@ -35,7 +35,6 @@ std::string Socket::Read()
     else if(nrBytesSend == 0)
     {
         std::cout << "Socket is shutdown. Disconnected\n";
-        delete this;
         return "";
     }
     return buffer;

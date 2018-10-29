@@ -75,12 +75,14 @@ void readClient(int master)
     for(size_t i = 0; i < sockets.size(); i++)
     {
         Socket* tempsocket = sockets.at(i);
-        if(tempsocket->getSocketFd() != master)
+        if(tempsocket->getSocketFd() == master)
         {   
             std::cout << "Client '" << i << "' || ";
             if(tempsocket->Read() == "")
             {
                 sockets.erase(sockets.begin() + i);
+                delete tempsocket;
+                tempsocket = nullptr;
                 continue;
             }
         }
@@ -179,7 +181,7 @@ int main( void )
             //nothing
         }
 
-         else // found activity, find outConnections
+        else // found activity, find outConnections
         {
             if (FD_ISSET(masterFd, &readFds))
             {
