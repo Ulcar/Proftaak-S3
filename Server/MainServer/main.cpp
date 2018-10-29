@@ -19,8 +19,9 @@
 //Socket = machines (C++)
 
 bool quit = false;
-std::vector<Socket> sockets; 
+std::vector<Socket*> sockets; 
 std::mutex mtx;
+int maxFd;
 
 
 void setup(int *socketFd)
@@ -64,22 +65,21 @@ void connectClient(int socketFd, int max_sd)
         exit(EXIT_FAILURE);
     }
     
-    sockets.push_back(Socket(connectFd));
-    std::cout << "Connected to: " << connectFd << "\n";
+    sockets.push_back(new Socket(connectFd));
+    std::cout << "Socket " << connectFd - socketFd << " connected\n";
 }
 
 void readClient(int master)
 {
     for(size_t i = 0; i < sockets.size(); i++)
     {
-        Socket* tempsocket = &sockets.at(i);
-        if(tempsocket->getSocketFd() == master)
+        Socket* tempsocket = sockets.at(i);
+        if(tempsocket->getSocketFd() != master)
         {   
             std::cout << "Client '" << i << "' || ";
             if(tempsocket->Read() == "")
             {
                 sockets.erase(sockets.begin() + i);
-                delete tempsocket;
                 continue;
             }
         }
@@ -133,64 +133,69 @@ static void HandleUserInput()
 int main( void )
 {  
     std::cout << "------------------\n  Setting up Server\n";
-    //Client* client = new Client();
-    //Socket* socket = new Socket();
-    
-    int max_sd = 0;
-    std::string buffer;
-    fd_set master;
-    int socketFd;
-    
-    setup(&socketFd);
+    int masterFd;
 
-    std::thread inputThread (HandleUserInput); 
+    setup(&masterFd);
+
+    std::thread Thread(HandleUserInput);
     std::cout << "  Server started\n------------------\n";
-    
-    while(!askQuit()){
 
-        FD_ZERO(&master);
+    while (!askQuit())
+    {        
+        fd_set readFds;
+        FD_ZERO(&readFds);
+        FD_SET(masterFd, &readFds);
+        maxFd = masterFd;
 
-        FD_SET(socketFd, &master);
-        max_sd = socketFd;
-
-        for (size_t i = 0 ; i < sockets.size() ; i++) 
+        for(uint i = 0; i < sockets.size(); i++)              
         {
-            int sd = sockets.at(i).getSocketFd();;
-             
+                int sd = sockets[i]->getSocketFd();
+                 //if valid socket descriptor then add to read list
             if(sd > 0)
-                FD_SET( sd , &master);
-             
-            if(sd > max_sd)
-                max_sd = sd;
-        }
-        timeval timer;
-        timer.tv_sec = 1;
-
-        int socketCount = select(max_sd + 1, &master, NULL, NULL, &timer);
-
-        if (socketCount < 0) 
-        {
-            printf("select error");
-        }
-        
-        if(socketCount > 0)
-        {
-            if(FD_ISSET(socketFd, &master))
             {
-                connectClient(socketFd, max_sd);
+                FD_SET(sd,&readFds);
+            }
+                
+            //highest file descriptor number, need it for the select function
+            if(sd > maxFd)
+            {
+                maxFd = sd;
+            }
+        }
+
+        struct timeval timeout;
+        timeout.tv_sec = 1;
+        timeout.tv_usec = 0;
+
+        int nrSockets = select(maxFd + 1, &readFds, NULL, NULL, &timeout);
+
+        if (nrSockets < 0) // error situation
+        {
+            perror("error from calling socket");
+        }
+        else if (nrSockets == 0) // timeout
+        {
+            std::cout << ".\n";
+        }
+
+         else // found activity, find outConnections
+        {
+            if (FD_ISSET(masterFd, &readFds))
+            {
+                connectClient(masterFd, maxFd);
             }
             else
             {
-                readClient(socketFd);
+                readClient(masterFd);
             }
         }
     }
 
     std::cout << "\n------------------\n  Stopping\n";
     
-    inputThread.detach();
+    Thread.detach();
 
     std::cout << "  Server Stopped\n------------------\n\n";
-    
+
     return 0;
 }
