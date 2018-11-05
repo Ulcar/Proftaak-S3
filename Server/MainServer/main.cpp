@@ -70,22 +70,15 @@ void connectClient(int socketFd, int max_sd)
     std::cout << "Socket " << connectFd - socketFd << " connected\n";
 }
 
-void readClient(int master)
+void readClient(int indexSocket)
 {
-    for(size_t i = 0; i < sockets.size(); i++)
+    Socket* tempsocket = sockets.at(indexSocket);
+    std::cout << "Client '" << indexSocket << "' || ";
+    if(tempsocket->Read() == "")
     {
-        Socket* tempsocket = sockets.at(i);
-        if(tempsocket->getSocketFd() == master)
-        {   
-            std::cout << "Client '" << i << "' || ";
-            if(tempsocket->Read() == "")
-            {
-                sockets.erase(sockets.begin() + i);
-                delete tempsocket;
-                tempsocket = nullptr;
-                continue;
-            }
-        }
+        sockets.erase(sockets.begin() + indexSocket);
+        delete tempsocket;
+        tempsocket = nullptr;
     }
 }
 
@@ -189,7 +182,14 @@ int main( void )
             }
             else
             {
-                readClient(masterFd);
+                for(size_t i = 0; i < sockets.size(); i++)
+                {
+                    Socket* tempsocket = sockets.at(i);
+                    if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
+                    {
+                        readClient(i);
+                    }
+                }
             }
         }
     }
