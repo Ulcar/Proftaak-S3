@@ -1,11 +1,8 @@
 #include "protocol.h"
 
-std::string Protocol::ToClient(std::vector<std::string> message)
+std::string Protocol::ToClient(Code code, int value)
 {
-    std::string startChar = "#";
-    std::string endChar = "&";
-
-    std::string messageToClient = makeString(message, startChar, endChar);
+    std::string messageToClient = MakeString(code, value, startCharToClient, endCharToClient);
     return messageToClient;
 }
 
@@ -25,11 +22,11 @@ std::vector<std::string> Protocol::FromClient(std::string message)
     return vector;
 }
 
-std::string Protocol::ToInterface(std::vector<std::string> message)
+std::string Protocol::ToInterface(Code code, int value)
 {
     std::string startChar = "#";
     std::string endChar = "&";
-    std::string messageToInterface = makeString(message, startChar, endChar);
+    std::string messageToInterface = MakeString(code, value, startCharToInterface, endCharToInterface);
     return messageToInterface;
 }
 
@@ -49,19 +46,13 @@ std::vector<std::string> Protocol::FromInterface(std::string message)
     return vector;
 }
 
-std::string Protocol::makeString(std::vector<std::string> message, std::string startChar, std::string endChar)
+std::string Protocol::MakeString(int code, int value, char startChar, char endChar)
 {
     std::string newString;
     newString = startChar;
-    for(size_t i = 0; i < message.size(); i++)
-    {
-        if(i != 0)
-        {
-            newString += ";";
-        }
-        newString += message[i];
-
-    }
+    newString += code;
+    newString += seperatorChar;
+    newString += value;
     newString += endChar;
     return newString;
 }

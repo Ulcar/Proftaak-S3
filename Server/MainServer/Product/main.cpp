@@ -1,5 +1,5 @@
 #include "client.h"
-#include "socket.h"
+#include "machine.h"
 #include "protocol.h"
 
 #include <arpa/inet.h>
@@ -19,7 +19,7 @@
 //Socket = machines (C++)
 
 bool quit = false;
-std::vector<Socket*> sockets; 
+std::vector<Machine*> sockets; 
 std::mutex mtx;
 int maxFd;
 
@@ -66,8 +66,8 @@ void connectClient(int socketFd, int max_sd)
         exit(EXIT_FAILURE);
     }
     
-    sockets.push_back(new Socket(connectFd));
-    std::cout << "Socket " << connectFd - socketFd << " connected\n";
+    sockets.push_back(new Machine(connectFd));
+    std::cout << "Socket " << connectFd - socketFd - 1 << " connected\n";
 }
 
 void readClient(int indexSocket)
