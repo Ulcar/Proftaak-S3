@@ -22,7 +22,6 @@ class Protocol
         static std::vector<std::string> FromClient(std::string);
         static std::string ToInterface(Code code, int value);
         static std::vector<std::string> FromInterface(std::string);
-        static std::vector<std::string> SplitString(std::string text, char split);
 
     private:
         static const char startCharToClient = '#';
@@ -32,6 +31,7 @@ class Protocol
         static const char seperatorChar = ':';
         static const int port = 2018; //set port here
         static std::string MakeString(int code, int value, char startChar, char endChar);
+        static std::vector<std::string> Protocol::SplitString(std::string text, char splitChar, char startChar, char endChar);
 
 };
 
