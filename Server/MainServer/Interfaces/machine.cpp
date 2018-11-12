@@ -1,7 +1,6 @@
 #include "machine.h"
 
-Machine::Machine(int socketFd) :
-    Socket(socketFd)
+Machine::Machine()
 {
     
 }

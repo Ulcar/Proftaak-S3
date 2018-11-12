@@ -7,16 +7,18 @@
 
 #include <cstring>
 
-class Machine : public Socket
+class Machine
 {
     public:
-        Machine(int socketFd);
+        Machine();
         ~Machine();
 
         void Send(Code code, int value);
         virtual void Beat(fd_set &readFds) = 0;
+        Socket* socket;
 
     private:
+        std::string macAdress;
 };
 
 #endif

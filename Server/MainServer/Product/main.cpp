@@ -1,4 +1,5 @@
 #include "client.h"
+#include "wasmachine.h"
 #include "machine.h"
 #include "protocol.h"
 
@@ -66,13 +67,17 @@ void connectClient(int socketFd, int max_sd)
         exit(EXIT_FAILURE);
     }
     
-    sockets.push_back(new Machine(connectFd));
+    Socket* socket = new Socket(connectFd);
     std::cout << "Socket " << connectFd - socketFd - 1 << " connected\n";
+
+    Machine* machine = new Wasmachine();
+    machine->socket = socket;
+    sockets.push_back(machine);
 }
 
 void readClient(int indexSocket)
 {
-    Socket* tempsocket = sockets.at(indexSocket);
+    Socket* tempsocket = sockets.at(indexSocket)->socket;
     std::cout << "Client '" << indexSocket << "' || ";
     if(tempsocket->Read() == "")
     {
@@ -145,7 +150,7 @@ int main( void )
 
         for(uint i = 0; i < sockets.size(); i++)              
         {
-                int sd = sockets[i]->getSocketFd();
+                int sd = sockets[i]->socket->getSocketFd();
                  //if valid socket descriptor then add to read list
             if(sd > 0)
             {
@@ -184,7 +189,7 @@ int main( void )
             {
                 for(size_t i = 0; i < sockets.size(); i++)
                 {
-                    Socket* tempsocket = sockets.at(i);
+                    Socket* tempsocket = sockets.at(i)->socket;
                     if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
                     {
                         readClient(i);

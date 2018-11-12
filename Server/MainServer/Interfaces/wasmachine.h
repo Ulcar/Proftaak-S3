@@ -7,7 +7,7 @@
 class Wasmachine : public Machine
 {
     public:
-        Wasmachine(int socketFd);
+        Wasmachine();
         ~Wasmachine();
 
         void RequestHeater(WasMachineHeater status);

@@ -19,6 +19,7 @@ class Socket
         ~Socket();
         int Ping();
         bool Beat(fd_set &readFds);
+        std::string Read();
 
         int getSocketFd()
         {
@@ -39,7 +40,6 @@ class Socket
         std::vector<std::string> buffer;
 
         void QueSend(std::string text);
-        std::string Read();
 
     protected:
         void Send(std::string text);
