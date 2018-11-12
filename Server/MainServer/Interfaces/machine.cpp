@@ -8,7 +8,7 @@ Machine::Machine(std::string macAdress)
 
 Machine::~Machine()
 {
-    //call destructor Socket
+    delete socket;
 }
 
 void Machine::Send(Code code, int value)
