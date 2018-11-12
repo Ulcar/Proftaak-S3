@@ -23,7 +23,7 @@
 
 PRODUCT= Server
 
-CPPFLAGS=-IInterfaces -IEnums -IProduct -IStatics
+CPPFLAGS=-IEnums -IInterfaces -IProduct -IStatics
 CXXFLAGS=-Wall -Werror -Wextra -pedantic -ggdb -O0 -std=c++11 -pthread $(CPPFLAGS)
 
 SOURCES=$(wildcard *.cpp) \
