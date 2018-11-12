@@ -19,3 +19,12 @@ void Machine::Send(Code code, int value)
     }
     socket->QueSend(Protocol::ToClient(code, value));
 }
+
+void Machine::SetSocket(Socket* tempSocket)
+{
+    if(socket != nullptr)
+    {
+        delete tempSocket;
+    }
+    socket = tempSocket;
+}

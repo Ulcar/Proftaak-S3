@@ -15,10 +15,21 @@ class Machine
 
         void Send(Code code, int value);
         virtual void Beat() = 0;
-        Socket* socket;
+        void SetSocket(Socket* socket);
 
-    private:
+        Socket* GetSocket()
+        {
+            return socket;
+        }
+
+        std::string GetMacAdress()
+        {
+            return macAdress;
+        }
+
+    protected:
         const std::string macAdress;
+        Socket* socket;
 };
 
 #endif
