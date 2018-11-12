@@ -24,9 +24,9 @@ void Errorlogger::Record(std::string errorMessage, std::string source)
    
     ErrorLogstruct error = ErrorLogstruct
     {
-        .message = errorMessage,
-        .source = source,
-        .time = dt
+        errorMessage,
+        source,
+        dt
     };
 
     ErrorLog.push_back(error);
