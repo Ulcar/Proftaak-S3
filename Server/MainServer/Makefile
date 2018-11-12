@@ -23,16 +23,18 @@
 
 PRODUCT= Server
 
-CPPFLAGS=-IInterfaces -IEnums -IProduct
+CPPFLAGS=-IInterfaces -IEnums -IProduct -IStatics
 CXXFLAGS=-Wall -Werror -Wextra -pedantic -ggdb -O0 -std=c++11 -pthread $(CPPFLAGS)
 
 SOURCES=$(wildcard *.cpp) \
         $(wildcard Interfaces/*.cpp) \
-        $(wildcard Enums/*.cpp)
+        $(wildcard Enums/*.cpp) \
+        $(wildcard Statics/*.cpp)
 
 HEADERS=$(wildcard *.h) \
         $(wildcard Interfaces/*.h) \
-        $(wildcard Enums/*.h)
+        $(wildcard Enums/*.h) \
+        $(wildcard Statics/*.h)
 
 CXX=g++
 
