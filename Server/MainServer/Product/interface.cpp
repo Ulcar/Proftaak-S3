@@ -10,20 +10,23 @@ Interface::Interface(std::string macAdress)
 
 Interface::~Interface()
 {
-
+    delete socket;
 }
 
-void Interface::Send()
+void Interface::Send(Code code, int value)
 {
-
+    if(socket == nullptr)
+    {
+        return;
+    }
+    socket->QueSend(Protocol::ToClient(code, value));
 }
 
-void Interface::Read()
+void Interface::SetSocket(Socket* tempSocket)
 {
-
-}
-
-int Interface::Ping()
-{
-    return 0;
+    if(socket != nullptr)
+    {
+        delete tempSocket;
+    }
+    socket = tempSocket;
 }

@@ -2,20 +2,32 @@
 #define INTERFACE_H
 
 #include "socket.h"
+#include "protocol.h"
 
 class Interface
 {
     public:
         Interface(std::string macAdress);
         ~Interface();
-        void Send();
+        void Send(Code code, int value);
         void Read();
         int Ping();
-        Socket* socket;
+        void SetSocket(Socket* socket);
+
+        Socket* GetSocket()
+        {
+            return socket;
+        }
+
+        std::string GetMacAdress()
+        {
+            return macAdress;
+        }
 
     private:
         int error;
-        std::string macAdress;
+        const std::string macAdress;
+        Socket* socket;
 };
 
 #endif
