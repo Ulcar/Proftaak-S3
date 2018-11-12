@@ -35,25 +35,32 @@ std::string Protocol::MakeString(int code, int value, char startChar, char endCh
 
 std::vector<std::string> Protocol::SplitString(std::string text, char splitChar, char startChar, char endChar)
 {
-    std::vector<std::string> commando;
-
     if ((text.substr(0,1).at(0) == startChar) && (text.substr(text.length()-1 , 1).at(0) == endChar))
     {
         text = text.substr(1, text.length() -2 );
-        text += " ";
-        size_t prevIndex = 0;
+        return SplitString(text, splitChar);
+    }
+    std::vector<std::string> fu;
+    return fu;
+}
 
-        while(true)
+std::vector<std::string> Protocol::SplitString(std::string text, char splitChar)
+{
+    std::vector<std::string> commando;
+
+    text += " ";
+    size_t prevIndex = 0;
+
+    while(true)
+    {
+        size_t index = text.find_first_of(splitChar, prevIndex);
+        if(index > text.length())
         {
-            size_t index = text.find_first_of(splitChar, prevIndex);
-            if(index > text.length())
-            {
-                break;
-            }
-            std::string ff = text.substr(prevIndex, index - prevIndex);
-            commando.push_back(ff);
-            prevIndex = index + 1;
+            break;
         }
+        std::string ff = text.substr(prevIndex, index - prevIndex);
+        commando.push_back(ff);
+        prevIndex = index + 1;
     }
     return commando;
 }

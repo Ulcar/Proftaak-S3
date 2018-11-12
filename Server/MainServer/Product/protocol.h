@@ -22,6 +22,7 @@ class Protocol
         static std::vector<std::string> FromClient(std::string);
         static std::string ToInterface(Code code, int value);
         static std::vector<std::string> FromInterface(std::string);
+        static std::vector<std::string> Protocol::SplitString(std::string text, char splitChar);
 
     private:
         static const char startCharToClient = '#';
