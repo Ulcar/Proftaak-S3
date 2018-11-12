@@ -18,8 +18,9 @@ class Socket
         Socket(int socketFd);
         ~Socket();
         int Ping();
-        bool Beat(fd_set &readFds);
-        std::string Read();
+        bool Beat();
+        bool Read();
+        void QueSend(std::string text);
 
         int getSocketFd()
         {
@@ -37,9 +38,9 @@ class Socket
         bool waitingForClient;
         std::string prevMessage;
 
-        std::vector<std::string> buffer;
+        std::vector<std::string> bufferOut;
+        std::vector<std::string> bufferIn;
 
-        void QueSend(std::string text);
 
     protected:
         void Send(std::string text);

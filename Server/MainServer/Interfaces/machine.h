@@ -10,15 +10,15 @@
 class Machine
 {
     public:
-        Machine();
+        Machine(std::string macAdress);
         ~Machine();
 
         void Send(Code code, int value);
-        virtual void Beat(fd_set &readFds) = 0;
+        virtual void Beat() = 0;
         Socket* socket;
 
     private:
-        std::string macAdress;
+        const std::string macAdress;
 };
 
 #endif

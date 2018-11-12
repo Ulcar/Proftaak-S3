@@ -1,6 +1,7 @@
 #include "machine.h"
 
-Machine::Machine()
+Machine::Machine(std::string macAdress)
+    : macAdress(macAdress)
 {
     
 }
@@ -12,8 +13,9 @@ Machine::~Machine()
 
 void Machine::Send(Code code, int value)
 {
-    Protocol::GetPort();
-    int ff = code + value;
-    std::cout << ff;
-    //Socket::Send(Protocol::ToClient(code, value));
+    if(socket == nullptr)
+    {
+        return;
+    }
+    socket->QueSend(Protocol::ToClient(code, value));
 }

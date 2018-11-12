@@ -1,4 +1,4 @@
-#include "client.h"
+#include "interface.h"
 #include "wasmachine.h"
 #include "machine.h"
 #include "protocol.h"
@@ -20,7 +20,8 @@
 //Socket = machines (C++)
 
 bool quit = false;
-std::vector<Machine*> sockets; 
+std::vector<Machine*> machines; 
+std::vector<Interface*> interfaces; 
 std::mutex mtx;
 int maxFd;
 
@@ -70,18 +71,67 @@ void connectClient(int socketFd, int max_sd)
     Socket* socket = new Socket(connectFd);
     std::cout << "Socket " << connectFd - socketFd - 1 << " connected\n";
 
-    Machine* machine = new Wasmachine();
-    machine->socket = socket;
-    sockets.push_back(machine);
+    if(!socket->Read())
+    {
+        delete socket;
+        return;
+    }
+
+    std::vector<std::string> message = Protocol::FromClient(socket->getPrevMessage());
+    
+    if(message.size == 3)
+    {
+        if(message.at(0) == "0")
+        {
+            Machine* machine;
+            switch(message.at(1).at(0))
+            {
+            case '0':
+                machine = new Wasmachine(message.at(2));
+                break;
+            case '1':
+                machine = new Wasmachine(message.at(2));
+                break;
+            case '2':
+                machine = new Wasmachine(message.at(2));
+                break;
+            case '3':
+                machine = new Wasmachine(message.at(2));
+                break;
+            default:
+                socket->QueSend(Protocol::ToClient(CODE_CONNECT, 1));
+                socket->Beat();
+                delete socket;
+                return;
+            }
+            socket->QueSend(Protocol::ToClient(CODE_CONNECT, 0));
+            socket->Beat();
+            machine->socket = socket;
+            machines.push_back(machine);
+            return;
+        }
+    }
+    
+    message = Protocol::FromInterface(socket->getPrevMessage());
+    
+    if(message.size == 2)
+    {
+        Interface* interface = new Interface(message.at(1));
+        socket->QueSend(Protocol::ToClient(CODE_CONNECT, 0));
+        socket->Beat();
+        interface->socket = socket;
+        interfaces.push_back(interface);
+        return;
+    }
 }
 
 void readClient(int indexSocket)
 {
-    Socket* tempsocket = sockets.at(indexSocket)->socket;
+    Socket* tempsocket = machines.at(indexSocket)->socket;
     std::cout << "Client '" << indexSocket << "' || ";
-    if(tempsocket->Read() == "")
+    if(!tempsocket->Read())
     {
-        sockets.erase(sockets.begin() + indexSocket);
+        machines.erase(machines.begin() + indexSocket);
         delete tempsocket;
         tempsocket = nullptr;
     }
@@ -148,9 +198,9 @@ int main( void )
         FD_SET(masterFd, &readFds);
         maxFd = masterFd;
 
-        for(uint i = 0; i < sockets.size(); i++)              
+        for(uint i = 0; i < machines.size(); i++)              
         {
-                int sd = sockets[i]->socket->getSocketFd();
+                int sd = machines[i]->socket->getSocketFd();
                  //if valid socket descriptor then add to read list
             if(sd > 0)
             {
@@ -187,9 +237,9 @@ int main( void )
             }
             else
             {
-                for(size_t i = 0; i < sockets.size(); i++)
+                for(size_t i = 0; i < machines.size(); i++)
                 {
-                    Socket* tempsocket = sockets.at(i)->socket;
+                    Socket* tempsocket = machines.at(i)->socket;
                     if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
                     {
                         readClient(i);

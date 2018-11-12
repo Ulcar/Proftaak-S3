@@ -7,11 +7,11 @@
 class Wasmachine : public Machine
 {
     public:
-        Wasmachine();
+        Wasmachine(std::string macAdress);
         ~Wasmachine();
 
         void RequestHeater(WasMachineHeater status);
-        void Beat(fd_set &readFds);
+        void Beat();
 
     private:
 };

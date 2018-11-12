@@ -6,7 +6,6 @@ Socket::Socket(int socketFd)
     error = Error::None;
     waitingForClient = false;
     this->socketFd = socketFd;
-    Send("Welcome socket");
 }
 
 Socket::~Socket()
@@ -16,10 +15,10 @@ Socket::~Socket()
 
 void Socket::QueSend(std::string text)
 {
-    buffer.push_back(text);
+    bufferOut.push_back(text);
 }
 
-std::string Socket::Read()
+bool Socket::Read()
 {
     const int BufferSize = 100;
     char buffer[BufferSize];
@@ -32,9 +31,11 @@ std::string Socket::Read()
     else if(nrBytesSend == 0)
     {
         std::cout << "Socket is shutdown. Disconnected\n";
-        return "";
+        return false;
     }
-    return buffer;
+
+    bufferIn.push_back(buffer);
+    return true;
 }
 
 int Socket::Ping()
@@ -47,26 +48,20 @@ void Socket::Send(std::string text)
     size_t nrBytesRec = send(socketFd, text.c_str(), text.length(), 0);
     if (nrBytesRec != text.length())
     {
-        std::cout << "not everything is sent (" << nrBytesRec << "/" << text.length() << " bytes sent)\n";
+        std::cout << "Not everything is sent (" << nrBytesRec << "/" << text.length() << " bytes sent)\n";
     }
 }
 
-bool Socket::Beat(fd_set &readFds)
+bool Socket::Beat()
 {
-    if(!waitingForClient)
+    if(!waitingForClient && bufferOut.size() != 0)
     {
-        if(buffer.size() == 0)
-        {
-            return false;
-        }
-        QueSend(buffer.at(0));
+        QueSend(bufferOut.at(0));
         waitingForClient = true;
-        return false;
     }
     
-    if (FD_ISSET(getSocketFd(), &readFds))
+    if(bufferIn.size() != 0)
     {
-        prevMessage = Read();
         return true;
     }
     return false;

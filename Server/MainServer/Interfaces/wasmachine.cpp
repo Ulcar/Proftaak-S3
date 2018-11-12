@@ -1,7 +1,7 @@
 #include "wasmachine.h"
 
-Wasmachine::Wasmachine() :
-    Machine()
+Wasmachine::Wasmachine(std::string macAdress) :
+    Machine(macAdress)
 {
     
 }
@@ -16,9 +16,9 @@ void Wasmachine::RequestHeater(WasMachineHeater status)
     Machine::Send(CODE_HEATER, status);
 }
 
-void Wasmachine::Beat(fd_set &readFds)
+void Wasmachine::Beat()
 {
-    if(socket->Beat(readFds))
+    if(socket->Beat())
     {
         //handle Socket::GetPrevMessage()
     }
