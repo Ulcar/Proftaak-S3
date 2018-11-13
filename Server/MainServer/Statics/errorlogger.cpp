@@ -1,5 +1,8 @@
 #include "errorlogger.h"
-        
+
+std::vector<Errorlogger::ErrorLogstruct> Errorlogger::ErrorLog;
+bool Errorlogger::LiveErrorLogging;
+
 Errorlogger::Errorlogger()
 {
     
