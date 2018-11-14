@@ -61,7 +61,7 @@ Machine* CreateNewMachine(char type, std::string macAdress)
 {
     for(Machine* machine : machines)
     {
-        if(machine->GetMacAdress == macAdress)
+        if(machine->GetMacAdress() == macAdress)
         {
             return machine;
         }
@@ -90,7 +90,7 @@ Machine* CreateNewMachine(char type, std::string macAdress)
 }
 
 
-void connectClient(int socketFd, int max_sd)
+void connectClient(int socketFd)
 {
     int connectFd = accept(socketFd, NULL, NULL);
     if (connectFd < 0)
@@ -111,7 +111,7 @@ void connectClient(int socketFd, int max_sd)
 
     std::vector<std::string> message = Protocol::FromClient(socket->getPrevMessage());
     
-    if(message.size == 3)
+    if(message.size() == 3)
     {
         if(message.at(0) == "0")
         {
@@ -124,7 +124,7 @@ void connectClient(int socketFd, int max_sd)
 
             socket->QueSend(Protocol::ToClient(CODE_CONNECT, 0));
             socket->Beat();
-            machine->SetSocket = socket;
+            machine->SetSocket(socket);
             machines.push_back(machine);
             return;
         }
@@ -132,12 +132,12 @@ void connectClient(int socketFd, int max_sd)
     
     message = Protocol::FromInterface(socket->getPrevMessage());
     
-    if(message.size == 2)
+    if(message.size() == 2)
     {
         Interface* interface = new Interface(message.at(1));
         socket->QueSend(Protocol::ToClient(CODE_CONNECT, 0));
         socket->Beat();
-        interface->SetSocket = socket;
+        interface->SetSocket(socket);
         interfaces.push_back(interface);
         return;
     }
@@ -145,7 +145,7 @@ void connectClient(int socketFd, int max_sd)
 
 bool readClient(Socket* socket)
 {
-    std::cout << "Client '" << socket->getSocketFd << "' || ";
+    std::cout << "Client '" << socket->getSocketFd() << "' || ";
     if(!socket->Read())
     {
        return false;
@@ -216,7 +216,7 @@ int main( void )
 
         for(uint i = 0; i < machines.size(); i++)              
         {
-                int sd = machines[i]->GetSocket->getSocketFd();
+                int sd = machines[i]->GetSocket()->getSocketFd();
                  //if valid socket descriptor then add to read list
             if(sd > 0)
             {
@@ -249,13 +249,13 @@ int main( void )
         {
             if (FD_ISSET(masterFd, &readFds))
             {
-                connectClient(masterFd, maxFd);
+                connectClient(masterFd);
             }
             else
             {
                 for(size_t i = 0; i < machines.size(); i++)
                 {
-                    Socket* tempsocket = machines.at(i)->GetSocket;
+                    Socket* tempsocket = machines.at(i)->GetSocket();
                     if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
                     {
                         if(!readClient(tempsocket))
@@ -267,7 +267,7 @@ int main( void )
                 }
                 for(size_t i = 0; i < interfaces.size(); i++)
                 {
-                    Socket* tempsocket = interfaces.at(i)->GetSocket;
+                    Socket* tempsocket = interfaces.at(i)->GetSocket();
                     if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
                     {
                         if(!readClient(tempsocket))
