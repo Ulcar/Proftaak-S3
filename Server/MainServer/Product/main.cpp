@@ -26,6 +26,56 @@ std::mutex mtx;
 int maxFd;
 
 
+
+static bool askQuit(){
+    std::unique_lock<std::mutex> lock (mtx);
+    return quit;
+}
+
+
+//------------------------------------------------------------------------------//
+//                               Console                                        //
+//------------------------------------------------------------------------------//
+
+static void setQuit(){
+    std::unique_lock<std::mutex> lock (mtx);
+    quit = true;
+}
+
+static void HandleUserInput()
+{   
+    while(true)
+    {
+        std::cout << "command:\n";
+        std::string commando;
+        std::getline(std::cin, commando);
+        
+        std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
+
+        try
+        {
+            if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit"))
+            {
+                setQuit();
+                return;
+            }
+            else
+            {
+                std::cout << "Invalid arg: " << commando << "\n";
+            }
+        }
+        catch(std::exception)
+        {
+            std::cout << "Exception: " << commando << "/n";
+        }
+    }
+}
+
+
+//------------------------------------------------------------------------------//
+//                               Socket                                         //
+//------------------------------------------------------------------------------//
+
 void setup(int *socketFd)
 {
     *socketFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -109,7 +159,7 @@ void connectClient(int socketFd)
         return;
     }
 
-    std::vector<std::string> message = Protocol::FromClient(socket->getPrevMessage());
+    std::vector<std::string> message = Protocol::FromClient(socket->ReadLastMessage());
     
     if(message.size() == 3)
     {
@@ -130,7 +180,7 @@ void connectClient(int socketFd)
         }
     }
     
-    message = Protocol::FromInterface(socket->getPrevMessage());
+    message = Protocol::FromInterface(socket->ReadLastMessage());
     
     if(message.size() == 2)
     {
@@ -153,62 +203,17 @@ bool readClient(Socket* socket)
     return true;
 }
 
-
-static void setQuit(){
-    std::unique_lock<std::mutex> lock (mtx);
-    quit = true;
-}
-
-static bool askQuit(){
-    std::unique_lock<std::mutex> lock (mtx);
-    return quit;
-}
-
-
-static void HandleUserInput()
-{   
-    while(true)
-    {
-        std::cout << "command:\n";
-        std::string commando;
-        std::getline(std::cin, commando);
-        
-        std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
-
-        try
-        {
-            if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit"))
-            {
-                setQuit();
-                return;
-            }
-            else
-            {
-                std::cout << "Invalid arg: " << commando << "\n";
-            }
-        }
-        catch(std::exception)
-        {
-            std::cout << "Exception: " << commando << "/n";
-        }
-    }
-}
-
-
-
-
-int main( void )
-{  
-    std::cout << "------------------\n  Setting up Server\n";
+static void socketHandler()
+{
     int masterFd;
 
     setup(&masterFd);
 
-    std::thread Thread(HandleUserInput);
-    std::cout << "  Server started\n------------------\n";
+    std::cout << "  Socket started\n";
 
     while (!askQuit())
     {        
+        std::cout << "Loop\n";
         fd_set readFds;
         FD_ZERO(&readFds);
         FD_SET(masterFd, &readFds);
@@ -244,7 +249,6 @@ int main( void )
         {
             //nothing
         }
-
         else // found activity, find outConnections
         {
             if (FD_ISSET(masterFd, &readFds))
@@ -253,26 +257,26 @@ int main( void )
             }
             else
             {
-                for(size_t i = 0; i < machines.size(); i++)
+                for(Machine* tempmachine : machines)
                 {
-                    Socket* tempsocket = machines.at(i)->GetSocket();
+                    Socket* tempsocket = tempmachine->GetSocket();
                     if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
                     {
                         if(!readClient(tempsocket))
                         { 
-                            machines.at(i)->SetSocket(nullptr);
+                            tempmachine->SetSocket(nullptr);
                             tempsocket = nullptr;
                         }
                     }
                 }
-                for(size_t i = 0; i < interfaces.size(); i++)
+                for(Interface* tempinterface : interfaces)
                 {
-                    Socket* tempsocket = interfaces.at(i)->GetSocket();
+                    Socket* tempsocket = tempinterface->GetSocket();
                     if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
                     {
                         if(!readClient(tempsocket))
                         { 
-                            interfaces.at(i)->SetSocket(nullptr);
+                            tempinterface->SetSocket(nullptr);
                             tempsocket = nullptr;
                         }
                     }
@@ -280,10 +284,30 @@ int main( void )
             }
         }
     }
+}
+
+
+int main( void )
+{  
+    std::cout << "------------------\n  Setting up Server\n";
+
+    std::thread socketThread(socketHandler);
+    std::thread consoleThread(HandleUserInput);
+
+    std::cout << "  Server started\n------------------\n";
+
+    while (!askQuit())
+    {
+        for(Machine* machine : machines)
+        {
+            machine->Beat();
+        }
+    }
 
     std::cout << "\n------------------\n  Stopping\n";
     
-    Thread.detach();
+    consoleThread.detach();
+    socketThread.detach();
 
     for(Machine* machine : machines)
     {

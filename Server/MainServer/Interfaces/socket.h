@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <mutex>
 #include <unistd.h>
 #include <vector>
 
@@ -21,14 +22,11 @@ class Socket
         bool Beat();
         bool Read();
         void QueSend(std::string text);
+        std::string ReadLastMessage();
 
         int getSocketFd()
         {
             return socketFd;
-        }
-        std::string getPrevMessage()
-        {
-            return prevMessage;
         }
 
     private:
@@ -36,11 +34,11 @@ class Socket
         int ETA;
         int socketFd;
         bool waitingForClient;
-        std::string prevMessage;
-
         std::vector<std::string> bufferOut;
         std::vector<std::string> bufferIn;
+        std::mutex mtx;
 
+        void AddMessageIn(std::string message);
 
     protected:
         void Send(std::string text);

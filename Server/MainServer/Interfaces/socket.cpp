@@ -18,6 +18,7 @@ void Socket::QueSend(std::string text)
     bufferOut.push_back(text);
 }
 
+//Called in external thread
 bool Socket::Read()
 {
     const int BufferSize = 100;
@@ -34,7 +35,7 @@ bool Socket::Read()
         return false;
     }
 
-    bufferIn.push_back(buffer);
+    AddMessageIn(buffer);
     return true;
 }
 
@@ -65,4 +66,23 @@ bool Socket::Beat()
         return true;
     }
     return false;
+}
+
+
+void Socket::AddMessageIn(std::string message)
+{
+    std::unique_lock<std::mutex> lock (mtx);
+    bufferIn.push_back(message);
+}
+
+std::string Socket::ReadLastMessage()
+{
+    std::unique_lock<std::mutex> lock (mtx);
+    if(bufferIn.size() == 0)
+    {
+        return "";
+    }
+    std::string last = bufferIn.at(0);
+    bufferIn.erase(bufferIn.begin());
+    return last;
 }
