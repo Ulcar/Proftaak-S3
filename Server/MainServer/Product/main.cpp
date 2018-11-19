@@ -290,10 +290,15 @@ static void socketHandler()
             connectClient(masterFd);
         }
 
-        std::vector<Machine*> tempMachines = askMachines();
+        tempMachines = askMachines();
         for(Machine* tempmachine : tempMachines)
         {
             Socket* tempsocket = tempmachine->GetSocket();
+
+            if(tempsocket == nullptr)
+            {
+                continue;
+            }
 
             //Try Sending a message
             tempsocket->TrySend();
