@@ -1,5 +1,7 @@
 #include "errorlogger.h"
 
+#include <fstream>
+
 std::vector<Errorlogger::ErrorLogstruct> Errorlogger::ErrorLog;
 bool Errorlogger::LiveErrorLogging;
 
@@ -66,6 +68,31 @@ void Errorlogger::Display()
 /// </summary>
 void Errorlogger::SaveAsFile()
 {
+ // current date/time based on current system
+   time_t now = time(0);
+   
+   // convert now to string form
+   char* dt = ctime(&now);
+
+   // convert now to tm struct for UTC
+   tm *gmtm = gmtime(&now);
+   dt = asctime(gmtm);
+
+
+   std::string filename = dt;
+
+std::ofstream errorFile (filename);
+
+std::vector<Errorlogger::ErrorLogstruct> ErrorLogCopy(ErrorLog);
+
+for(int i = 0; i < ErrorLog.size(); i++)
+{
+    errorFile << ErrorLog[i].time + " Source: " + ErrorLog[i].source + " -- " + ErrorLog[i].message + '\n';
+}
+
+errorFile.close();
+
+
 /*
     Directory.CreateDirectory(basePath);
     StringBuilder sb = new StringBuilder();
