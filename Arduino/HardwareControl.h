@@ -8,6 +8,11 @@
 
 #include "includes/Vector.h"
 
+#define INPUT_WATER_2        (16)
+#define INPUT_WATER_1        (17)
+#define INPUT_TEMPERATURE_2  (18)
+#define INPUT_TEMPERATURE_1  (19)
+
 class HardwareControl
 {
 public:

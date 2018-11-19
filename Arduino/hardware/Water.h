@@ -10,7 +10,7 @@ public:
     Water();
     ~Water();
 
-    int GetLevel();
+    WaterLevel GetLevel();
     bool GetPressure();
 };
 

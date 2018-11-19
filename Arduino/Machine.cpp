@@ -39,7 +39,7 @@ int Program::GetNumber()
     return _number;
 }
 
-void Program::AddAction(Action* action)
+void Program::AddAction(IAction* action)
 {
     _actions.push_back(action);
 }
@@ -59,14 +59,15 @@ void Machine::StartProgram(int number)
         if (_programs[i]->GetNumber() == number)
         {
             _programs[i]->Start(_control);
+
             return;
         }
     }
 
-    _serial->SendMessage("Couldn't find program.\n");
+    _client->SendMessage("Couldn't find program.\n");
 }
 
-void Machine::NewProgram(int number, Vector<Action*>& actions)
+void Machine::NewProgram(int number, Vector<IAction*>& actions)
 {
     Program* program = new Program(number);
 
@@ -78,7 +79,7 @@ void Machine::NewProgram(int number, Vector<Action*>& actions)
     _programs.push_back(program);
 }
 
-Machine::Machine(HardwareControl& control, INetworkClient* serial)
+Machine::Machine(HardwareControl& control, INetworkClient* client)
     : _control(control)
-    , _serial(serial)
+    , _client(client)
 {}

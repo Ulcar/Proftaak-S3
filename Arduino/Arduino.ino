@@ -1,8 +1,8 @@
-#include "hardware/Water.h"
-#include "includes/Vector.h"
-
 #include <Centipede.h>
 #include <Wire.h>
+
+#include "hardware/Water.h"
+#include "includes/Vector.h"
 
 #include "HardwareControl.h"
 /* #include "WifiClient.h" */
@@ -52,7 +52,7 @@ void setup()
 
     Machine machine(hardwareControl, client);
 
-    Vector<Action*> actions;
+    Vector<IAction*> actions;
     actions.push_back(new FillWaterAction(3));
     actions.push_back(new HeatAction(2));
 

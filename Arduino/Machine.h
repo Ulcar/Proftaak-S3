@@ -6,13 +6,13 @@
 #include "HardwareControl.h"
 #include "INetworkClient.h"
 
-class Action
+class IAction
 {
 public:
     virtual void Handle(HardwareControl& control) = 0;
 };
 
-class HeatAction : public Action
+class HeatAction : public IAction
 {
 public:
     HeatAction(int level);
@@ -23,7 +23,7 @@ private:
     int _level;
 };
 
-class FillWaterAction : public Action
+class FillWaterAction : public IAction
 {
 public:
     FillWaterAction(int level);
@@ -40,25 +40,26 @@ public:
     Program(int number);
 
     int GetNumber();
-    void AddAction(Action* action);
+    void AddAction(IAction* action);
     void Start(HardwareControl& control);
 
 private:
     int _number;
-    Vector<Action*> _actions;
+    Vector<IAction*> _actions;
 };
 
 class Machine
 {
 public:
-    Machine(HardwareControl& control, INetworkClient* serial);
+    Machine(HardwareControl& control, INetworkClient* client);
 
     void StartProgram(int number);
-    void NewProgram(int number, Vector<Action*>& actions);
+    void NewProgram(int number, Vector<IAction*>& actions);
 
 private:
     HardwareControl& _control;
-    INetworkClient* _serial;
+    INetworkClient* _client;
+
     Vector<Program*> _programs;
 };
 

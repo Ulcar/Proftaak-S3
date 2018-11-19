@@ -10,9 +10,9 @@ Water::~Water()
     // ...
 }
 
-int Water::GetLevel()
+WaterLevel Water::GetLevel()
 {
-    return 5;
+    return (WaterLevel) ((_centipede.digitalRead(INPUT_WATER_2) << 1) | _centipede.digitalRead(INPUT_WATER_1));
 }
 
 bool Water::GetPressure()
