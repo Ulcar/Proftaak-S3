@@ -85,7 +85,7 @@ std::ofstream errorFile (filename);
 
 std::vector<Errorlogger::ErrorLogstruct> ErrorLogCopy(ErrorLog);
 
-for(int i = 0; i < ErrorLog.size(); i++)
+for(u_int i = 0; i < ErrorLog.size(); i++)
 {
     errorFile << ErrorLog[i].time + " Source: " + ErrorLog[i].source + " -- " + ErrorLog[i].message + '\n';
 }
