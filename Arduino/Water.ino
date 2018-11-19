@@ -2,7 +2,7 @@
 
 Water::Water()
 {
-    // ...
+    this->_name = "water";
 }
 
 Water::~Water()
@@ -18,9 +18,4 @@ int Water::GetLevel()
 bool Water::GetPressure()
 {
     return true;
-}
-
-String Water::GetName()
-{
-    return "water";
 }

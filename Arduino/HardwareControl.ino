@@ -1,7 +1,25 @@
 #include "HardwareControl.h"
 
+HardwareControl::HardwareControl(Centipede centipede)
+    : _centipede(centipede)
+{
+    // ...
+}
+
+void HardwareControl::Initialize()
+{
+    _centipede.initialize();
+
+    for (int i = 0; i <= 15; ++i)
+    {
+        _centipede.pinMode(i, OUTPUT);
+    }
+}
+
 void HardwareControl::AddInterface(IHardwareInterface* interface)
 {
+    interface->SetCentipede(_centipede);
+
     _interfaces.push_back(interface);
 }
 

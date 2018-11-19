@@ -1,20 +1,32 @@
 #include "hardware/Water.h"
 
-#include "HardwareControl.h"
-#include "WifiClient.h"
+#include <Centipede.h>
+#include <Wire.h>
 
-HardwareControl hardwareControl;
-WifiClient* client;
+#include "HardwareControl.h"
+/* #include "WifiClient.h" */
+#include "SerialClient.h"
+
+Centipede centipede;
+/* WifiClient* client; */
+SerialClient* client;
+
+HardwareControl hardwareControl(centipede);
 
 void setup()
 {
     Serial.begin(9600);
+    Wire.begin();
 
+    // Initialize the hardware control.
+    hardwareControl.Initialize();
     hardwareControl.AddInterface(new Water());
 
+    // Connect to the server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    client = new WifiClient("12connect", "192.168.200.73", 1337);
+    /* client = new WifiClient("12connect", "192.168.200.73", 1337); */
+    client = new SerialClient();
 
     if (!client->IsConnected())
     {
