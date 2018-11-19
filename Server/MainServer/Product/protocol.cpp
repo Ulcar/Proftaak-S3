@@ -48,7 +48,6 @@ std::vector<std::string> Protocol::SplitString(std::string text, char splitChar)
 {
     std::vector<std::string> commando;
 
-    text += " ";
     size_t prevIndex = 0;
 
     while(true)
@@ -56,6 +55,8 @@ std::vector<std::string> Protocol::SplitString(std::string text, char splitChar)
         size_t index = text.find_first_of(splitChar, prevIndex);
         if(index > text.length())
         {
+            std::string ff = text.substr(prevIndex, text.length() - prevIndex);
+            commando.push_back(ff);
             break;
         }
         std::string ff = text.substr(prevIndex, index - prevIndex);
