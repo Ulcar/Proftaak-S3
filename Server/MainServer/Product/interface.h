@@ -12,6 +12,7 @@ class Interface
         void Send(Code code, int value);
         void Read();
         int Ping();
+        void Beat();
         void SetSocket(Socket* socket);
 
         Socket* GetSocket()

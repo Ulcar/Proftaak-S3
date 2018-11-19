@@ -17,7 +17,7 @@ void Machine::Send(Code code, int value)
     {
         return;
     }
-    socket->QueSend(Protocol::ToClient(code, value));
+    socket->NewSendMessage(Protocol::ToClient(code, value));
 }
 
 void Machine::SetSocket(Socket* tempSocket)

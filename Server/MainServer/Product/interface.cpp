@@ -19,7 +19,7 @@ void Interface::Send(Code code, int value)
     {
         return;
     }
-    socket->QueSend(Protocol::ToClient(code, value));
+    socket->NewSendMessage(Protocol::ToClient(code, value));
 }
 
 void Interface::SetSocket(Socket* tempSocket)
@@ -29,4 +29,15 @@ void Interface::SetSocket(Socket* tempSocket)
         delete tempSocket;
     }
     socket = tempSocket;
+}
+
+void Interface::Beat()
+{
+    std::string message = socket->ReadLastMessage();
+    if(message.empty())
+    {
+        return;
+    }
+
+    //handle message
 }

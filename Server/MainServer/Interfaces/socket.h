@@ -19,9 +19,9 @@ class Socket
         Socket(int socketFd);
         ~Socket();
         int Ping();
-        bool Beat();
+        void TrySend();
         bool Read();
-        void QueSend(std::string text);
+        void NewSendMessage(std::string text);
         std::string ReadLastMessage();
 
         int getSocketFd()
@@ -36,11 +36,11 @@ class Socket
         bool waitingForClient;
         std::vector<std::string> bufferOut;
         std::vector<std::string> bufferIn;
-        std::mutex mtx;
+        std::mutex mtxBufferIn;
+        std::mutex mtxBufferOut;
 
         void AddMessageIn(std::string message);
-
-    protected:
+        std::string GetMessageToSend();
         void Send(std::string text);
 };
 

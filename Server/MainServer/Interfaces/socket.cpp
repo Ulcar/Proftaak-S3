@@ -13,11 +13,6 @@ Socket::~Socket()
     close(socketFd);
 }
 
-void Socket::QueSend(std::string text)
-{
-    bufferOut.push_back(text);
-}
-
 //Called in external thread
 bool Socket::Read()
 {
@@ -53,36 +48,52 @@ void Socket::Send(std::string text)
     }
 }
 
-bool Socket::Beat()
+void Socket::TrySend()
 {
     if(!waitingForClient && bufferOut.size() != 0)
     {
-        QueSend(bufferOut.at(0));
+        Send(GetMessageToSend());
         waitingForClient = true;
     }
-    
-    if(bufferIn.size() != 0)
-    {
-        return true;
-    }
-    return false;
 }
 
 
+
+//mutexes
+
 void Socket::AddMessageIn(std::string message)
 {
-    std::unique_lock<std::mutex> lock (mtx);
+    std::unique_lock<std::mutex> lock (mtxBufferIn);
     bufferIn.push_back(message);
 }
 
 std::string Socket::ReadLastMessage()
 {
-    std::unique_lock<std::mutex> lock (mtx);
+    std::unique_lock<std::mutex> lock (mtxBufferIn);
     if(bufferIn.size() == 0)
     {
         return "";
     }
     std::string last = bufferIn.at(0);
     bufferIn.erase(bufferIn.begin());
+    return last;
+}
+
+
+void Socket::NewSendMessage(std::string message)
+{
+    std::unique_lock<std::mutex> lock (mtxBufferIn);
+    bufferOut.push_back(message);
+}
+
+std::string Socket::GetMessageToSend()
+{
+    std::unique_lock<std::mutex> lock (mtxBufferIn);
+    if(bufferOut.size() == 0)
+    {
+        return "";
+    }
+    std::string last = bufferOut.at(0);
+    bufferOut.erase(bufferOut.begin());
     return last;
 }

@@ -23,7 +23,6 @@ bool quit = false;
 std::vector<Machine*> machines; 
 std::vector<Interface*> interfaces; 
 std::mutex mtx;
-int maxFd;
 
 
 
@@ -172,8 +171,8 @@ void connectClient(int socketFd)
                 return;
             }
 
-            socket->QueSend(Protocol::ToClient(CODE_CONNECT, 0));
-            socket->Beat();
+            socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
+            socket->TrySend();
             machine->SetSocket(socket);
             machines.push_back(machine);
             return;
@@ -185,8 +184,8 @@ void connectClient(int socketFd)
     if(message.size() == 2)
     {
         Interface* interface = new Interface(message.at(1));
-        socket->QueSend(Protocol::ToClient(CODE_CONNECT, 0));
-        socket->Beat();
+        socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
+        socket->TrySend();
         interface->SetSocket(socket);
         interfaces.push_back(interface);
         return;
@@ -213,73 +212,58 @@ static void socketHandler()
 
     while (!askQuit())
     {        
+    //Tot hoeverre is dit nodig?
         std::cout << "Loop\n";
         fd_set readFds;
         FD_ZERO(&readFds);
         FD_SET(masterFd, &readFds);
-        maxFd = masterFd;
 
         for(uint i = 0; i < machines.size(); i++)              
         {
-                int sd = machines[i]->GetSocket()->getSocketFd();
-                 //if valid socket descriptor then add to read list
+            int sd = machines[i]->GetSocket()->getSocketFd();
+                //if valid socket descriptor then add to read list
             if(sd > 0)
             {
                 FD_SET(sd,&readFds);
             }
+        }
+    //Tot hier
                 
-            //highest file descriptor number, need it for the select function
-            if(sd > maxFd)
-            {
-                maxFd = sd;
-            }
+        if (FD_ISSET(masterFd, &readFds))
+        {
+            connectClient(masterFd);
         }
 
-        struct timeval timeout;
-        timeout.tv_sec = 1;
-        timeout.tv_usec = 0;
+        for(Machine* tempmachine : machines)
+        {
+            Socket* tempsocket = tempmachine->GetSocket();
 
-        int nrSockets = select(maxFd + 1, &readFds, NULL, NULL, &timeout);
+            //Try Sending a message
+            tempsocket->TrySend();
 
-        if (nrSockets < 0) // error situation
-        {
-            perror("error from calling socket");
-        }
-        else if (nrSockets == 0) // timeout
-        {
-            //nothing
-        }
-        else // found activity, find outConnections
-        {
-            if (FD_ISSET(masterFd, &readFds))
+            //Try Reading a message
+            if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
             {
-                connectClient(masterFd);
-            }
-            else
-            {
-                for(Machine* tempmachine : machines)
-                {
-                    Socket* tempsocket = tempmachine->GetSocket();
-                    if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
-                    {
-                        if(!readClient(tempsocket))
-                        { 
-                            tempmachine->SetSocket(nullptr);
-                            tempsocket = nullptr;
-                        }
-                    }
+                if(!readClient(tempsocket))
+                { 
+                    tempmachine->SetSocket(nullptr);
+                    tempsocket = nullptr;
                 }
-                for(Interface* tempinterface : interfaces)
-                {
-                    Socket* tempsocket = tempinterface->GetSocket();
-                    if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
-                    {
-                        if(!readClient(tempsocket))
-                        { 
-                            tempinterface->SetSocket(nullptr);
-                            tempsocket = nullptr;
-                        }
-                    }
+            }
+        }
+
+        for(Interface* tempinterface : interfaces)
+        {
+            Socket* tempsocket = tempinterface->GetSocket();
+
+            tempsocket->TrySend();
+
+            if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
+            {
+                if(!readClient(tempsocket))
+                { 
+                    tempinterface->SetSocket(nullptr);
+                    tempsocket = nullptr;
                 }
             }
         }

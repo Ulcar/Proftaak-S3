@@ -8,7 +8,7 @@ Wasmachine::Wasmachine(std::string macAdress) :
 
 Wasmachine::~Wasmachine()
 {
-    //call destructor Machine
+    
 }
 
 void Wasmachine::RequestHeater(WasMachineHeater status)
@@ -18,8 +18,11 @@ void Wasmachine::RequestHeater(WasMachineHeater status)
 
 void Wasmachine::Beat()
 {
-    if(socket->Beat())
+    std::string message = socket->ReadLastMessage();
+    if(message.empty())
     {
-        //handle Socket::GetPrevMessage()
+        return;
     }
+
+    //handle message
 }
