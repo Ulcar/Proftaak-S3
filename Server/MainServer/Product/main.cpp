@@ -1,5 +1,5 @@
 #include "errorlogger.h"
-#include "interface.h"
+#include "controlpanel.h"
 #include "wasmachine.h"
 #include "machine.h"
 #include "protocol.h"
@@ -22,7 +22,7 @@
 
 bool quit = false;
 std::vector<Machine*> machines; 
-std::vector<Interface*> interfaces; 
+std::vector<ControlPanel*> controlPanels; 
 std::mutex mtx;
 
 
@@ -55,14 +55,14 @@ static void setMachines(Machine* machine){
 }
 
 
-static std::vector<Interface*> askInterfaces(){
+static std::vector<ControlPanel*> askControlPanels(){
     std::unique_lock<std::mutex> lock (mtx);
-    return interfaces;
+    return controlPanels;
 }
 
-static void setInterfaces(Interface* interface){
+static void setControlPanel(ControlPanel* controlpanel){
     std::unique_lock<std::mutex> lock (mtx);
-    interfaces.push_back(interface);
+    controlPanels.push_back(controlpanel);
 }
 
 //------------------------------------------------------------------------------//
@@ -74,7 +74,7 @@ static void HandleUserInput()
 {   
     Errorlogger::LiveErrorLogging = true;
     Errorlogger::Record("System startup", "main");
-    
+
     while(true)
     {
         std::cout << "command:\n";
@@ -238,11 +238,11 @@ void connectClient(int socketFd)
     {
         if(message.at(0) == "0")
         {
-            Interface* interface = new Interface(message.at(1));
+            ControlPanel* controlpanel = new ControlPanel(message.at(1));
             socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
             socket->TrySend();
-            interface->SetSocket(socket);
-            setInterfaces(interface);
+            controlpanel->SetSocket(socket);
+            setControlPanel(controlpanel);
             return;
         }
     }
@@ -338,10 +338,10 @@ static void socketHandler()
             }
         }
 
-        std::vector<Interface*> tempInterfaces = askInterfaces();
-        for(Interface* tempinterface : tempInterfaces)
+        std::vector<ControlPanel*> tempControlPanels = askControlPanels();
+        for(ControlPanel* tempcontrolpanel : tempControlPanels)
         {
-            Socket* tempsocket = tempinterface->GetSocket();
+            Socket* tempsocket = tempcontrolpanel->GetSocket();
 
             tempsocket->TrySend();
 
@@ -349,7 +349,7 @@ static void socketHandler()
             {
                 if(!readClient(tempsocket))
                 { 
-                    tempinterface->SetSocket(nullptr);
+                    tempcontrolpanel->SetSocket(nullptr);
                     tempsocket = nullptr;
                 }
             }
@@ -391,10 +391,10 @@ int main( void )
         machine->SetSocket(nullptr);
     }
 
-    std::vector<Interface*> tempInterfaces = askInterfaces();
-    for(Interface* interface : tempInterfaces)
+    std::vector<ControlPanel*> tempControlPanels = askControlPanels();
+    for(ControlPanel* controlpanel : tempControlPanels)
     {
-        interface->SetSocket(nullptr);
+        controlpanel->SetSocket(nullptr);
     }
 
     std::cout << "  Server Stopped\n------------------\n\n";

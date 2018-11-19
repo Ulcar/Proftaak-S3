@@ -1,19 +1,19 @@
-#include "interface.h"
+#include "controlpanel.h"
 #include "enums.h"
 
 
-Interface::Interface(std::string macAdress)
+ControlPanel::ControlPanel(std::string macAdress)
     : macAdress(macAdress)
 {
     error = Error::None;
 }
 
-Interface::~Interface()
+ControlPanel::~ControlPanel()
 {
     delete socket;
 }
 
-void Interface::Send(Code code, int value)
+void ControlPanel::Send(Code code, int value)
 {
     if(socket == nullptr)
     {
@@ -22,7 +22,7 @@ void Interface::Send(Code code, int value)
     socket->NewSendMessage(Protocol::ToClient(code, value));
 }
 
-void Interface::SetSocket(Socket* tempSocket)
+void ControlPanel::SetSocket(Socket* tempSocket)
 {
     if(socket != nullptr)
     {
@@ -31,7 +31,7 @@ void Interface::SetSocket(Socket* tempSocket)
     socket = tempSocket;
 }
 
-void Interface::Beat()
+void ControlPanel::Beat()
 {
     std::string message = socket->ReadLastMessage();
     if(message.empty())

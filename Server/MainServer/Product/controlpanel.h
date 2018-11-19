@@ -1,14 +1,14 @@
-#ifndef INTERFACE_H
-#define INTERFACE_H
+#ifndef CONTROLPANEL_H
+#define CONTROLPANEL_H
 
 #include "socket.h"
 #include "protocol.h"
 
-class Interface
+class ControlPanel
 {
     public:
-        Interface(std::string macAdress);
-        ~Interface();
+        ControlPanel(std::string macAdress);
+        ~ControlPanel();
         void Send(Code code, int value);
         void Read();
         int Ping();
