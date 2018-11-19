@@ -12,8 +12,6 @@ public:
 
     int GetLevel();
     bool GetPressure();
-
-    String GetName();
 };
 
 #endif
