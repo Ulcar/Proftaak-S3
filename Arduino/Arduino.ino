@@ -1,4 +1,5 @@
 #include "hardware/Water.h"
+#include "includes/Vector.h"
 
 #include <Centipede.h>
 #include <Wire.h>
@@ -6,6 +7,7 @@
 #include "HardwareControl.h"
 /* #include "WifiClient.h" */
 #include "SerialClient.h"
+#include "Machine.h"
 
 Centipede centipede;
 /* WifiClient* client; */
@@ -48,9 +50,15 @@ void setup()
     Serial.println("Connected to the server.");
     Serial.println(client->GetMacAddress());
 
-    // Temporary HAL test.
-    Water* water = (Water*) hardwareControl.GetInterface("water");
-    Serial.println(String(water->GetLevel()));
+    Machine machine(hardwareControl, client);
+
+    Vector<Action*> actions;
+    actions.push_back(new FillWaterAction(3));
+    actions.push_back(new HeatAction(2));
+
+    machine.NewProgram(0, actions);
+
+    machine.StartProgram(0);
 }
 
 void loop()
