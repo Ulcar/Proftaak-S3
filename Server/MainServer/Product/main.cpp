@@ -205,6 +205,7 @@ bool readClient(Socket* socket)
 static void socketHandler()
 {
     int masterFd;
+    int maxFd;
 
     setup(&masterFd);
 
@@ -212,22 +213,43 @@ static void socketHandler()
 
     while (!askQuit())
     {        
-    //Tot hoeverre is dit nodig?
-        std::cout << "Loop\n";
+//is dit echt nodig?     
         fd_set readFds;
         FD_ZERO(&readFds);
         FD_SET(masterFd, &readFds);
+        maxFd = masterFd;
 
         for(uint i = 0; i < machines.size(); i++)              
         {
-            int sd = machines[i]->GetSocket()->getSocketFd();
-                //if valid socket descriptor then add to read list
+                int sd = machines[i]->GetSocket()->getSocketFd();
+                 //if valid socket descriptor then add to read list
             if(sd > 0)
             {
                 FD_SET(sd,&readFds);
             }
+                
+            //highest file descriptor number, need it for the select function
+            if(sd > maxFd)
+            {
+                maxFd = sd;
+            }
         }
-    //Tot hier
+
+        struct timeval timeout;
+        timeout.tv_sec = 1;
+        timeout.tv_usec = 0;
+
+        int nrSockets = select(maxFd + 1, &readFds, NULL, NULL, &timeout);
+
+        if (nrSockets < 0) // error situation
+        {
+            perror("error from calling socket");
+        }
+        else if (nrSockets == 0) // timeout
+        {
+            //nothing
+        }
+//to hier
                 
         if (FD_ISSET(masterFd, &readFds))
         {
