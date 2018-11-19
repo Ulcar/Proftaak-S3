@@ -28,7 +28,7 @@ class Errorlogger
         };
 
         static std::vector<ErrorLogstruct> ErrorLog;
-        const std::string basePath = "@/loggers";//AppDomain.CurrentDomain.BaseDirectory + @"/loggers";
+        static std::string basePath;
 };
 
 #endif

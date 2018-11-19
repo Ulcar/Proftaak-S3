@@ -4,6 +4,7 @@
 
 std::vector<Errorlogger::ErrorLogstruct> Errorlogger::ErrorLog;
 bool Errorlogger::LiveErrorLogging;
+std::string Errorlogger::basePath = "loggers/";
 
 Errorlogger::Errorlogger()
 {
@@ -68,43 +69,27 @@ void Errorlogger::Display()
 /// </summary>
 void Errorlogger::SaveAsFile()
 {
- // current date/time based on current system
-   time_t now = time(0);
-   
-   // convert now to string form
-   char* dt = ctime(&now);
-
-   // convert now to tm struct for UTC
-   tm *gmtm = gmtime(&now);
-   dt = asctime(gmtm);
-
-
-   std::string filename = dt;
-
-std::ofstream errorFile (filename);
-
-std::vector<Errorlogger::ErrorLogstruct> ErrorLogCopy(ErrorLog);
-
-for(u_int i = 0; i < ErrorLog.size(); i++)
-{
-    errorFile << ErrorLog[i].time + " Source: " + ErrorLog[i].source + " -- " + ErrorLog[i].message + '\n';
-}
-
-errorFile.close();
-
-
-/*
-    Directory.CreateDirectory(basePath);
-    StringBuilder sb = new StringBuilder();
-    List<ErrorLogstruct> copyErrorLog = new List<ErrorLogstruct>(ErrorLog);
-    string filename ="//" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day + "_" + DateTime.Now.Hour + "-" + DateTime.Now.Minute + ".errorlog.txt";
-
-    foreach (var error in copyErrorLog)
-    {
-        sb.AppendLine(String.Format("[{0}] Source: {2} -- {1}", error.time, error.source, error.message));
-    }
+    // current date/time based on current system
+    time_t now = time(0);
     
-    File.WriteAllText(basePath + filename, sb.ToString());
-*/
+    // convert now to string form
+    char* dt = ctime(&now);
+
+    // convert now to tm struct for UTC
+    tm *gmtm = gmtime(&now);
+    dt = asctime(gmtm);
+
+
+    std::string filename = basePath + dt;
+
+    std::ofstream errorFile (filename);
+    std::vector<Errorlogger::ErrorLogstruct> ErrorLogCopy(ErrorLog);
+
+    for(u_int i = 0; i < ErrorLogCopy.size(); i++)
+    {
+        errorFile << ErrorLogCopy[i].time + " Source: " + ErrorLogCopy[i].source + " -- " + ErrorLogCopy[i].message + '\n';
+    }
+
+    errorFile.close();
     std::cout << "File saved\n";
 }

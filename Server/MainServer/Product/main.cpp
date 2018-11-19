@@ -1,3 +1,4 @@
+#include "errorlogger.h"
 #include "interface.h"
 #include "wasmachine.h"
 #include "machine.h"
@@ -71,6 +72,9 @@ static void setInterfaces(Interface* interface){
 
 static void HandleUserInput()
 {   
+    Errorlogger::LiveErrorLogging = true;
+    Errorlogger::Record("System startup", "main");
+    
     while(true)
     {
         std::cout << "command:\n";
@@ -85,6 +89,26 @@ static void HandleUserInput()
             {
                 setQuit();
                 return;
+            }
+            else if(commandos.at(0) == "errorlogger")
+            {
+                if(commandos.size() == 1)
+                {
+                    std::cout << "live\n";
+                    std::cout << "save\n";
+                }
+                else
+                {
+                    if(commandos.at(1) == "save")
+                    {
+                        Errorlogger::SaveAsFile();
+                    }
+                    else if(commandos.at(1) == "live")
+                    {
+                        Errorlogger::LiveErrorLogging = !Errorlogger::LiveErrorLogging;
+                        std::cout << "Live Errorlogging: " << Errorlogger::LiveErrorLogging << "\n";
+                    }
+                }
             }
             else
             {
