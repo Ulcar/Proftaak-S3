@@ -26,20 +26,48 @@ std::mutex mtx;
 
 
 
+
+//------------------------------------------------------------------------------//
+//                               Mutexes                                        //
+//------------------------------------------------------------------------------//
+
+
 static bool askQuit(){
     std::unique_lock<std::mutex> lock (mtx);
     return quit;
 }
 
+static void setQuit(){
+    std::unique_lock<std::mutex> lock (mtx);
+    quit = true;
+}
+
+
+static std::vector<Machine*> askMachines(){
+    std::unique_lock<std::mutex> lock (mtx);
+    return machines;
+}
+
+static void setMachines(Machine* machine){
+    std::unique_lock<std::mutex> lock (mtx);
+    machines.push_back(machine);
+}
+
+
+static std::vector<Interface*> askInterfaces(){
+    std::unique_lock<std::mutex> lock (mtx);
+    return interfaces;
+}
+
+static void setInterfaces(Interface* interface){
+    std::unique_lock<std::mutex> lock (mtx);
+    interfaces.push_back(interface);
+}
 
 //------------------------------------------------------------------------------//
 //                               Console                                        //
 //------------------------------------------------------------------------------//
 
-static void setQuit(){
-    std::unique_lock<std::mutex> lock (mtx);
-    quit = true;
-}
 
 static void HandleUserInput()
 {   
@@ -108,7 +136,8 @@ void setup(int *socketFd)
 
 Machine* CreateNewMachine(char type, std::string macAdress)
 {
-    for(Machine* machine : machines)
+    std::vector<Machine*> tempMachines = askMachines();
+    for(Machine* machine : tempMachines)
     {
         if(machine->GetMacAdress() == macAdress)
         {
@@ -174,7 +203,7 @@ void connectClient(int socketFd)
             socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
             socket->TrySend();
             machine->SetSocket(socket);
-            machines.push_back(machine);
+            setMachines(machine);
             return;
         }
     }
@@ -183,12 +212,15 @@ void connectClient(int socketFd)
     
     if(message.size() == 2)
     {
-        Interface* interface = new Interface(message.at(1));
-        socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
-        socket->TrySend();
-        interface->SetSocket(socket);
-        interfaces.push_back(interface);
-        return;
+        if(message.at(0) == "0")
+        {
+            Interface* interface = new Interface(message.at(1));
+            socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
+            socket->TrySend();
+            interface->SetSocket(socket);
+            setInterfaces(interface);
+            return;
+        }
     }
 }
 
@@ -211,7 +243,7 @@ static void socketHandler()
 
     std::cout << "  Socket started\n";
 
-    while (!askQuit())
+    while (true)
     {        
 //is dit echt nodig?     
         fd_set readFds;
@@ -219,9 +251,10 @@ static void socketHandler()
         FD_SET(masterFd, &readFds);
         maxFd = masterFd;
 
-        for(uint i = 0; i < machines.size(); i++)              
+        std::vector<Machine*> tempMachines = askMachines();
+        for(Machine* machine : tempMachines)              
         {
-                int sd = machines[i]->GetSocket()->getSocketFd();
+                int sd = machine->GetSocket()->getSocketFd();
                  //if valid socket descriptor then add to read list
             if(sd > 0)
             {
@@ -241,6 +274,7 @@ static void socketHandler()
 
         int nrSockets = select(maxFd + 1, &readFds, NULL, NULL, &timeout);
 
+
         if (nrSockets < 0) // error situation
         {
             perror("error from calling socket");
@@ -256,7 +290,8 @@ static void socketHandler()
             connectClient(masterFd);
         }
 
-        for(Machine* tempmachine : machines)
+        std::vector<Machine*> tempMachines = askMachines();
+        for(Machine* tempmachine : tempMachines)
         {
             Socket* tempsocket = tempmachine->GetSocket();
 
@@ -274,7 +309,8 @@ static void socketHandler()
             }
         }
 
-        for(Interface* tempinterface : interfaces)
+        std::vector<Interface*> tempInterfaces = askInterfaces();
+        for(Interface* tempinterface : tempInterfaces)
         {
             Socket* tempsocket = tempinterface->GetSocket();
 
@@ -292,6 +328,10 @@ static void socketHandler()
     }
 }
 
+//------------------------------------------------------------------------------//
+//                               Main                                           //
+//------------------------------------------------------------------------------//
+
 
 int main( void )
 {  
@@ -304,7 +344,8 @@ int main( void )
 
     while (!askQuit())
     {
-        for(Machine* machine : machines)
+        std::vector<Machine*> tempMachines = askMachines();
+        for(Machine* machine : tempMachines)
         {
             machine->Beat();
         }
@@ -315,12 +356,14 @@ int main( void )
     consoleThread.detach();
     socketThread.detach();
 
-    for(Machine* machine : machines)
+    std::vector<Machine*> tempMachines = askMachines();
+    for(Machine* machine : tempMachines)
     {
         machine->SetSocket(nullptr);
     }
 
-    for(Interface* interface : interfaces)
+    std::vector<Interface*> tempInterfaces = askInterfaces();
+    for(Interface* interface : tempInterfaces)
     {
         interface->SetSocket(nullptr);
     }
