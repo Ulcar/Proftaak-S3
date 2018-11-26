@@ -27,6 +27,7 @@ void Errorlogger::Record(std::string errorMessage, std::string source)
    // convert now to tm struct for UTC
    tm *gmtm = gmtime(&now);
    dt = asctime(gmtm);
+   dt[24] = '\0';
    
     ErrorLogstruct error = ErrorLogstruct
     {
@@ -78,11 +79,12 @@ void Errorlogger::SaveAsFile()
     // convert now to tm struct for UTC
     tm *gmtm = gmtime(&now);
     dt = asctime(gmtm);
+    dt[24] = '\0';
 
 
     std::string filename = basePath + dt;
 
-    std::ofstream errorFile (filename);
+    std::ofstream errorFile (filename + ".txt");
     std::vector<Errorlogger::ErrorLogstruct> ErrorLogCopy(ErrorLog);
 
     for(u_int i = 0; i < ErrorLogCopy.size(); i++)
