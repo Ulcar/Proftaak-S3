@@ -22,7 +22,7 @@
 //Socket = machines (C++)
 
 bool quit = false;
-Database* database;
+Database* database = new Database;
 std::mutex mtx;
 
 
@@ -107,8 +107,6 @@ static void HandleUserInput()
 
 int main( void )
 {  
-    database = new Database;
-
     std::cout << "------------------\n  Setting up Server\n";
 
     std::thread socketThread(SocketHandler::RunSocketHandler, database);
