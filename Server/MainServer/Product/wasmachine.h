@@ -3,8 +3,9 @@
 
 #include "machine.h"
 #include "wasmachineEnums.h"
+#include "iWasmachine.h"
 
-class Wasmachine : public Machine
+class Wasmachine : public Machine , public iWasmachine
 {
     public:
         Wasmachine(std::string macAdress);
