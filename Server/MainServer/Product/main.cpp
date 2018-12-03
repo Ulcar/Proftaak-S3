@@ -1,3 +1,4 @@
+#include "algorithm_test.h"
 #include "errorlogger.h"
 #include "controlpanel.h"
 #include "socketHandler.h"
@@ -23,7 +24,8 @@
 //Socket = machines (C++)
 
 bool quit = false;
-Database* database = new Database;
+Database* database;
+iAlgorithm* algorithm;
 std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
@@ -37,18 +39,17 @@ static void Setup()
     Errorlogger::Record("System startup", "main");
     Errorlogger::LiveErrorLogging = true;
 
+    database = new Database();
+    algorithm = new Algorithm_test(database);
     socketThread = std::thread(SocketHandler::RunSocketHandler, database);
     consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
+
     std::cout << "  Server started\n------------------\n";
 }
 
 static void Loop()
 {
-    std::vector<Machine*> tempMachines = database->GetMachines();
-    for(Machine* machine : tempMachines)
-    {
-        machine->Beat();
-    }
+    algorithm->Beat();
 }
 
 static void ShutDown()

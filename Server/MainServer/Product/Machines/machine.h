@@ -14,7 +14,6 @@ class Machine : public iMachine
         Machine(std::string macAdress);
         ~Machine();
         void Send(Code code, int value);
-        virtual void Beat() = 0;
         void SetSocket(Socket* socket);
 
         Socket* GetSocket()

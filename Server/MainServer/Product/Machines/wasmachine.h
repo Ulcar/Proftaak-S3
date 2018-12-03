@@ -10,8 +10,6 @@ class Wasmachine : public Machine , public iWasmachine
         Wasmachine(std::string macAdress);
         ~Wasmachine();
 
-        void Beat();
-
     private:
 };
 
