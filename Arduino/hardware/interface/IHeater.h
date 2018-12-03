@@ -1,27 +1,20 @@
 #ifndef IHEATER_H
 #define IHEATER_H
 
-#include "IHardwareInterface.h"
+#include <Centipede.h>
 
-enum Temperature
-{
-    TEMP_OFF,
-    TEMP_COLD,
-    TEMP_MEDIUM,
-    TEMP_HOT
-};
-
-enum HeaterState
-{
-    HEATER_ON,
-    HEATER_OFF
-};
+#include "../Enums.h"
 
 class IHeater
 {
 public:
+    virtual void Initialize(Centipede centipede) = 0;
+
     virtual void Set(HardwareState state) = 0;
     virtual Temperature GetTemperature() = 0;
+
+protected:
+    Centipede _centipede;
 };
 
 #endif

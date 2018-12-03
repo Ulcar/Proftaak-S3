@@ -1,17 +1,9 @@
 #include "hardware/Water.h"
 
-Water::Water()
+void Water::Initialize(Centipede centipede)
 {
-    this->_name = "water";
-}
+    _centipede = centipede;
 
-Water::~Water()
-{
-    // ...
-}
-
-void Water::Initialize()
-{
     _centipede.digitalWrite(OUTPUT_SINK, LOW);
     _centipede.digitalWrite(OUTPUT_DRAIN, LOW);
 }
@@ -33,28 +25,10 @@ bool Water::HasPressure()
 
 void Water::SetSink(HardwareState state)
 {
-    switch (state)
-    {
-    case STATE_ON:
-        _centipede.digitalWrite(OUTPUT_SINK, HIGH);
-    break;
-
-    case STATE_OFF:
-        _centipede.digitalWrite(OUTPUT_SINK, LOW);
-    break;
-    }
+    _centipede.digitalWrite(OUTPUT_SINK, state == STATE_ON);
 }
 
 void Water::SetDrain(HardwareState state)
 {
-    switch (state)
-    {
-    case STATE_ON:
-        _centipede.digitalWrite(OUTPUT_DRAIN, HIGH);
-    break;
-
-    case STATE_OFF:
-        _centipede.digitalWrite(OUTPUT_DRAIN, LOW);
-    break;
-    }
+    _centipede.digitalWrite(OUTPUT_DRAIN, state == STATE_ON);
 }

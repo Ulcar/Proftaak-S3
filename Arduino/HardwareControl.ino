@@ -1,26 +1,23 @@
 #include "HardwareControl.h"
-#include "hardware/interface/IWater.h"
 
-#define OUTPUT_GROUP_2   ( 0)
-#define OUTPUT_GROUP_1   ( 1)
-#define OUTPUT_STROBE    ( 2)
-#define OUTPUT_KEYSELECT ( 3)
-#define OUTPUT_DATA_C    ( 8)
-#define OUTPUT_DATA_B    ( 9)
-#define OUTPUT_DATA_A    (10)
-
-#define INPUT_IN_1       (22)
-#define INPUT_IN_2       (21)
-#define INPUT_IN_3       (20)
-
-HardwareControl::HardwareControl(Centipede centipede, int interfaceCount)
-    : _centipede(centipede)
+HardwareControl::HardwareControl()
+    : _centipede(Centipede())
 {
-    _interfaces = new IHardwareInterface*[interfaceCount];
+    // ...
+}
+
+HardwareControl::~HardwareControl()
+{
+    delete _controls;
+    delete _heater;
+    delete _motor;
+    delete _water;
 }
 
 void HardwareControl::Initialize()
 {
+    Wire.begin(9600);
+
     _centipede.initialize();
 
     for (int i = 0; i < 16; ++i)
@@ -36,28 +33,8 @@ void HardwareControl::Initialize()
     _centipede.digitalWrite(OUTPUT_DATA_B,    LOW);
     _centipede.digitalWrite(OUTPUT_DATA_A,    LOW);
 
-    for (int i = 0; i < _interfaceCount; ++i)
-    {
-        _interfaces[i]->Initialize();
-    }
-}
-
-void HardwareControl::AddInterface(IHardwareInterface* interface)
-{
-    interface->SetCentipede(_centipede);
-
-    _interfaces[_interfaceCount++] = interface;
-}
-
-IHardwareInterface* HardwareControl::GetInterface(String name)
-{
-    for (int i = 0; i < _interfaceCount; ++i)
-    {
-        if (_interfaces[i]->GetName() == name)
-        {
-            return _interfaces[i];
-        }
-    }
-
-    return NULL;
+    _controls->Initialize(_centipede);
+    _heater->Initialize(_centipede);
+    _motor->Initialize(_centipede);
+    _water->Initialize(_centipede);
 }

@@ -1,17 +1,9 @@
 #include "hardware/Controls.h"
 
-Controls::Controls()
+void Controls::Initialize(Centipede centipede)
 {
-    this->_name = "controls";
-}
+    _centipede = centipede;
 
-Controls::~Controls()
-{
-    // ...
-}
-
-void Controls::Initialize()
-{
     _centipede.digitalWrite(OUTPUT_BUZZER, HIGH);
     _centipede.digitalWrite(OUTPUT_SOAP_1, LOW);
     _centipede.digitalWrite(OUTPUT_LOCK,   LOW);
@@ -19,16 +11,7 @@ void Controls::Initialize()
 
 void Controls::SetLock(HardwareState state)
 {
-    switch (state)
-    {
-    case STATE_ON:
-        _centipede.digitalWrite(OUTPUT_LOCK, HIGH);
-    break;
-
-    case STATE_OFF:
-        _centipede.digitalWrite(OUTPUT_LOCK, LOW);
-    break;
-    }
+    _centipede.digitalWrite(OUTPUT_LOCK, state == STATE_ON);
 }
 
 void Controls::SetSoap(HardwareState state, int dispenser)
@@ -44,6 +27,7 @@ void Controls::SetSoap(HardwareState state, int dispenser)
         _centipede.digitalWrite(OUTPUT_SOAP_1, state == STATE_ON);
         break;
 
+    // TODO: Fix this mess
     case 2:
         int mask = (1 << 0) - 1;
 

@@ -1,24 +1,23 @@
 #ifndef IWATER_H
 #define IWATER_H
 
-#include "IHardwareInterface.h"
+#include <Centipede.h>
 
-enum WaterLevel
-{
-    WL_EMPTY,
-    WL_25,
-    WL_50,
-    WL_FULL
-};
+#include "../Enums.h"
 
 class IWater
 {
 public:
+    virtual void Initialize(Centipede centipede) = 0;
+
     virtual WaterLevel GetLevel() = 0;
     virtual bool HasPressure() = 0;
 
     virtual void SetSink(HardwareState state) = 0;
     virtual void SetDrain(HardwareState state) = 0;
+
+protected:
+    Centipede _centipede;
 };
 
 #endif

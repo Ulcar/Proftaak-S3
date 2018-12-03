@@ -1,25 +1,20 @@
 #ifndef IMOTOR_H
 #define IMOTOR_H
 
-enum MotorDirection
-{
-    MD_LEFT,
-    MD_RIGHT
-};
+#include <Centipede.h>
 
-enum MotorSpeed
-{
-    SPEED_OFF,
-    SPEED_LOW,
-    SPEED_MEDIUM,
-    SPEED_HIGH
-};
+#include "../Enums.h"
 
 class IMotor
 {
 public:
+    virtual void Initialize(Centipede centipede) = 0;
+
     virtual void SetDirection(MotorDirection direction) = 0;
     virtual void SetSpeed(MotorSpeed speed) = 0;
+
+protected:
+    Centipede _centipede;
 };
 
 #endif

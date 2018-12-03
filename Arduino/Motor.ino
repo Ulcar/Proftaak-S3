@@ -1,17 +1,9 @@
 #include "hardware/Motor.h"
 
-Motor::Motor()
+void Motor::Initialize(Centipede centipede)
 {
-    this->_name = "motor";
-}
+    _centipede = centipede;
 
-Motor::~Motor()
-{
-    // ...
-}
-
-void Motor::Initialize()
-{
     _centipede.digitalWrite(OUTPUT_MOTOR_DIRECTION, LOW);
     _centipede.digitalWrite(OUTPUT_SPEED_1, HIGH);
     _centipede.digitalWrite(OUTPUT_SPEED_2, HIGH);

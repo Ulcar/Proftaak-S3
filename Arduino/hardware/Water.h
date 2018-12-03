@@ -1,7 +1,6 @@
 #ifndef WATER_H
 #define WATER_H
 
-#include "interface/IHardwareInterface.h"
 #include "interface/IWater.h"
 
 #define INPUT_PRESSURE (23)
@@ -11,13 +10,10 @@
 #define OUTPUT_SINK    (13)
 #define OUTPUT_DRAIN   (14)
 
-class Water : public IWater, public IHardwareInterface
+class Water : public IWater
 {
 public:
-    Water();
-    ~Water();
-
-    void Initialize();
+    void Initialize(Centipede centipede);
 
     WaterLevel GetLevel();
     bool HasPressure();

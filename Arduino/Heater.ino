@@ -1,32 +1,15 @@
 #include "hardware/Heater.h"
 
-Heater::Heater()
+void Heater::Initialize(Centipede centipede)
 {
-    this->_name = "heater";
-}
+    _centipede = centipede;
 
-Heater::~Heater()
-{
-    // ...
-}
-
-void Heater::Initialize()
-{
     _centipede.digitalWrite(OUTPUT_HEATER, HIGH);
 }
 
 void Heater::Set(HardwareState state)
 {
-    switch (state)
-    {
-    case STATE_ON:
-        _centipede.digitalWrite(OUTPUT_HEATER, LOW);
-    break;
-
-    case STATE_OFF:
-        _centipede.digitalWrite(OUTPUT_HEATER, HIGH);
-    break;
-    }
+    _centipede.digitalWrite(OUTPUT_HEATER, state != STATE_ON);
 }
 
 Temperature Heater::GetTemperature()

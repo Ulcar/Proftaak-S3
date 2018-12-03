@@ -1,6 +1,3 @@
-#include <Centipede.h>
-#include <Wire.h>
-
 #include "hardware/Controls.h"
 #include "hardware/Heater.h"
 #include "hardware/Motor.h"
@@ -11,22 +8,19 @@
 #include "SerialClient.h"
 #include "Machine.h"
 
-Centipede centipede;
 /* WifiClient* client; */
+HardwareControl hardwareControl;
 SerialClient* client;
-
-HardwareControl hardwareControl(centipede, 4);
 
 void setup()
 {
     Serial.begin(9600);
-    Wire.begin();
 
     // Initialize the hardware control.
-    hardwareControl.AddInterface(new Controls());
-    hardwareControl.AddInterface(new Heater());
-    hardwareControl.AddInterface(new Motor());
-    hardwareControl.AddInterface(new Water());
+    hardwareControl.SetControls(new Controls());
+    hardwareControl.SetHeater(new Heater());
+    hardwareControl.SetMotor(new Motor());
+    hardwareControl.SetWater(new Water());
 
     hardwareControl.Initialize();
 
@@ -66,30 +60,30 @@ void setup()
 
     machine.StartProgram(0);
 
-    Water* water = (Water*) hardwareControl.GetInterface("water");
+    Water* water = hardwareControl.GetWater();
     water->SetDrain(STATE_ON);
 
-    Heater* heater = (Heater*) hardwareControl.GetInterface("heater");
+    Heater* heater = hardwareControl.GetHeater();
     heater->Set(STATE_ON);
 
-    Controls* controls = (Controls*) hardwareControl.GetInterface("controls");
+    Controls* controls = hardwareControl.GetControls();
     controls->SetLock(STATE_ON);
     controls->SetSoap(STATE_ON, 1);
     controls->SetSoap(STATE_ON, 2);
 
-    Motor* motor = (Motor*) hardwareControl.GetInterface("motor");
-    motor->SetDirection(MD_RIGHT);
-    motor->SetSpeed(SPEED_HIGH);
+    Motor* motor = hardwareControl.GetMotor();
+    motor->SetDirection(MD_LEFT);
+    motor->SetSpeed(SPEED_LOW);
 }
 
-Temperature lastTemperature = TEMP_COLD;
+Temperature lastTemperature = TEMP_OFF;
 WaterLevel lastWaterLevel = WL_EMPTY;
 bool lastPressure = false;
 
 void loop()
 {
-    Controls* controls = (Controls*) hardwareControl.GetInterface("controls");
-    Water* water = (Water*) hardwareControl.GetInterface("water");
+    Controls* controls = hardwareControl.GetControls();
+    Water* water = hardwareControl.GetWater();
 
     WaterLevel level = water->GetLevel();
 
@@ -118,7 +112,7 @@ void loop()
         }
     }
 
-    Heater* heater = (Heater*) hardwareControl.GetInterface("heater");
+    Heater* heater = hardwareControl.GetHeater();
     Temperature temperature = heater->GetTemperature();
 
     if (temperature != lastTemperature)
