@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include <sys/stat.h>
+
 std::vector<Errorlogger::ErrorLogstruct> Errorlogger::ErrorLog;
 bool Errorlogger::LiveErrorLogging;
 std::string Errorlogger::basePath = "loggers/";
@@ -80,6 +82,14 @@ void Errorlogger::SaveAsFile()
     tm *gmtm = gmtime(&now);
     dt = asctime(gmtm);
     dt[24] = '\0';
+
+
+
+
+std::string cmd = "mkdir -p " + basePath;
+
+system(cmd.c_str());
+   
 
 
     std::string filename = basePath + dt;

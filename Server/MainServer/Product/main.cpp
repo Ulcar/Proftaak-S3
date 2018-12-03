@@ -94,7 +94,6 @@ static void Setup()
 
     socketThread = std::thread(SocketHandler::RunSocketHandler, database);
     consoleThread = std::thread(HandleUserInput);
-
     std::cout << "  Server started\n------------------\n";
 }
 
