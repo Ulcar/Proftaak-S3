@@ -207,11 +207,8 @@ void SocketHandler::ConnectClient(int socketFd)
             database->AddMachine(machine);
             return;
         }
-    }
-    
-    message = Protocol::FromInterface(socket->ReadLastMessage());
-    
-    if(message.size() == 2)
+    }    
+    else if(message.size() == 2)
     {
         if(message.at(0) == "0")
         {
