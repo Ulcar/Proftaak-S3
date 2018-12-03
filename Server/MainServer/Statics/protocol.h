@@ -29,7 +29,7 @@ class Protocol
         static const char endCharToClient = '&';
         static const char startCharToInterface = '#';
         static const char endCharToInterface = '$';
-        static const char seperatorChar = ':';
+        static const char seperatorChar = ';';
         static const int port = 2018; //set port here
         static std::string MakeString(int code, int value, char startChar, char endChar);
         static std::vector<std::string> SplitString(std::string text, char splitChar, char startChar, char endChar);
