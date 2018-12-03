@@ -24,24 +24,9 @@
 bool quit = false;
 Database* database = new Database;
 std::mutex mtx;
+std::thread socketThread;
+std::thread consoleThread;
 
-
-
-
-//------------------------------------------------------------------------------//
-//                               Mutexes                                        //
-//------------------------------------------------------------------------------//
-
-
-static bool askQuit(){
-    std::unique_lock<std::mutex> lock (mtx);
-    return quit;
-}
-
-static void setQuit(){
-    std::unique_lock<std::mutex> lock (mtx);
-    quit = true;
-}
 
 //------------------------------------------------------------------------------//
 //                               Console                                        //
@@ -60,9 +45,9 @@ static void HandleUserInput()
 
         try
         {
-            if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit"))
+            if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit") || (commandos.at(0) == "q"))
             {
-                setQuit();
+                database->SetQuit(true);
                 return;
             }
             else if(commandos.at(0) == "errorlogger")
@@ -97,32 +82,33 @@ static void HandleUserInput()
     }
 }
 
-//------------------------------------------------------------------------------//
-//                               Main                                           //
-//------------------------------------------------------------------------------//
 
 
-int main( void )
-{  
+static void Setup()
+{
     std::cout << "------------------\n  Setting up Server\n";
-    
+
     Errorlogger::LiveErrorLogging = false;
     Errorlogger::Record("System startup", "main");
     Errorlogger::LiveErrorLogging = true;
 
-    std::thread socketThread(SocketHandler::RunSocketHandler, database);
-    std::thread consoleThread(HandleUserInput);
+    socketThread = std::thread(SocketHandler::RunSocketHandler, database);
+    consoleThread = std::thread(HandleUserInput);
 
     std::cout << "  Server started\n------------------\n";
+}
 
-    while (!askQuit())
+static void Loop()
+{
+    std::vector<Machine*> tempMachines = database->GetMachines();
+    for(Machine* machine : tempMachines)
     {
-        std::vector<Machine*> tempMachines = database->GetMachines();
-        for(Machine* machine : tempMachines)
-        {
-            machine->Beat();
-        }
+        machine->Beat();
     }
+}
+
+static void ShutDown()
+{
 
     std::cout << "\n------------------\n  Stopping\n";
     
@@ -144,6 +130,23 @@ int main( void )
     //delete database;
 
     std::cout << "  Server Stopped\n------------------\n\n";
+}
+
+//------------------------------------------------------------------------------//
+//                               Main                                           //
+//------------------------------------------------------------------------------//
+
+
+int main( void )
+{  
+    Setup();
+
+    while (!database->AskQuit())
+    {
+        Loop();
+    }
+
+    ShutDown();
 
     return 0;
 }

@@ -2,7 +2,7 @@
 
 Database::Database()
 {
-
+    quit = false;
 }
 
 std::vector<Machine*> Database::GetMachines()
@@ -28,4 +28,16 @@ void Database::AddControlPanel(ControlPanel* controlpanel)
 {
     std::unique_lock<std::mutex> lock (mtxControl);
     controlpanels.push_back(controlpanel);
+}
+
+bool Database::AskQuit()
+{
+    std::unique_lock<std::mutex> lock (mtxQuit);
+    return quit;
+}
+
+void Database::SetQuit(bool setQuit)
+{
+    std::unique_lock<std::mutex> lock (mtxQuit);
+    quit = setQuit;
 }

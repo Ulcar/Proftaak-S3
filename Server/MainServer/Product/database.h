@@ -22,14 +22,18 @@ class Database
         void AddMachine(Machine* machine);
         std::vector<ControlPanel*> GetControlPanels();
         void AddControlPanel(ControlPanel* controlpanel);
+        bool AskQuit();
+        void SetQuit(bool quit);
 
     private:
+        bool quit;
         std::vector<Socket*> sockets;
         std::vector<Machine*> machines;
         std::vector<ControlPanel*> controlpanels;
 
         std::mutex mtxMachine;
         std::mutex mtxControl;
+        std::mutex mtxQuit;
 };
 
 #endif
