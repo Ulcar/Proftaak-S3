@@ -12,15 +12,23 @@ Algorithm_test::~Algorithm_test()
 
 void Algorithm_test::Beat()
 {
-    std::vector<Machine*> tempMachines = database->GetMachines();
-    for(Machine* machine : tempMachines)
+    std::vector<Client*> tempClients = database->GetClients();
+    for(Client* client : tempClients)
     {
-        std::string message = machine->GetSocket()->ReadLastMessage();
+        std::string message = client->GetSocket()->ReadLastMessage();
         if(message.empty())
         {
             return;
         }
 
-        //handle message
+        //handle message:
+        
+        switch(client->GetType())
+        {
+            case Type::ControlPanel:
+                break;
+            case Type::Wasmachine:
+                break;
+        }
     }
 }

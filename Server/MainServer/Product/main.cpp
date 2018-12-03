@@ -1,10 +1,9 @@
 #include "algorithm_test.h"
 #include "errorlogger.h"
-#include "controlpanel.h"
+#include "client.h"
 #include "socketHandler.h"
 #include "consoleHandler.h"
 #include "database.h"
-#include "wasmachine.h"
 #include "machine.h"
 #include "protocol.h"
 
@@ -60,19 +59,7 @@ static void ShutDown()
     consoleThread.detach();
     socketThread.detach();
 
-    std::vector<Machine*> tempMachines = database->GetMachines();
-    for(Machine* machine : tempMachines)
-    {
-        machine->SetSocket(nullptr);
-    }
-
-    std::vector<ControlPanel*> tempControlPanels = database->GetControlPanels();
-    for(ControlPanel* controlpanel : tempControlPanels)
-    {
-        controlpanel->SetSocket(nullptr);
-    }
-
-    //delete database;
+    delete database;
 
     std::cout << "  Server Stopped\n------------------\n\n";
 }

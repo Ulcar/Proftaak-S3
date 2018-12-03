@@ -22,11 +22,16 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
         FD_SET(masterFd, &readFds);
         maxFd = masterFd;
 
-        std::vector<Machine*> tempMachines = database->GetMachines();
-        for(Machine* machine : tempMachines)              
+        std::vector<Client*> tempClients = database->GetClients();
+        for(Client* client : tempClients)              
         {
-                int sd = machine->GetSocket()->getSocketFd();
-                 //if valid socket descriptor then add to read list
+            if(client->GetSocket() == nullptr)
+            {
+                continue;
+            }
+
+            int sd = client->GetSocket()->getSocketFd();
+                //if valid socket descriptor then add to read list
             if(sd > 0)
             {
                 FD_SET(sd,&readFds);
@@ -61,10 +66,10 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
             ConnectClient(masterFd);
         }
 
-        tempMachines = database->GetMachines();
-        for(Machine* tempmachine : tempMachines)
+        tempClients = database->GetClients();
+        for(Client* tempClient : tempClients)
         {
-            Socket* tempsocket = tempmachine->GetSocket();
+            Socket* tempsocket = tempClient->GetSocket();
 
             if(tempsocket == nullptr)
             {
@@ -79,24 +84,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
             {
                 if(!ReadClient(tempsocket))
                 { 
-                    tempmachine->SetSocket(nullptr);
-                    tempsocket = nullptr;
-                }
-            }
-        }
-
-        std::vector<ControlPanel*> tempControlPanels = database->GetControlPanels();
-        for(ControlPanel* tempcontrolpanel : tempControlPanels)
-        {
-            Socket* tempsocket = tempcontrolpanel->GetSocket();
-
-            tempsocket->TrySend();
-
-            if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
-            {
-                if(!ReadClient(tempsocket))
-                { 
-                    tempcontrolpanel->SetSocket(nullptr);
+                    tempClient->SetSocket(nullptr);
                     tempsocket = nullptr;
                 }
             }
@@ -135,37 +123,36 @@ void SocketHandler::Setup(int *socketFd)
     }
 }
 
-Machine* SocketHandler::CreateNewMachine(char type, std::string macAdress)
+Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
 {
-    std::vector<Machine*> tempMachines = database->GetMachines();
-    for(Machine* machine : tempMachines)
+    //nog op letten bij unreeele waardes
+    Type type;
+    if(typeChar == 'x')
     {
-        if(machine->GetMacAdress() == macAdress)
+        type = Type::ControlPanel;
+    }
+    else
+    {
+        type = Type(typeChar);
+    }
+
+    std::vector<Client*> tempClients = database->GetClients();
+    for(Client* client : tempClients)
+    {
+        if(client->GetMacAdress() == macAdress)
         {
-            return machine;
+            return client;
         }
     }
 
-    Machine* machine;
-
-    switch(type)
+    if(type == Type::ControlPanel)
     {
-    case '0':
-        machine = new Wasmachine(macAdress);
-        break;
-    case '1':
-        machine = new Wasmachine(macAdress);
-        break;
-    case '2':
-        machine = new Wasmachine(macAdress);
-        break;
-    case '3':
-        machine = new Wasmachine(macAdress);
-        break;
-    default:
-        machine = nullptr;
+        return new Client(macAdress, type);
     }
-    return machine;
+    else
+    {
+        return new Machine(macAdress, type);
+    }
 }
 
 
@@ -190,12 +177,22 @@ void SocketHandler::ConnectClient(int socketFd)
 
     std::vector<std::string> message = Protocol::FromClient(socket->ReadLastMessage());
     
-    if(message.size() == 3)
+    if((message.size() == 2) || (message.size() == 3))
     {
         if(message.at(0) == "0")
         {
-            Machine* machine = CreateNewMachine(message.at(1).at(0), message.at(2));
-            if(machine == nullptr)
+            Client* client;
+
+            if(message.size() == 2)
+            {
+                client = CreateNewClient('x', message.at(1));
+            }
+            else
+            {
+                client = CreateNewClient(message.at(1).at(0), message.at(2));
+            }
+
+            if(client == nullptr)
             {
                 delete socket;
                 return;
@@ -203,23 +200,11 @@ void SocketHandler::ConnectClient(int socketFd)
 
             socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
             socket->TrySend();
-            machine->SetSocket(socket);
-            database->AddMachine(machine);
+            client->SetSocket(socket);
+            database->AddClient(client);
             return;
         }
     }    
-    else if(message.size() == 2)
-    {
-        if(message.at(0) == "0")
-        {
-            ControlPanel* controlpanel = new ControlPanel(message.at(1));
-            socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
-            socket->TrySend();
-            controlpanel->SetSocket(socket);
-            database->AddControlPanel(controlpanel);
-            return;
-        }
-    }
 }
 
 bool SocketHandler::ReadClient(Socket* socket)

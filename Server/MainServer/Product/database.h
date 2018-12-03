@@ -1,9 +1,8 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include "machine.h"
+#include "client.h"
 #include "socket.h"
-#include "controlpanel.h"
 
 #include <arpa/inet.h>
 #include <cstdio>
@@ -18,21 +17,17 @@ class Database
 {
     public:
         Database();
-        std::vector<Machine*> GetMachines();
-        void AddMachine(Machine* machine);
-        std::vector<ControlPanel*> GetControlPanels();
-        void AddControlPanel(ControlPanel* controlpanel);
+        ~Database();
+        std::vector<Client*> GetClients();
+        void AddClient(Client* client);
         bool AskQuit();
         void SetQuit(bool quit);
 
     private:
         bool quit;
-        std::vector<Socket*> sockets;
-        std::vector<Machine*> machines;
-        std::vector<ControlPanel*> controlpanels;
+        std::vector<Client*> clients;
 
-        std::mutex mtxMachine;
-        std::mutex mtxControl;
+        std::mutex mtxClient;
         std::mutex mtxQuit;
 };
 

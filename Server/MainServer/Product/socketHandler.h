@@ -4,8 +4,8 @@
 #include "socket.h"
 #include "machine.h"
 #include "database.h"
-#include "wasmachine.h"
-#include "controlpanel.h"
+#include "client.h"
+#include "enums.h"
 
 #include <arpa/inet.h>
 #include <cstdio>
@@ -25,7 +25,7 @@ class SocketHandler
         static Database* database;
 
         static void Setup(int *socketFd);
-        static Machine* CreateNewMachine(char type, std::string macAdress);
+        static Client* CreateNewClient(char typeChar, std::string macAdress);
         static void ConnectClient(int socketFd);
         static bool ReadClient(Socket* socket);
 };

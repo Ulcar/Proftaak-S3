@@ -1,18 +1,20 @@
-#ifndef CONTROLPANEL_H
-#define CONTROLPANEL_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
+#include "enums.h"
 #include "socket.h"
+#include "codes.h"
 #include "protocol.h"
+#include "iClient.h"
 
-class ControlPanel
+#include <cstring>
+
+class Client : public iClient
 {
     public:
-        ControlPanel(std::string macAdress);
-        ~ControlPanel();
+        Client(std::string macAdress, Type type);
+        ~Client();
         void Send(Code code, int value);
-        void Read();
-        int Ping();
-        void Beat();
         void SetSocket(Socket* socket);
 
         Socket* GetSocket()
@@ -25,8 +27,14 @@ class ControlPanel
             return macAdress;
         }
 
-    private:
+        Type GetType()
+        {
+            return clientType;
+        }
+
+    protected:
         const std::string macAdress;
+        const Type clientType;
         Socket* socket;
 };
 

@@ -5,29 +5,26 @@ Database::Database()
     quit = false;
 }
 
-std::vector<Machine*> Database::GetMachines()
+Database::~Database()
 {
-    std::unique_lock<std::mutex> lock (mtxMachine);
-    return machines;
+    std::unique_lock<std::mutex> lock (mtxClient);
+
+    for(Client* client : clients)
+    {
+        delete client;
+    }
 }
 
-void Database::AddMachine(Machine* machine)
+std::vector<Client*> Database::GetClients()
 {
-    std::unique_lock<std::mutex> lock (mtxMachine);
-    machines.push_back(machine);
+    std::unique_lock<std::mutex> lock (mtxClient);
+    return clients;
 }
 
-
-std::vector<ControlPanel*> Database::GetControlPanels()
+void Database::AddClient(Client* client)
 {
-    std::unique_lock<std::mutex> lock (mtxControl);
-    return controlpanels;
-}
-
-void Database::AddControlPanel(ControlPanel* controlpanel)
-{
-    std::unique_lock<std::mutex> lock (mtxControl);
-    controlpanels.push_back(controlpanel);
+    std::unique_lock<std::mutex> lock (mtxClient);
+    clients.push_back(client);
 }
 
 bool Database::AskQuit()
