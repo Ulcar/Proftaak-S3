@@ -6,17 +6,13 @@
 #include "hardware/interface/IHardwareInterface.h"
 #include "hardware/interface/IWater.h"
 
-#include "includes/Vector.h"
-
-#define INPUT_WATER_2        (16)
-#define INPUT_WATER_1        (17)
 #define INPUT_TEMPERATURE_2  (18)
 #define INPUT_TEMPERATURE_1  (19)
 
 class HardwareControl
 {
 public:
-    HardwareControl(Centipede centipede);
+    HardwareControl(Centipede centipede, int interfaceCount);
 
     void Initialize();
 
@@ -24,8 +20,10 @@ public:
     IHardwareInterface* GetInterface(String name);
 
 private:
-    Vector<IHardwareInterface*> _interfaces;
     Centipede _centipede;
+
+    IHardwareInterface** _interfaces;
+    int _interfaceCount;
 };
 
 #endif

@@ -1,8 +1,10 @@
 #include <Centipede.h>
 #include <Wire.h>
 
+#include "hardware/Controls.h"
+#include "hardware/Heater.h"
+#include "hardware/Motor.h"
 #include "hardware/Water.h"
-#include "includes/Vector.h"
 
 #include "HardwareControl.h"
 /* #include "WifiClient.h" */
@@ -13,7 +15,7 @@ Centipede centipede;
 /* WifiClient* client; */
 SerialClient* client;
 
-HardwareControl hardwareControl(centipede);
+HardwareControl hardwareControl(centipede, 4);
 
 void setup()
 {
@@ -21,8 +23,12 @@ void setup()
     Wire.begin();
 
     // Initialize the hardware control.
-    hardwareControl.Initialize();
+    hardwareControl.AddInterface(new Controls());
+    hardwareControl.AddInterface(new Heater());
+    hardwareControl.AddInterface(new Motor());
     hardwareControl.AddInterface(new Water());
+
+    hardwareControl.Initialize();
 
     // Connect to the server.
     Serial.println("Connecting to the Wi-Fi network...");
@@ -59,8 +65,85 @@ void setup()
     machine.NewProgram(0, actions);
 
     machine.StartProgram(0);
+
+    Water* water = (Water*) hardwareControl.GetInterface("water");
+    water->SetDrain(STATE_ON);
+
+    Heater* heater = (Heater*) hardwareControl.GetInterface("heater");
+    heater->Set(STATE_ON);
+
+    Controls* controls = (Controls*) hardwareControl.GetInterface("controls");
+    controls->SetLock(STATE_ON);
+    controls->SetSoap(STATE_ON, 1);
+    controls->SetSoap(STATE_ON, 2);
+
+    Motor* motor = (Motor*) hardwareControl.GetInterface("motor");
+    motor->SetDirection(MD_RIGHT);
+    motor->SetSpeed(SPEED_HIGH);
 }
+
+Temperature lastTemperature = TEMP_COLD;
+WaterLevel lastWaterLevel = WL_EMPTY;
+bool lastPressure = false;
 
 void loop()
 {
+    Controls* controls = (Controls*) hardwareControl.GetInterface("controls");
+    Water* water = (Water*) hardwareControl.GetInterface("water");
+
+    WaterLevel level = water->GetLevel();
+
+    if (level != lastWaterLevel)
+    {
+        Serial.println("Water Level: " + String(level));
+
+        lastWaterLevel = level;
+
+        if (level == WL_FULL)
+        {
+            water->SetDrain(STATE_OFF);
+            water->SetSink(STATE_ON);
+
+            controls->SetSoap(STATE_OFF, 1);
+            controls->SetSoap(STATE_OFF, 2);
+        }
+
+        if (level == WL_EMPTY)
+        {
+            water->SetSink(STATE_OFF);
+            water->SetDrain(STATE_ON);
+
+            controls->SetSoap(STATE_ON, 1);
+            controls->SetSoap(STATE_ON, 2);
+        }
+    }
+
+    Heater* heater = (Heater*) hardwareControl.GetInterface("heater");
+    Temperature temperature = heater->GetTemperature();
+
+    if (temperature != lastTemperature)
+    {
+        Serial.println("Temperature: " + String(temperature));
+
+        lastTemperature = temperature;
+
+        if (temperature == TEMP_HOT)
+        {
+            heater->Set(STATE_OFF);
+        }
+
+        if (temperature == TEMP_OFF)
+        {
+            heater->Set(STATE_ON);
+        }
+    }
+
+    bool pressure = water->HasPressure();
+
+    if (pressure != lastPressure)
+    {
+        Serial.println("Pressure: " + String(pressure ? "yes" : "no"));
+
+        lastPressure = pressure;
+    }
 }

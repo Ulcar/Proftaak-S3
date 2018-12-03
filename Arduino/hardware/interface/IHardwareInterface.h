@@ -3,9 +3,17 @@
 
 #include <Centipede.h>
 
+enum HardwareState
+{
+    STATE_ON,
+    STATE_OFF
+};
+
 class IHardwareInterface
 {
 public:
+    virtual void Initialize() = 0;
+
     String GetName()
     {
         return this->_name;
