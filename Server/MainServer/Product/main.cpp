@@ -366,7 +366,7 @@ int main( void )
 {  
     std::cout << "------------------\n  Setting up Server\n";
 
-    std::thread socketThread(socketHandler);
+    std::thread socketThread(&socketHandler);
     std::thread consoleThread(HandleUserInput);
 
     std::cout << "  Server started\n------------------\n";
