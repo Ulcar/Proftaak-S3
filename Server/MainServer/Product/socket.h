@@ -32,7 +32,6 @@ class Socket : public iSocketQueue , public iSocketIO
         }
 
     private:
-        int error;
         int ETA;
         int socketFd;
         bool waitingForClient;

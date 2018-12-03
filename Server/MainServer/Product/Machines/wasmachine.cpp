@@ -11,10 +11,6 @@ Wasmachine::~Wasmachine()
     
 }
 
-void Wasmachine::RequestHeater(WasMachineHeater status)
-{
-    Machine::Send(CODE_HEATER, status);
-}
 
 void Wasmachine::Beat()
 {

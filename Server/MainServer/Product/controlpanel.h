@@ -26,7 +26,6 @@ class ControlPanel
         }
 
     private:
-        int error;
         const std::string macAdress;
         Socket* socket;
 };

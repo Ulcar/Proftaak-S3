@@ -5,7 +5,7 @@
 ControlPanel::ControlPanel(std::string macAdress)
     : macAdress(macAdress)
 {
-    error = Error::None;
+    
 }
 
 ControlPanel::~ControlPanel()

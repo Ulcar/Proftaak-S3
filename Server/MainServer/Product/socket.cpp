@@ -3,7 +3,6 @@
 Socket::Socket(int socketFd)
 {
     ETA = 0;
-    error = Error::None;
     waitingForClient = false;
     this->socketFd = socketFd;
 }
