@@ -4,15 +4,15 @@
 #include "socket.h"
 #include "codes.h"
 #include "protocol.h"
+#include "iMachine.h"
 
 #include <cstring>
 
-class Machine
+class Machine : public iMachine
 {
     public:
         Machine(std::string macAdress);
         ~Machine();
-
         void Send(Code code, int value);
         virtual void Beat() = 0;
         void SetSocket(Socket* socket);
