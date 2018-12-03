@@ -5,8 +5,6 @@ class iWasmachine
 {
 public:
     virtual ~iWasmachine() {};
-
-    virtual void Beat() = 0;
 };
 
 #endif

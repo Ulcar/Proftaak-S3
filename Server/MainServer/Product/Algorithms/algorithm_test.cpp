@@ -1,7 +1,11 @@
 #include "algorithm_test.h"
 
 Algorithm_test::Algorithm_test(Database* database)
-    : database(database)
+{
+    this->database = database;
+}
+
+Algorithm_test::~Algorithm_test()
 {
     
 }
