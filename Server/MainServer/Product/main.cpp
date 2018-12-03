@@ -50,9 +50,6 @@ static void setQuit(){
 
 static void HandleUserInput()
 {   
-    Errorlogger::LiveErrorLogging = true;
-    Errorlogger::Record("System startup", "main");
-
     while(true)
     {
         std::cout << "command:\n";
@@ -108,6 +105,10 @@ static void HandleUserInput()
 int main( void )
 {  
     std::cout << "------------------\n  Setting up Server\n";
+    
+    Errorlogger::LiveErrorLogging = false;
+    Errorlogger::Record("System startup", "main");
+    Errorlogger::LiveErrorLogging = true;
 
     std::thread socketThread(SocketHandler::RunSocketHandler, database);
     std::thread consoleThread(HandleUserInput);
