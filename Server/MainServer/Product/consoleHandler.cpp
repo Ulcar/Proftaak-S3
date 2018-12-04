@@ -6,7 +6,7 @@ Database* ConsoleHandler::database;
 void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
 {
     database = tempdatabase;
-    std::cout << "  Console started\n";
+    DebugLogger::Record("Console started", "consoleHandler");
 
     while(true)
     {
@@ -54,6 +54,7 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
         }
         catch(std::exception)
         {
+            Errorlogger::Record("Exception in handeling command: " + commando, "consoleHandler");
             std::cout << "Exception: " << commando << "/n";
         }
     }

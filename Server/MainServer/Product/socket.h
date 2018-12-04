@@ -5,6 +5,8 @@
 #include "enums.h"
 #include "iSocketQueue.h"
 #include "iSocketIO.h"
+#include "errorlogger.h"
+#include "debuglogger.h"
 
 #include <arpa/inet.h>
 #include <cstdio>
