@@ -1,5 +1,6 @@
 #include "algorithm_test.h"
 #include "errorlogger.h"
+#include "debuglogger.h"
 #include "client.h"
 #include "socketHandler.h"
 #include "consoleHandler.h"
@@ -17,11 +18,6 @@
 #include <vector>
 #include <thread> 
 
-
-
-//Client == Interface (C#)
-//Socket = machines (C++)
-
 bool quit = false;
 Database* database;
 iAlgorithm* algorithm;
@@ -32,18 +28,16 @@ std::thread consoleThread;
 
 static void Setup()
 {
-    std::cout << "------------------\n  Setting up Server\n";
-
-    Errorlogger::LiveErrorLogging = false;
-    Errorlogger::Record("System startup", "main");
-    Errorlogger::LiveErrorLogging = true;
-
     database = new Database();
     algorithm = new Algorithm_test(database);
     socketThread = std::thread(SocketHandler::RunSocketHandler, database);
     consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
 
-    std::cout << "  Server started\n------------------\n";
+    Errorlogger::Record("System startup", "main");
+    Errorlogger::LiveErrorLogging = true;
+
+    DebugLogger::LiveDebugLogging = true;
+    DebugLogger::Record("System startup", "main");
 }
 
 static void Loop()
@@ -52,16 +46,14 @@ static void Loop()
 }
 
 static void ShutDown()
-{
-
-    std::cout << "\n------------------\n  Stopping\n";
-    
+{    
     consoleThread.detach();
     socketThread.detach();
 
     delete database;
 
-    std::cout << "  Server Stopped\n------------------\n\n";
+    Errorlogger::Record("System shutdown", "main");
+    DebugLogger::Record("System shutdown", "main");
 }
 
 //------------------------------------------------------------------------------//

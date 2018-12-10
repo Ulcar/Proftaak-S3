@@ -13,18 +13,7 @@ class Machine : public iMachine
     public:
         Machine(std::string macAdress);
         ~Machine();
-        void Send(Code code, int value);
-        void SetSocket(Socket* socket);
-
-        Socket* GetSocket()
-        {
-            return socket;
-        }
-
-        std::string GetMacAdress()
-        {
-            return macAdress;
-        }
+        void Send(std::vector<std::string> message);
 
     protected:
         const std::string macAdress;

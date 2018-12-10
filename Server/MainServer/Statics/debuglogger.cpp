@@ -1,24 +1,24 @@
-#include "errorlogger.h"
+#include "debuglogger.h"
 
 #include <fstream>
 
 #include <sys/stat.h>
 
-std::vector<Errorlogger::ErrorLogstruct> Errorlogger::ErrorLog;
-bool Errorlogger::LiveErrorLogging;
-std::string Errorlogger::basePath = "loggers/";
+std::vector<DebugLogger::DebugLogstruct> DebugLogger::DebugLog;
+bool DebugLogger::LiveDebugLogging;
+std::string DebugLogger::basePath = "loggers/";
 
-Errorlogger::Errorlogger()
+DebugLogger::DebugLogger()
 {
     
 }
 
 /// <summary>
-/// Writes a new line in the Errorlog.
+/// Writes a new line in the DebugLog.
 /// <param name="errorMessage">The (hole) error.</param>
 /// <param name="source">The source of the error.</param>
 /// </summary>
-void Errorlogger::Record(std::string errorMessage, std::string source)
+void DebugLogger::Record(std::string errorMessage, std::string source)
 {
    // current date/time based on current system
    time_t now = time(0);
@@ -31,46 +31,46 @@ void Errorlogger::Record(std::string errorMessage, std::string source)
    dt = asctime(gmtm);
    dt[24] = '\0';
    
-    ErrorLogstruct error = ErrorLogstruct
+    DebugLogstruct error = DebugLogstruct
     {
         errorMessage,
         source,
         dt
     };
 
-    ErrorLog.push_back(error);
-    if(LiveErrorLogging) 
+    DebugLog.push_back(error);
+    if(LiveDebugLogging) 
     {
         std::cout << "[" << error.time << "] Source: " << error.source << " -- " << error.message << "\n";
     }
 }
 
 /// <summary>
-/// Displays the last 20 lines of the current Errorlog
+/// Displays the last 20 lines of the current DebugLog
 /// </summary>
-void Errorlogger::Display()
+void DebugLogger::Display()
 {
-    if (ErrorLog.size() <= 20)
+    if (DebugLog.size() <= 20)
     {
-        for(ErrorLogstruct error : ErrorLog)
+        for(DebugLogstruct error : DebugLog)
         {
             std::cout << "[" << error.time << "] Source: " << error.source << " -- " << error.message << "\n";
         }
         return;
     }
 
-    std::cout << "[...] skipped " << (ErrorLog.size() - 20) << "lines\n";
-    for (int i = ErrorLog.size() - 20; i < 20; i++)
+    std::cout << "[...] skipped " << (DebugLog.size() - 20) << "lines\n";
+    for (int i = DebugLog.size() - 20; i < 20; i++)
     {
-        ErrorLogstruct error = ErrorLog[i];
+        DebugLogstruct error = DebugLog[i];
         std::cout << "[" << error.time << "] Source: " << error.source << " -- " << error.message << "\n";
     }
 }
 
 /// <summary>
-/// Save the Errorlog to a file.
+/// Save the DebugLog to a file.
 /// </summary>
-void Errorlogger::SaveAsFile()
+void DebugLogger::SaveAsFile()
 {
     // current date/time based on current system
     time_t now = time(0);
@@ -90,11 +90,11 @@ void Errorlogger::SaveAsFile()
     std::string filename = basePath + dt;
 
     std::ofstream errorFile (filename + ".txt");
-    std::vector<Errorlogger::ErrorLogstruct> ErrorLogCopy(ErrorLog);
+    std::vector<DebugLogger::DebugLogstruct> DebugLogCopy(DebugLog);
 
-    for(u_int i = 0; i < ErrorLogCopy.size(); i++)
+    for(u_int i = 0; i < DebugLogCopy.size(); i++)
     {
-        errorFile << ErrorLogCopy[i].time + " Source: " + ErrorLogCopy[i].source + " -- " + ErrorLogCopy[i].message + '\n';
+        errorFile << DebugLogCopy[i].time + " Source: " + DebugLogCopy[i].source + " -- " + DebugLogCopy[i].message + '\n';
     }
 
     errorFile.close();

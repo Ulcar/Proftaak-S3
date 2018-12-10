@@ -12,3 +12,12 @@ Machine::~Machine()
 {
     
 }
+
+void Machine::Send(std::vector<std::string> message)
+{
+    if(socket == nullptr)
+    {
+        return;
+    }
+    socket->NewSendMessage(Protocol::ToInterface(message));
+}

@@ -10,4 +10,4 @@ Server/MainServer/protocol.o
 /Interface/Server_Interface/.vs/Server_Interface/v15/.suo
 /Interface/Server_Interface/.vs/Server_Interface/DesignTimeBuild
 /Interface/Server_Interface/.vs/Server_Interface/obj/Debug
-/loggers/*.txt
+Server/MainServer/loggers/*.txt

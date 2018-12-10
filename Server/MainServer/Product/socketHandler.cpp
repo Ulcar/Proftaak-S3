@@ -12,7 +12,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
 
     Setup(&masterFd);
 
-    std::cout << "  Socket started\n";
+    DebugLogger::Record("Sockets started", "socketHandler");
 
     while (true)
     {        
@@ -53,7 +53,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
 
         if (nrSockets < 0) // error situation
         {
-            perror("error from calling socket");
+            Errorlogger::Record("error from calling socket", "socketHandler");
         }
         else if (nrSockets == 0) // timeout
         {
@@ -86,6 +86,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
                 { 
                     tempClient->SetSocket(nullptr);
                     tempsocket = nullptr;
+                    DebugLogger::Record("Removed socket of " + tempClient->GetMacAdress(), "socketHandler");
                 }
             }
         }
@@ -97,27 +98,26 @@ void SocketHandler::Setup(int *socketFd)
     *socketFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (*socketFd < 0)
     {
-        perror("cannot create socket");
-        exit(EXIT_FAILURE);
+        Errorlogger::Record("Can't create socket", "socketHandler");
+        return;
     }
 
     struct sockaddr_in sa;
     memset(&sa, 0, sizeof sa);
     sa.sin_family = AF_INET;
     sa.sin_port = Protocol::GetPort();
-    //sa.sin_port = htons(Protocol::GetPort());
     sa.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(*socketFd, (struct sockaddr*)&sa, sizeof sa) < 0)
     {
-        perror("bind failed");
+       Errorlogger::Record("bind failed", "socketHandler");
         close(*socketFd);
         exit(EXIT_FAILURE);
     }
     
     if (listen(*socketFd, SOCKET_SIZE) < 0)
     {
-        perror("listen failed");
+        Errorlogger::Record("listen failed", "socketHandler");
         close(*socketFd);
         exit(EXIT_FAILURE);
     }
@@ -125,15 +125,21 @@ void SocketHandler::Setup(int *socketFd)
 
 Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
 {
-    //nog op letten bij unreeele waardes
     Type type;
-    if(typeChar == 'x')
+    try
     {
-        type = Type::ControlPanel;
+        if(typeChar == '\0')
+        {
+            type = Type::ControlPanel;
+        }
+        else
+        {
+            type = Type(typeChar);
+        }
     }
-    else
+    catch(...)
     {
-        type = Type(typeChar);
+        return nullptr;
     }
 
     std::vector<Client*> tempClients = database->GetClients();
@@ -144,14 +150,17 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
             return client;
         }
     }
-
+    DebugLogger::Record("Created new Client: " + type, "socketHandler");
+            
     if(type == Type::ControlPanel)
     {
-        return new Client(macAdress, type);
+        Client* client = new Client(macAdress, type);
+        return client;
     }
     else
     {
-        return new Machine(macAdress, type);
+        Client* client = new Machine(macAdress, type);
+        return client;
     }
 }
 
@@ -161,16 +170,17 @@ void SocketHandler::ConnectClient(int socketFd)
     int connectFd = accept(socketFd, NULL, NULL);
     if (connectFd < 0)
     {
-        perror("accept failed");
+        Errorlogger::Record("Accept failed", "socketHandler");
         close(socketFd);
         exit(EXIT_FAILURE);
     }
     
     Socket* socket = new Socket(connectFd);
-    std::cout << "Socket " << connectFd << " connected\n";
+    DebugLogger::Record("New socket connected: " + connectFd, "socketHandler");
 
     if(!socket->Read())
     {
+        DebugLogger::Record("Removed socket: " + connectFd, "socketHandler");
         delete socket;
         return;
     }
@@ -185,7 +195,7 @@ void SocketHandler::ConnectClient(int socketFd)
 
             if(message.size() == 2)
             {
-                client = CreateNewClient('x', message.at(1));
+                client = CreateNewClient('\0', message.at(1));
             }
             else
             {
@@ -202,6 +212,10 @@ void SocketHandler::ConnectClient(int socketFd)
             socket->TrySend();
             client->SetSocket(socket);
             database->AddClient(client);
+
+            std::string fu = "Added Client with type: " + client->GetType();
+            fu += "with id: " + client->GetMacAdress();
+            DebugLogger::Record(fu, "socketHandler");
             return;
         }
     }    
@@ -209,7 +223,6 @@ void SocketHandler::ConnectClient(int socketFd)
 
 bool SocketHandler::ReadClient(Socket* socket)
 {
-    std::cout << "Client '" << socket->getSocketFd() << "' || ";
     if(!socket->Read())
     {
        return false;

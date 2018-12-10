@@ -21,11 +21,15 @@ bool Socket::Read()
     if (nrBytesSend > 0)
     {
         buffer[nrBytesSend] = '\0';
-        std::cout << "received " << nrBytesSend << " bytes: " << buffer << std::endl;
+        std::string fu = "Recieved from " + this->getSocketFd();
+        fu += " a new message: " + + std::stoi(buffer);
+        DebugLogger::Record(fu, "socket");
     }
     else if(nrBytesSend == 0)
     {
-        std::cout << "Socket is shutdown. Disconnected\n";
+        std::string fu = "Socket " + this->getSocketFd();
+        fu += " is shutdown. Disconnected";
+        DebugLogger::Record(fu, "socket");
         return false;
     }
 
@@ -43,7 +47,11 @@ void Socket::Send(std::string text)
     size_t nrBytesRec = send(socketFd, text.c_str(), text.length(), 0);
     if (nrBytesRec != text.length())
     {
-        std::cout << "Not everything is sent (" << nrBytesRec << "/" << text.length() << " bytes sent)\n";
+        std::string fu = "Socket " + this->getSocketFd();
+        fu += " has not send everything (" + nrBytesRec;
+        fu += "/" + text.length();
+        fu += ")";
+        DebugLogger::Record(fu, "socket");
     }
 }
 

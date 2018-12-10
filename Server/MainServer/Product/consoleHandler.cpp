@@ -6,7 +6,7 @@ Database* ConsoleHandler::database;
 void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
 {
     database = tempdatabase;
-    std::cout << "  Console started\n";
+    DebugLogger::Record("Console started", "consoleHandler");
 
     while(true)
     {
@@ -23,7 +23,7 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
                 database->SetQuit(true);
                 return;
             }
-            else if(commandos.at(0) == "errorlogger")
+            else if((commandos.at(0) == "errorlogger") || (commandos.at(0) == "el"))
             {
                 if(commandos.size() == 1)
                 {
@@ -43,6 +43,26 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
                     }
                 }
             }
+            else if((commandos.at(0) == "debuglogger") || (commandos.at(0) == "dl"))
+            {
+                if(commandos.size() == 1)
+                {
+                    std::cout << "live\n";
+                    std::cout << "save\n";
+                }
+                else
+                {
+                    if(commandos.at(1) == "save")
+                    {
+                        DebugLogger::SaveAsFile();
+                    }
+                    else if(commandos.at(1) == "live")
+                    {
+                        DebugLogger::LiveDebugLogging = !DebugLogger::LiveDebugLogging;
+                        std::cout << "Live Debuglogging: " << DebugLogger::LiveDebugLogging << "\n";
+                    }
+                }
+            }
             else if(commandos.at(0) == "ping")
             {
                 std::cout << "Pong";
@@ -54,6 +74,7 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
         }
         catch(std::exception)
         {
+            Errorlogger::Record("Exception in handeling command: " + commando, "consoleHandler");
             std::cout << "Exception: " << commando << "/n";
         }
     }

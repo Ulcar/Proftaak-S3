@@ -11,9 +11,9 @@ std::vector<std::string> Protocol::FromClient(std::string message)
     return SplitString(message, seperatorChar, endCharToClient, startCharToClient);
 }
 
-std::string Protocol::ToInterface(Code code, int value)
+std::string Protocol::ToInterface(std::vector<std::string> message)
 {
-    std::string messageToInterface = MakeString(code, value, startCharToInterface, endCharToInterface);
+    std::string messageToInterface = MakeString(message, startCharToInterface, endCharToInterface);
     return messageToInterface;
 }
 
@@ -29,6 +29,21 @@ std::string Protocol::MakeString(int code, int value, char startChar, char endCh
     newString += code;
     newString += seperatorChar;
     newString += value;
+    newString += endChar;
+    return newString;
+}
+
+std::string Protocol::MakeString(std::vector<std::string> message, char startChar, char endChar)
+{
+    std::string newString;
+    newString = startChar;
+    newString += message.at(0);
+    
+    for(size_t i = 1; i < message.size(); i++)
+    {
+        newString += seperatorChar;
+        newString += message.at(i);
+    }
     newString += endChar;
     return newString;
 }
