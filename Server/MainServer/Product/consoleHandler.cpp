@@ -41,6 +41,10 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
                         Errorlogger::LiveErrorLogging = !Errorlogger::LiveErrorLogging;
                         std::cout << "Live Errorlogging: " << Errorlogger::LiveErrorLogging << "\n";
                     }
+                    else if(commandos.at(1) == "display")
+                    {
+                        Errorlogger::Display();
+                    }
                 }
             }
             else if((commandos.at(0) == "debuglogger") || (commandos.at(0) == "dl"))
@@ -60,6 +64,10 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
                     {
                         DebugLogger::LiveDebugLogging = !DebugLogger::LiveDebugLogging;
                         std::cout << "Live Debuglogging: " << DebugLogger::LiveDebugLogging << "\n";
+                    }
+                    else if(commandos.at(1) == "display")
+                    {
+                        DebugLogger::Display();
                     }
                 }
             }
