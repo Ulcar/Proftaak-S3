@@ -14,7 +14,7 @@ class Client : public iClient
     public:
         Client(std::string macAdress, Type type);
         ~Client();
-        void Send(Code code, int value);
+        void Send(CP_Code code, int value);
         void SetSocket(Socket* socket);
 
         Socket* GetSocket()

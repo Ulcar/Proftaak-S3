@@ -1,25 +1,25 @@
 #include "protocol.h"
 
-std::string Protocol::ToClient(Code code, int value)
+std::string Protocol::ToMachine(M_Code code, int value)
 {
-    std::string messageToClient = MakeString(code, value, startCharToClient, endCharToClient);
-    return messageToClient;
+    std::string messageToMachine = MakeString(code, value, startCharToMachine, endCharToMachine);
+    return messageToMachine;
 }
 
-std::vector<std::string> Protocol::FromClient(std::string message)
+std::vector<std::string> Protocol::FromMachine(std::string message)
 {
-    return SplitString(message, seperatorChar, endCharToClient, startCharToClient);
+    return SplitString(message, seperatorChar, endCharToMachine, startCharToMachine);
 }
 
-std::string Protocol::ToInterface(std::vector<std::string> message)
+std::string Protocol::ToControlPanel(CP_Code code, int value)
 {
-    std::string messageToInterface = MakeString(message, startCharToInterface, endCharToInterface);
-    return messageToInterface;
+    std::string messageToControlPanel = MakeString(code, value, startCharToControlPanel, endCharToControlPanel);
+    return messageToControlPanel;
 }
 
-std::vector<std::string> Protocol::FromInterface(std::string message)
+std::vector<std::string> Protocol::FromControlPanel(std::string message)
 {
-    return SplitString(message, seperatorChar, endCharToInterface, startCharToInterface);
+    return SplitString(message, seperatorChar, endCharToControlPanel, startCharToControlPanel);
 }
 
 std::string Protocol::MakeString(int code, int value, char startChar, char endChar)
@@ -29,21 +29,6 @@ std::string Protocol::MakeString(int code, int value, char startChar, char endCh
     newString += code;
     newString += seperatorChar;
     newString += value;
-    newString += endChar;
-    return newString;
-}
-
-std::string Protocol::MakeString(std::vector<std::string> message, char startChar, char endChar)
-{
-    std::string newString;
-    newString = startChar;
-    newString += message.at(0);
-    
-    for(size_t i = 1; i < message.size(); i++)
-    {
-        newString += seperatorChar;
-        newString += message.at(i);
-    }
     newString += endChar;
     return newString;
 }

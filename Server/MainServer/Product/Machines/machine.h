@@ -8,9 +8,10 @@ class Machine : public Client
     public:
         Machine(std::string macAdress, Type type);
         ~Machine();
-        void Send(std::vector<std::string> message);
+        void Send(M_Code code, int value);
 
     private:
+
         
 };
 

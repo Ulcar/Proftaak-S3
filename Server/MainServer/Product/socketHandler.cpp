@@ -185,7 +185,7 @@ void SocketHandler::ConnectClient(int socketFd)
         return;
     }
 
-    std::vector<std::string> message = Protocol::FromClient(socket->ReadLastMessage());
+    std::vector<std::string> message = Protocol::FromMachine(socket->ReadLastMessage());
     
     if((message.size() == 2) || (message.size() == 3))
     {
@@ -196,10 +196,12 @@ void SocketHandler::ConnectClient(int socketFd)
             if(message.size() == 2)
             {
                 client = CreateNewClient('\0', message.at(1));
+                socket->NewSendMessage(Protocol::ToControlPanel(CP_CODE_CONNECT, 0));
             }
             else
             {
                 client = CreateNewClient(message.at(1).at(0), message.at(2));
+                socket->NewSendMessage(Protocol::ToMachine(M_CODE_CONNECT, 0));
             }
 
             if(client == nullptr)
@@ -208,7 +210,6 @@ void SocketHandler::ConnectClient(int socketFd)
                 return;
             }
 
-            socket->NewSendMessage(Protocol::ToClient(CODE_CONNECT, 0));
             socket->TrySend();
             client->SetSocket(socket);
             database->AddClient(client);

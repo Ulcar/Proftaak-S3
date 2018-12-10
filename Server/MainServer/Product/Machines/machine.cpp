@@ -13,11 +13,11 @@ Machine::~Machine()
     
 }
 
-void Machine::Send(std::vector<std::string> message)
+void Machine::Send(M_Code code, int value)
 {
     if(socket == nullptr)
     {
         return;
     }
-    socket->NewSendMessage(Protocol::ToInterface(message));
+    socket->NewSendMessage(Protocol::ToMachine(code, value));
 }

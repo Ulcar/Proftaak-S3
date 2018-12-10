@@ -18,21 +18,20 @@ class Protocol
         {
             return port;
         }
-        static std::string ToClient(Code code, int value);
-        static std::vector<std::string> FromClient(std::string);
-        static std::string ToInterface(std::vector<std::string> message);
-        static std::vector<std::string> FromInterface(std::string);
+        static std::string ToMachine(M_Code code, int value);
+        static std::vector<std::string> FromMachine(std::string);
+        static std::string ToControlPanel(CP_Code code, int value);
+        static std::vector<std::string> FromControlPanel(std::string);
         static std::vector<std::string> SplitString(std::string text, char splitChar);
 
     private:
-        static const char startCharToClient = '#';
-        static const char endCharToClient = '&';
-        static const char startCharToInterface = '#';
-        static const char endCharToInterface = '$';
+        static const char startCharToMachine = '#';
+        static const char endCharToMachine = '&';
+        static const char startCharToControlPanel = '#';
+        static const char endCharToControlPanel = '$';
         static const char seperatorChar = ';';
         static const int port = 2018; //set port here
         static std::string MakeString(int code, int value, char startChar, char endChar);
-        static std::string MakeString(std::vector<std::string> message, char startChar, char endChar);
         static std::vector<std::string> SplitString(std::string text, char splitChar, char startChar, char endChar);
 
 };

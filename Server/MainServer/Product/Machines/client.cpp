@@ -12,13 +12,13 @@ Client::~Client()
     delete socket;
 }
 
-void Client::Send(Code code, int value)
+void Client::Send(CP_Code code, int value)
 {
     if(socket == nullptr)
     {
         return;
     }
-    socket->NewSendMessage(Protocol::ToClient(code, value));
+    socket->NewSendMessage(Protocol::ToControlPanel(code, value));
 }
 
 void Client::SetSocket(Socket* tempSocket)
