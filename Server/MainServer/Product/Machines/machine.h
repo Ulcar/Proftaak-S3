@@ -1,23 +1,17 @@
 #ifndef MACHINE_H
 #define MACHINE_H
 
-#include "socket.h"
-#include "codes.h"
-#include "protocol.h"
-#include "iMachine.h"
+#include "client.h"
 
-#include <cstring>
-
-class Machine : public iMachine
+class Machine : public Client
 {
     public:
-        Machine(std::string macAdress);
+        Machine(std::string macAdress, Type type);
         ~Machine();
         void Send(std::vector<std::string> message);
 
-    protected:
-        const std::string macAdress;
-        Socket* socket;
+    private:
+        
 };
 
 #endif
