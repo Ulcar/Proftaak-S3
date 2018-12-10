@@ -2,7 +2,8 @@
 
 std::string Protocol::ToMachine(M_Code code, int value)
 {
-    std::string messageToMachine = MakeString(code, new std::vector(value + ""), startCharToMachine, endCharToMachine);
+    std::vector<std::string> temp = {value + ""};
+    std::string messageToMachine = MakeString(code, temp, startCharToMachine, endCharToMachine);
     return messageToMachine;
 }
 

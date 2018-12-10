@@ -14,7 +14,8 @@ Client::~Client()
 
 void Client::Send(CP_Code code, std::string value)
 {
-    Send(code, new std::vector(value));
+    std::vector<std::string> temp = {value};
+    Send(code, temp);
 }
 
 void Client::Send(CP_Code code, std::vector<std::string> value)

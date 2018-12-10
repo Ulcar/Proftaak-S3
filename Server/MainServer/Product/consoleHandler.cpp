@@ -28,7 +28,6 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
         if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit") || (commandos.at(0) == "q"))
         {
             database->SetQuit(true);
-            return;
         }
         else if((commandos.at(0) == "errorlogger") || (commandos.at(0) == "el"))
         {

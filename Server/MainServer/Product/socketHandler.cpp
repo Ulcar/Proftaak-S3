@@ -192,11 +192,12 @@ void SocketHandler::ConnectClient(int socketFd)
         if(message.at(0) == "0")
         {
             Client* client;
+            std::vector<std::string> temp = {0 + ""};
 
             if(message.size() == 2)
             {
                 client = CreateNewClient('\0', message.at(1));
-                socket->NewSendMessage(Protocol::ToControlPanel(CP_CODE_CONNECT, 0));
+                socket->NewSendMessage(Protocol::ToControlPanel(CP_CODE_CONNECT, temp));
             }
             else
             {
