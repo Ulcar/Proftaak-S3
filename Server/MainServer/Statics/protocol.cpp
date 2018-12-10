@@ -2,7 +2,7 @@
 
 std::string Protocol::ToMachine(M_Code code, int value)
 {
-    std::string messageToMachine = MakeString(code, value + "", startCharToMachine, endCharToMachine);
+    std::string messageToMachine = MakeString(code, new std::vector(value + ""), startCharToMachine, endCharToMachine);
     return messageToMachine;
 }
 
@@ -11,7 +11,7 @@ std::vector<std::string> Protocol::FromMachine(std::string message)
     return SplitString(message, seperatorChar, endCharToMachine, startCharToMachine);
 }
 
-std::string Protocol::ToControlPanel(CP_Code code, std::string value)
+std::string Protocol::ToControlPanel(CP_Code code, std::vector<std::string> value)
 {
     std::string messageToControlPanel = MakeString(code, value, startCharToControlPanel, endCharToControlPanel);
     return messageToControlPanel;
@@ -22,13 +22,17 @@ std::vector<std::string> Protocol::FromControlPanel(std::string message)
     return SplitString(message, seperatorChar, endCharToControlPanel, startCharToControlPanel);
 }
 
-std::string Protocol::MakeString(int code, std::string value, char startChar, char endChar)
+std::string Protocol::MakeString(int code, std::vector<std::string> value, char startChar, char endChar)
 {
     std::string newString;
     newString = startChar;
     newString += code;
-    newString += seperatorChar;
-    newString += value;
+
+    for(std::string mess : value)
+    {
+        newString += seperatorChar;
+        newString += mess;
+    }
     newString += endChar;
     return newString;
 }

@@ -20,7 +20,7 @@ class Protocol
         }
         static std::string ToMachine(M_Code code, int value);
         static std::vector<std::string> FromMachine(std::string);
-        static std::string ToControlPanel(CP_Code code, std::string value);
+        static std::string ToControlPanel(CP_Code code, std::vector<std::string> value);
         static std::vector<std::string> FromControlPanel(std::string);
         static std::vector<std::string> SplitString(std::string text, char splitChar);
 
@@ -31,7 +31,7 @@ class Protocol
         static const char endCharToControlPanel = '$';
         static const char seperatorChar = ';';
         static const int port = 2018; //set port here
-        static std::string MakeString(int code, std::string value, char startChar, char endChar);
+        static std::string MakeString(int code, std::vector<std::string> value, char startChar, char endChar);
         static std::vector<std::string> SplitString(std::string text, char splitChar, char startChar, char endChar);
 
 };
