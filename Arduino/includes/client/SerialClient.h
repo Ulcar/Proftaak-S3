@@ -1,9 +1,9 @@
 #ifndef SERIALCLIENT_H
 #define SERIALCLIENT_H
 
-#include "INetworkClient.h"
+#include "IClient.h"
 
-class SerialClient : public INetworkClient
+class SerialClient : public IClient
 {
 public:
     SerialClient();

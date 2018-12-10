@@ -1,7 +1,7 @@
-#ifndef INETWORKCLIENT_H
-#define INETWORKCLIENT_H
+#ifndef ICLIENT_H
+#define ICLIENT_H
 
-class INetworkClient
+class IClient
 {
 public:
     virtual bool Connect() = 0;

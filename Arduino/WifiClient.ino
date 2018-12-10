@@ -1,4 +1,4 @@
-#include "WifiClient.h"
+#include "includes/client/WifiClient.h"
 
 WifiClient::WifiClient(String ssid, String ipAddress, int port)
     : _ssid(ssid)

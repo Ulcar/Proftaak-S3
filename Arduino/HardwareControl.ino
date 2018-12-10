@@ -1,7 +1,11 @@
-#include "HardwareControl.h"
+#include "includes/hardware/HardwareControl.h"
 
-HardwareControl::HardwareControl()
+HardwareControl::HardwareControl(IControls* controls, IHeater* heater, IMotor* motor, IWater* water)
     : _centipede(Centipede())
+    , _controls(controls)
+    , _heater(heater)
+    , _motor(motor)
+    , _water(water)
 {
     // ...
 }

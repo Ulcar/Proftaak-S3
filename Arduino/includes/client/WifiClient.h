@@ -3,9 +3,9 @@
 
 #include <WiFi.h>
 
-#include "INetworkClient.h"
+#include "IClient.h"
 
-class WifiClient : public INetworkClient
+class WifiClient : public IClient
 {
 public:
     WifiClient(String ssid, String ipAddress, int port);

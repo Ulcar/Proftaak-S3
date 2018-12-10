@@ -4,10 +4,10 @@
 #include <Centipede.h>
 #include <Wire.h>
 
-#include "hardware/interface/IControls.h"
-#include "hardware/interface/IHeater.h"
-#include "hardware/interface/IMotor.h"
-#include "hardware/interface/IWater.h"
+#include "interface/IControls.h"
+#include "interface/IHeater.h"
+#include "interface/IMotor.h"
+#include "interface/IWater.h"
 
 #define OUTPUT_GROUP_2   ( 0)
 #define OUTPUT_GROUP_1   ( 1)
@@ -24,21 +24,14 @@
 class HardwareControl
 {
 public:
-    HardwareControl();
+    HardwareControl(IControls* controls, IHeater* heater, IMotor* motor, IWater* water);
     ~HardwareControl();
 
     void Initialize();
 
-    void SetControls(IControls* controls) { _controls = controls; }
     IControls* GetControls() { return _controls; }
-
-    void SetHeater(IHeater* heater) { _heater = heater; }
     IHeater* GetHeater() { return _heater; }
-
-    void SetMotor(IMotor* motor) { _motor = motor; }
     IMotor* GetMotor() { return _motor; }
-
-    void SetWater(IWater* water) { _water = water; }
     IWater* GetWater() { return _water; }
 
 private:

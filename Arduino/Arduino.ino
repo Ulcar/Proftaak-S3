@@ -1,15 +1,17 @@
-#include "hardware/Controls.h"
-#include "hardware/Heater.h"
-#include "hardware/Motor.h"
-#include "hardware/Water.h"
+#include "includes/hardware/Controls.h"
+#include "includes/hardware/Heater.h"
+#include "includes/hardware/Motor.h"
+#include "includes/hardware/Water.h"
 
-#include "HardwareControl.h"
-/* #include "WifiClient.h" */
-#include "SerialClient.h"
-#include "Machine.h"
+#include "includes/hardware/HardwareControl.h"
+// #include "includes/client/WifiClient.h"
+#include "includes/client/SerialClient.h"
 
+#include "includes/machine/Machine.h"
+#include "includes/machine/Actions.h"
+
+HardwareControl hardwareControl(new Controls(), new Heater(), new Motor(), new Water());
 /* WifiClient* client; */
-HardwareControl hardwareControl;
 SerialClient* client;
 
 void setup()
@@ -17,17 +19,12 @@ void setup()
     Serial.begin(9600);
 
     // Initialize the hardware control.
-    hardwareControl.SetControls(new Controls());
-    hardwareControl.SetHeater(new Heater());
-    hardwareControl.SetMotor(new Motor());
-    hardwareControl.SetWater(new Water());
-
     hardwareControl.Initialize();
 
     // Connect to the server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    /* client = new WifiClient("12connect", "192.168.200.73", 1337); */
+    // client = new WifiClient("12connect", "192.168.200.73", 1337);
     client = new SerialClient();
 
     if (!client->IsConnected())
