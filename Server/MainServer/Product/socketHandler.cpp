@@ -110,7 +110,7 @@ void SocketHandler::Setup(int *socketFd)
 
     if (bind(*socketFd, (struct sockaddr*)&sa, sizeof sa) < 0)
     {
-       Errorlogger::Record("bind failed", "socketHandler");
+       Errorlogger::Record("Adress is already in use", "socketHandler");
         close(*socketFd);
         exit(EXIT_FAILURE);
     }
@@ -123,18 +123,18 @@ void SocketHandler::Setup(int *socketFd)
     }
 }
 
-Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
+Client* SocketHandler::CreateNewClient(int typeInt, std::string macAdress)
 {
     Type type;
     try
     {
-        if(typeChar == '\0')
+        if(typeInt == -1)
         {
             type = Type::ControlPanel;
         }
         else
         {
-            type = Type((int)typeChar);
+            type = Type(typeInt);
         }
     }
     catch(...)
@@ -196,12 +196,12 @@ void SocketHandler::ConnectClient(int socketFd)
 
             if(message.size() == 2)
             {
-                client = CreateNewClient('\0', message.at(1));
+                client = CreateNewClient(-1, message.at(1));
                 socket->NewSendMessage(Protocol::ToControlPanel(CP_CODE_CONNECT, temp));
             }
             else
             {
-                client = CreateNewClient(message.at(1).at(0), message.at(2));
+                client = CreateNewClient((int)message.at(1).at(0), message.at(2));
                 socket->NewSendMessage(Protocol::ToMachine(M_CODE_CONNECT, 0));
             }
 
@@ -219,6 +219,11 @@ void SocketHandler::ConnectClient(int socketFd)
             fu += "with id: " + client->GetMacAdress();
             DebugLogger::Record(fu, "socketHandler");
             return;
+        }
+
+        else
+        {
+            std::cout << "THis is not a machine";
         }
     }    
 }

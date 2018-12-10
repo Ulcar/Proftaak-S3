@@ -22,7 +22,8 @@ bool Socket::Read()
     {
         buffer[nrBytesSend] = '\0';
         std::string fu = "Recieved from " + this->getSocketFd();
-        fu += " a new message: " + + std::stoi(buffer);
+        fu += " a new message: ";
+        fu += buffer;
         DebugLogger::Record(fu, "socket");
     }
     else if(nrBytesSend == 0)

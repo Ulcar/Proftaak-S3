@@ -3,7 +3,7 @@
 
 enum Type
 {
-    ControlPanel = 0,
+    ControlPanel = -1,
     Wasmachine
 };
 
