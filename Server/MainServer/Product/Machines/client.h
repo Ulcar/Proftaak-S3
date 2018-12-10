@@ -13,7 +13,8 @@ class Client : public iClient
 {
     public:
         Client(std::string macAdress, Type type);
-        ~Client();
+        virtual ~Client();
+        void Send(CP_Code code, std::vector<std::string> value);
         void Send(CP_Code code, std::string value);
         void SetSocket(Socket* socket);
 

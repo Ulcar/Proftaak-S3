@@ -14,6 +14,11 @@ Client::~Client()
 
 void Client::Send(CP_Code code, std::string value)
 {
+    Send(code, new std::vector(value));
+}
+
+void Client::Send(CP_Code code, std::vector<std::string> value)
+{
     if(socket == nullptr)
     {
         return;
