@@ -13,77 +13,88 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
         std::cout << "command:\n";
         std::string commando;
         std::getline(std::cin, commando);
-        
-        std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
 
-        try
+        std::cout << HandleConsoleCommando(commando);
+    }
+}
+
+std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
+{  
+    std::string message;
+    std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
+
+    try
+    {
+        if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit") || (commandos.at(0) == "q"))
         {
-            if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit") || (commandos.at(0) == "q"))
+            database->SetQuit(true);
+            return;
+        }
+        else if((commandos.at(0) == "errorlogger") || (commandos.at(0) == "el"))
+        {
+            if(commandos.size() == 1)
             {
-                database->SetQuit(true);
-                return;
-            }
-            else if((commandos.at(0) == "errorlogger") || (commandos.at(0) == "el"))
-            {
-                if(commandos.size() == 1)
-                {
-                    std::cout << "live\n";
-                    std::cout << "save\n";
-                }
-                else
-                {
-                    if(commandos.at(1) == "save")
-                    {
-                        Errorlogger::SaveAsFile();
-                    }
-                    else if(commandos.at(1) == "live")
-                    {
-                        Errorlogger::LiveErrorLogging = !Errorlogger::LiveErrorLogging;
-                        std::cout << "Live Errorlogging: " << Errorlogger::LiveErrorLogging << "\n";
-                    }
-                    else if(commandos.at(1) == "display")
-                    {
-                        std::cout << Errorlogger::Display();
-                    }
-                }
-            }
-            else if((commandos.at(0) == "debuglogger") || (commandos.at(0) == "dl"))
-            {
-                if(commandos.size() == 1)
-                {
-                    std::cout << "live\n";
-                    std::cout << "save\n";
-                }
-                else
-                {
-                    if(commandos.at(1) == "save")
-                    {
-                        DebugLogger::SaveAsFile();
-                    }
-                    else if(commandos.at(1) == "live")
-                    {
-                        DebugLogger::LiveDebugLogging = !DebugLogger::LiveDebugLogging;
-                        std::cout << "Live Debuglogging: " << DebugLogger::LiveDebugLogging << "\n";
-                    }
-                    else if(commandos.at(1) == "display")
-                    {
-                        std::cout << DebugLogger::Display();
-                    }
-                }
-            }
-            else if(commandos.at(0) == "ping")
-            {
-                std::cout << "Pong";
+                message += "display\n";
+                message += "live\n";
+                message += "save\n";
             }
             else
             {
-                std::cout << "Invalid arg: " << commando << "\n";
+                if(commandos.at(1) == "save")
+                {
+                    Errorlogger::SaveAsFile();
+                }
+                else if(commandos.at(1) == "live")
+                {
+                    Errorlogger::LiveErrorLogging = !Errorlogger::LiveErrorLogging;
+                    message += "Live Errorlogging: " + Errorlogger::LiveErrorLogging;
+                    message += "\n";
+                }
+                else if(commandos.at(1) == "display")
+                {
+                    message += Errorlogger::Display();
+                }
             }
         }
-        catch(std::exception)
+        else if((commandos.at(0) == "debuglogger") || (commandos.at(0) == "dl"))
         {
-            Errorlogger::Record("Exception in handeling command: " + commando, "consoleHandler");
-            std::cout << "Exception: " << commando << "/n";
+            if(commandos.size() == 1)
+            {
+                message += "display\n";
+                message += "live\n";
+                message += "save\n";
+            }
+            else
+            {
+                if(commandos.at(1) == "save")
+                {
+                    DebugLogger::SaveAsFile();
+                }
+                else if(commandos.at(1) == "live")
+                {
+                    DebugLogger::LiveDebugLogging = !DebugLogger::LiveDebugLogging;
+                    message += "Live Debuglogging: " + DebugLogger::LiveDebugLogging;
+                    message += "\n";
+                }
+                else if(commandos.at(1) == "display")
+                {
+                    message += DebugLogger::Display();
+                }
+            }
+        }
+        else if(commandos.at(0) == "ping")
+        {
+            message += "Pong";
+        }
+        else
+        {
+            message += "Invalid arg: " + commando + "\n";
         }
     }
+    catch(std::exception)
+    {
+        Errorlogger::Record("Exception in handling command: " + commando, "consoleHandler");
+        message += "Exception: " + commando + "/n";
+    }
+    return message;
 }
