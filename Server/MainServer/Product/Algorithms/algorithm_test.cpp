@@ -26,11 +26,12 @@ void Algorithm_test::Beat()
         {
             case Type::ControlPanel:
             {
-                std::vector<std::string> messagevec = Protocol::FromInterface(message);
+                std::vector<std::string> messagevec = Protocol::FromControlPanel(message);
 
                 switch(static_cast<CP_Code>(stoi(messagevec[0])))
                 {
                     case CP_CODE_CONSOLE:
+                        client->Send(CP_CODE_CONSOLE, ConsoleHandler::HandleConsoleCommando(messagevec[1]));
                         break;
 
                     default:
@@ -41,9 +42,9 @@ void Algorithm_test::Beat()
             }
             case Type::Wasmachine:
             {
-                std::vector<std::string> messagevec = Protocol::FromClient(message);
+                std::vector<std::string> messagevec = Protocol::FromMachine(message);
 
-                switch(static_cast<CP_Code>(stoi(messagevec[0])))
+                switch(static_cast<M_Code>(stoi(messagevec[0])))
                 {
                     case M_CODE_HEATER:
                         break;

@@ -3,6 +3,8 @@
 
 #include "iAlgorithm.h"
 #include "database.h"
+#include "consoleHandler.h"
+#include "client.h"
 
 class Algorithm_test : public iAlgorithm
 {
