@@ -21,3 +21,34 @@ void Machine::Send(M_Code code, int value)
     }
     socket->NewSendMessage(Protocol::ToMachine(code, value));
 }
+
+
+int Machine::GetUsedPower()
+{
+    return usedPower;
+}
+
+void Machine::SetUsedPower(int setPower)
+{
+    usedPower = setPower;
+}
+
+int Machine::GetUsedWater()
+{
+    return usedWater;
+}
+
+void Machine::SetUsedWater(int setWater)
+{
+    usedWater = setWater;
+}
+
+Program Machine::GetProgram()
+{
+    return currentProgram;
+}
+
+void Machine::SetProgram(Program SetProgram)
+{
+    currentProgram = SetProgram;
+}
