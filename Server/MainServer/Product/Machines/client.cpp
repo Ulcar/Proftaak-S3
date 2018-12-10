@@ -12,7 +12,7 @@ Client::~Client()
     delete socket;
 }
 
-void Client::Send(CP_Code code, int value)
+void Client::Send(CP_Code code, std::string value)
 {
     if(socket == nullptr)
     {
