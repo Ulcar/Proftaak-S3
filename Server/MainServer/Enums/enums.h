@@ -4,7 +4,13 @@
 enum Type
 {
     ControlPanel = 0,
-    Wasmachine = 1
+    Wasmachine
+};
+
+enum Program
+{
+    PROGRAM_XX = 0,
+    PROGRAM_YY
 };
 //No enums
 
