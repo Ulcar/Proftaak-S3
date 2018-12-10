@@ -1,6 +1,9 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
+#define MAXPOWER 1000
+#define MAXWATER 1000
+
 #include "client.h"
 #include "socket.h"
 
@@ -22,6 +25,13 @@ class Database
         void AddClient(Client* client);
         bool AskQuit();
         void SetQuit(bool quit);
+        
+        int AskCurrentWater();
+        bool RemoveCurrentWater(int removeCurrentWater);
+        void AddCurrentWater(int addCurrentWater);
+        int AskCurrentPower();
+        bool RemoveCurrentPower(int removeCurrentPower);
+        void AddCurrentPower(int addCurrentPower);
 
     private:
         bool quit;
@@ -29,6 +39,13 @@ class Database
 
         std::mutex mtxClient;
         std::mutex mtxQuit;
+        std::mutex mtxPower;
+        std::mutex mtxWater;
+
+        //Water is in Liters
+        int currentWater;
+        //power is in Watt
+        int currentPower;
 };
 
 #endif
