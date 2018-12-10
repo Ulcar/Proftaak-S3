@@ -1,14 +1,15 @@
 #ifndef IWATER_H
 #define IWATER_H
 
-#include <Centipede.h>
-
+#include "ICentipedeShield.h"
 #include "../../Enums.h"
 
 class IWater
 {
 public:
-    virtual void Initialize(Centipede centipede) = 0;
+    virtual ~IWater() = 0;
+
+    virtual void Initialize(ICentipedeShield* centipede) = 0;
 
     virtual WaterLevel GetLevel() = 0;
     virtual bool HasPressure() = 0;
@@ -17,7 +18,7 @@ public:
     virtual void SetDrain(HardwareState state) = 0;
 
 protected:
-    Centipede _centipede;
+    ICentipedeShield* _centipede;
 };
 
 #endif

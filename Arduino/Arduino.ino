@@ -1,4 +1,5 @@
 #include "includes/hardware/HardwareControl.h"
+#include "includes/hardware/CentipedeShield.h"
 #include "includes/hardware/Controls.h"
 #include "includes/hardware/Heater.h"
 #include "includes/hardware/Motor.h"
@@ -50,7 +51,7 @@ void setup()
     Serial.println("Connected to the server.");
 
     // Initialize the hardware control.
-    hardwareControl = new HardwareControl(new Controls(), new Heater(), new Motor(), new Water());
+    hardwareControl = new HardwareControl(new CentipedeShield(), new Controls(), new Heater(), new Motor(), new Water());
     hardwareControl->Initialize();
 
     Machine machine(*hardwareControl, client);

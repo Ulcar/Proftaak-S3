@@ -11,7 +11,7 @@
 class Heater : public IHeater
 {
 public:
-    void Initialize(Centipede centipede);
+    void Initialize(ICentipedeShield* centipede);
 
     void Set(HardwareState state);
     Temperature GetTemperature();

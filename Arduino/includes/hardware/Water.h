@@ -13,7 +13,7 @@
 class Water : public IWater
 {
 public:
-    void Initialize(Centipede centipede);
+    void Initialize(ICentipedeShield* centipede);
 
     WaterLevel GetLevel();
     bool HasPressure();

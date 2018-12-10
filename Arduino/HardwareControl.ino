@@ -1,7 +1,7 @@
 #include "includes/hardware/HardwareControl.h"
 
-HardwareControl::HardwareControl(IControls* controls, IHeater* heater, IMotor* motor, IWater* water)
-    : _centipede(Centipede())
+HardwareControl::HardwareControl(ICentipedeShield* centipede, IControls* controls, IHeater* heater, IMotor* motor, IWater* water)
+    : _centipede(centipede)
     , _controls(controls)
     , _heater(heater)
     , _motor(motor)
@@ -12,6 +12,7 @@ HardwareControl::HardwareControl(IControls* controls, IHeater* heater, IMotor* m
 
 HardwareControl::~HardwareControl()
 {
+    delete _centipede;
     delete _controls;
     delete _heater;
     delete _motor;
@@ -20,22 +21,20 @@ HardwareControl::~HardwareControl()
 
 void HardwareControl::Initialize()
 {
-    Wire.begin(9600);
-
-    _centipede.initialize();
+    _centipede->Initialize();
 
     for (int i = 0; i < 16; ++i)
     {
-        _centipede.pinMode(i, OUTPUT);
+        _centipede->PinMode(i, OUTPUT);
     }
 
-    _centipede.digitalWrite(OUTPUT_KEYSELECT, HIGH);
-    _centipede.digitalWrite(OUTPUT_GROUP_2, LOW);
-    _centipede.digitalWrite(OUTPUT_GROUP_1, LOW);
-    _centipede.digitalWrite(OUTPUT_STROBE, LOW);
-    _centipede.digitalWrite(OUTPUT_DATA_C, LOW);
-    _centipede.digitalWrite(OUTPUT_DATA_B, LOW);
-    _centipede.digitalWrite(OUTPUT_DATA_A, LOW);
+    _centipede->DigitalWrite(OUTPUT_KEYSELECT, HIGH);
+    _centipede->DigitalWrite(OUTPUT_GROUP_2, LOW);
+    _centipede->DigitalWrite(OUTPUT_GROUP_1, LOW);
+    _centipede->DigitalWrite(OUTPUT_STROBE, LOW);
+    _centipede->DigitalWrite(OUTPUT_DATA_C, LOW);
+    _centipede->DigitalWrite(OUTPUT_DATA_B, LOW);
+    _centipede->DigitalWrite(OUTPUT_DATA_A, LOW);
 
     _controls->Initialize(_centipede);
     _heater->Initialize(_centipede);

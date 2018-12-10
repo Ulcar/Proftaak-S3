@@ -2,8 +2,6 @@ Server/MainServer/Server
 Server/MainServer/main.o
 Server/MainServer/client.o
 Server/MainServer/socket.o
+
 Clients/bin/
 Clients/client
-
-*.elf
-*.hex

@@ -1,9 +1,7 @@
 #ifndef HARDWARECONTROL_H
 #define HARDWARECONTROL_H
 
-#include <Centipede.h>
-#include <Wire.h>
-
+#include "interface/ICentipedeShield.h"
 #include "interface/IControls.h"
 #include "interface/IHeater.h"
 #include "interface/IMotor.h"
@@ -24,7 +22,7 @@
 class HardwareControl
 {
 public:
-    HardwareControl(IControls* controls, IHeater* heater, IMotor* motor, IWater* water);
+    HardwareControl(ICentipedeShield* centipede, IControls* controls, IHeater* heater, IMotor* motor, IWater* water);
     ~HardwareControl();
 
     void Initialize();
@@ -35,7 +33,7 @@ public:
     IWater* GetWater() { return _water; }
 
 private:
-    Centipede _centipede;
+    ICentipedeShield* _centipede;
 
     IControls* _controls;
     IHeater* _heater;

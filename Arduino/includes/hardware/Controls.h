@@ -10,7 +10,7 @@
 class Controls : public IControls
 {
 public:
-    void Initialize(Centipede centipede);
+    void Initialize(ICentipedeShield* centipede);
 
     void SetLock(HardwareState state);
     void SetSoap(HardwareState state, int dispenser);

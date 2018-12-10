@@ -1,17 +1,17 @@
 #include "includes/hardware/Controls.h"
 
-void Controls::Initialize(Centipede centipede)
+void Controls::Initialize(ICentipedeShield* centipede)
 {
     _centipede = centipede;
 
-    _centipede.digitalWrite(OUTPUT_BUZZER, HIGH);
-    _centipede.digitalWrite(OUTPUT_SOAP_1, LOW);
-    _centipede.digitalWrite(OUTPUT_LOCK,   LOW);
+    _centipede->DigitalWrite(OUTPUT_BUZZER, HIGH);
+    _centipede->DigitalWrite(OUTPUT_SOAP_1, LOW);
+    _centipede->DigitalWrite(OUTPUT_LOCK,   LOW);
 }
 
 void Controls::SetLock(HardwareState state)
 {
-    _centipede.digitalWrite(OUTPUT_LOCK, state == STATE_ON);
+    _centipede->DigitalWrite(OUTPUT_LOCK, state == STATE_ON);
 }
 
 void Controls::SetSoap(HardwareState state, int dispenser)
@@ -24,7 +24,7 @@ void Controls::SetSoap(HardwareState state, int dispenser)
     switch (dispenser)
     {
     case 1:
-        _centipede.digitalWrite(OUTPUT_SOAP_1, state == STATE_ON);
+        _centipede->DigitalWrite(OUTPUT_SOAP_1, state == STATE_ON);
         break;
 
     // TODO: Fix this mess
@@ -36,18 +36,18 @@ void Controls::SetSoap(HardwareState state, int dispenser)
             mask |= 0x4;
         }
 
-        _centipede.digitalWrite(1, 0x2 & 0x01);
-        _centipede.digitalWrite(0, (0x2 >> 1) & 0x01);
+        _centipede->DigitalWrite(1, 0x2 & 0x01);
+        _centipede->DigitalWrite(0, (0x2 >> 1) & 0x01);
 
-        _centipede.digitalWrite(10, mask & 0x01);
-        _centipede.digitalWrite(9, (mask >> 1) & 0x01);
-        _centipede.digitalWrite(8, (mask >> 2) & 0x01);
+        _centipede->DigitalWrite(10, mask & 0x01);
+        _centipede->DigitalWrite(9, (mask >> 1) & 0x01);
+        _centipede->DigitalWrite(8, (mask >> 2) & 0x01);
 
-        _centipede.digitalWrite(2, LOW);
+        _centipede->DigitalWrite(2, LOW);
         delay(80);
-        _centipede.digitalWrite(2, HIGH);
+        _centipede->DigitalWrite(2, HIGH);
         delay(10);
-        _centipede.digitalWrite(2, LOW);
+        _centipede->DigitalWrite(2, LOW);
         break;
     }
 }
