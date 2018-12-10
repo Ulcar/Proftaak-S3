@@ -22,13 +22,31 @@ void Algorithm_test::Beat()
         }
 
         //handle message:
-        
-        switch(client->GetType())
+        Type tmp = client->GetType();
+        switch(tmp)
         {
-            case Type::ControlPanel:
+            case Type::ControlPanel:{
+
+                std::vector<std::string> messagevec = Protocol::FromInterface(message);
+
+                switch(static_cast<Code>(stoi(messagevec[0])))
+                {
+                    case CODE_HEATER:
+                        break;
+
+                    default:
+                        break;
+                }
+    
                 break;
-            case Type::Wasmachine:
+            }
+            case Type::Wasmachine:{
                 break;
+            }
+            default:
+            {
+                break;
+            }
         }
     }
 }
