@@ -11,10 +11,10 @@ public:
     WifiClient(String ssid, String ipAddress, int port);
     ~WifiClient();
 
-    bool Connect();
+    bool ConnectToServer();
 
     void SendMessage(String data);
-    String ReadMessage();
+    String ReadMessage(bool shouldBlock = true);
 
     String GetMacAddress();
     bool IsConnected();

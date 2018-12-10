@@ -17,7 +17,7 @@ WifiClient::~WifiClient()
     }
 }
 
-bool WifiClient::Connect()
+bool WifiClient::ConnectToServer()
 {
     if (!this->IsConnected())
     {
@@ -34,10 +34,10 @@ void WifiClient::SendMessage(String data)
         return;
     }
 
-    _client.write(data.c_str());
+    _client.write((CLIENT_CHARACTER_START + data + CLIENT_CHARACTER_END).c_str());
 }
 
-String WifiClient::ReadMessage()
+String WifiClient::ReadMessage(bool shouldBlock = true)
 {
     if (!this->IsConnected())
     {
@@ -46,9 +46,25 @@ String WifiClient::ReadMessage()
 
     String message = "";
 
-    while (_client.available())
+    while (shouldBlock ? true : _client.available())
     {
-        message += (char) _client.read();
+        if (_client.available())
+        {
+            char character = _client.read();
+
+            if (character == SERVER_CHARACTER_START)
+            {
+                message = "";
+            }
+            else if (character == SERVER_CHARACTER_END)
+            {
+                message = "";
+            }
+            else
+            {
+                message += character;
+            }
+        }
     }
 
     return message;

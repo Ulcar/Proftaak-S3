@@ -3,7 +3,7 @@
 
 #include <Centipede.h>
 
-#include "../Enums.h"
+#include "../../Enums.h"
 
 class IControls
 {

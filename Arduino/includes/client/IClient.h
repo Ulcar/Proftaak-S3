@@ -1,13 +1,19 @@
 #ifndef ICLIENT_H
 #define ICLIENT_H
 
+#define SERVER_CHARACTER_START ('#')
+#define SERVER_CHARACTER_END   ('&')
+
+#define CLIENT_CHARACTER_START ('&')
+#define CLIENT_CHARACTER_END   ('#')
+
 class IClient
 {
 public:
-    virtual bool Connect() = 0;
+    virtual bool ConnectToServer() = 0;
 
     virtual void SendMessage(String data) = 0;
-    virtual String ReadMessage() = 0;
+    virtual String ReadMessage(bool shouldBlock = true) = 0;
 
     virtual String GetMacAddress() = 0;
     virtual bool IsConnected() = 0;

@@ -30,12 +30,12 @@ void HardwareControl::Initialize()
     }
 
     _centipede.digitalWrite(OUTPUT_KEYSELECT, HIGH);
-    _centipede.digitalWrite(OUTPUT_GROUP_2,   LOW);
-    _centipede.digitalWrite(OUTPUT_GROUP_1,   LOW);
-    _centipede.digitalWrite(OUTPUT_STROBE,    LOW);
-    _centipede.digitalWrite(OUTPUT_DATA_C,    LOW);
-    _centipede.digitalWrite(OUTPUT_DATA_B,    LOW);
-    _centipede.digitalWrite(OUTPUT_DATA_A,    LOW);
+    _centipede.digitalWrite(OUTPUT_GROUP_2, LOW);
+    _centipede.digitalWrite(OUTPUT_GROUP_1, LOW);
+    _centipede.digitalWrite(OUTPUT_STROBE, LOW);
+    _centipede.digitalWrite(OUTPUT_DATA_C, LOW);
+    _centipede.digitalWrite(OUTPUT_DATA_B, LOW);
+    _centipede.digitalWrite(OUTPUT_DATA_A, LOW);
 
     _controls->Initialize(_centipede);
     _heater->Initialize(_centipede);

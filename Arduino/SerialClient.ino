@@ -10,7 +10,7 @@ SerialClient::~SerialClient()
     // ...
 }
 
-bool SerialClient::Connect()
+bool SerialClient::ConnectToServer()
 {
     return true;
 }
@@ -22,10 +22,10 @@ void SerialClient::SendMessage(String data)
         return;
     }
 
-    Serial.println(data);
+    Serial.println(CLIENT_CHARACTER_START + data + CLIENT_CHARACTER_END);
 }
 
-String SerialClient::ReadMessage()
+String SerialClient::ReadMessage(bool shouldBlock = true)
 {
     if (!this->IsConnected())
     {
@@ -34,9 +34,25 @@ String SerialClient::ReadMessage()
 
     String message = "";
 
-    while (Serial.available())
+    while (shouldBlock ? true : Serial.available())
     {
-        message += (char) Serial.read();
+        if (Serial.available())
+        {
+            char character = Serial.read();
+
+            if (character == SERVER_CHARACTER_START)
+            {
+                message = "";
+            }
+            else if (character == SERVER_CHARACTER_END)
+            {
+                break;
+            }
+            else
+            {
+                message += character;
+            }
+        }
     }
 
     return message;

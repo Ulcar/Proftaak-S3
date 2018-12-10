@@ -1,6 +1,14 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
+enum MachineType
+{
+    MT_WASMACHINE = 0,
+    MT_DROOGMACHINE = 1,
+    MT_CENTRIFUGE = 2,
+    MT_STOOMMACHINE = 3
+};
+
 enum HardwareState
 {
     STATE_ON,
