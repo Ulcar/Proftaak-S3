@@ -83,15 +83,10 @@ void Errorlogger::SaveAsFile()
     dt = asctime(gmtm);
     dt[24] = '\0';
 
+    std::string cmd = "mkdir -p " + basePath;
 
-
-
-std::string cmd = "mkdir -p " + basePath;
-
-system(cmd.c_str());
+    system(cmd.c_str());
    
-
-
     std::string filename = basePath + dt;
 
     std::ofstream errorFile (filename + ".txt");

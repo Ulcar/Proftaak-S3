@@ -128,7 +128,7 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
     Type type;
     try
     {
-        if(typeChar == NULL)
+        if(typeChar == '\0')
         {
             type = Type::ControlPanel;
         }
@@ -195,7 +195,7 @@ void SocketHandler::ConnectClient(int socketFd)
 
             if(message.size() == 2)
             {
-                client = CreateNewClient(NULL, message.at(1));
+                client = CreateNewClient('\0', message.at(1));
             }
             else
             {

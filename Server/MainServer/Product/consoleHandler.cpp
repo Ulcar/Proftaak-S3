@@ -23,7 +23,7 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
                 database->SetQuit(true);
                 return;
             }
-            else if(commandos.at(0) == "errorlogger")
+            else if((commandos.at(0) == "errorlogger") || (commandos.at(0) == "el"))
             {
                 if(commandos.size() == 1)
                 {
@@ -40,6 +40,26 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
                     {
                         Errorlogger::LiveErrorLogging = !Errorlogger::LiveErrorLogging;
                         std::cout << "Live Errorlogging: " << Errorlogger::LiveErrorLogging << "\n";
+                    }
+                }
+            }
+            else if((commandos.at(0) == "debuglogger") || (commandos.at(0) == "dl"))
+            {
+                if(commandos.size() == 1)
+                {
+                    std::cout << "live\n";
+                    std::cout << "save\n";
+                }
+                else
+                {
+                    if(commandos.at(1) == "save")
+                    {
+                        DebugLogger::SaveAsFile();
+                    }
+                    else if(commandos.at(1) == "live")
+                    {
+                        DebugLogger::LiveDebugLogging = !DebugLogger::LiveDebugLogging;
+                        std::cout << "Live Debuglogging: " << DebugLogger::LiveDebugLogging << "\n";
                     }
                 }
             }
