@@ -28,16 +28,16 @@ std::thread consoleThread;
 
 static void Setup()
 {
-    database = new Database();
-    algorithm = new Algorithm_test(database);
-    socketThread = std::thread(SocketHandler::RunSocketHandler, database);
-    consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
-
     Errorlogger::Record("System startup", "main");
     Errorlogger::LiveErrorLogging = true;
 
     DebugLogger::LiveDebugLogging = true;
     DebugLogger::Record("System startup", "main");
+
+    database = new Database();
+    algorithm = new Algorithm_test(database);
+    socketThread = std::thread(SocketHandler::RunSocketHandler, database);
+    consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
 }
 
 static void Loop()
