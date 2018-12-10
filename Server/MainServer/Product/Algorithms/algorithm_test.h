@@ -5,6 +5,7 @@
 #include "database.h"
 #include "consoleHandler.h"
 #include "client.h"
+#include "machine.h"
 
 class Algorithm_test : public iAlgorithm
 {
