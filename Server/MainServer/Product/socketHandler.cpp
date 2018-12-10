@@ -125,15 +125,21 @@ void SocketHandler::Setup(int *socketFd)
 
 Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
 {
-    //nog op letten bij unreeele waardes
     Type type;
-    if(typeChar == 'x')
+    try
     {
-        type = Type::ControlPanel;
+        if(typeChar == NULL)
+        {
+            type = Type::ControlPanel;
+        }
+        else
+        {
+            type = Type(typeChar);
+        }
     }
-    else
+    catch(...)
     {
-        type = Type(typeChar);
+        return nullptr;
     }
 
     std::vector<Client*> tempClients = database->GetClients();
@@ -189,7 +195,7 @@ void SocketHandler::ConnectClient(int socketFd)
 
             if(message.size() == 2)
             {
-                client = CreateNewClient('x', message.at(1));
+                client = CreateNewClient(NULL, message.at(1));
             }
             else
             {
