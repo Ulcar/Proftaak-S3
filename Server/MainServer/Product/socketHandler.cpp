@@ -134,7 +134,7 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
         }
         else
         {
-            type = Type(typeChar);
+            type = Type((int)typeChar);
         }
     }
     catch(...)

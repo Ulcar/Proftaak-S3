@@ -22,16 +22,15 @@ void Algorithm_test::Beat()
         }
 
         //handle message:
-        Type tmp = client->GetType();
-        switch(tmp)
+        switch(client->GetType())
         {
-            case Type::ControlPanel:{
-
+            case Type::ControlPanel:
+            {
                 std::vector<std::string> messagevec = Protocol::FromInterface(message);
 
-                switch(static_cast<Code>(stoi(messagevec[0])))
+                switch(static_cast<CP_Code>(stoi(messagevec[0])))
                 {
-                    case CODE_HEATER:
+                    case CP_CODE_CONSOLE:
                         break;
 
                     default:
@@ -40,7 +39,24 @@ void Algorithm_test::Beat()
     
                 break;
             }
-            case Type::Wasmachine:{
+            case Type::Wasmachine:
+            {
+                std::vector<std::string> messagevec = Protocol::FromClient(message);
+
+                switch(static_cast<CP_Code>(stoi(messagevec[0])))
+                {
+                    case M_CODE_HEATER:
+                        break;
+
+                    case M_CODE_WATER:
+                        break;
+
+                    case M_CODE_DONE:
+                        break;
+
+                    default:
+                        break;
+                }
                 break;
             }
             default:
