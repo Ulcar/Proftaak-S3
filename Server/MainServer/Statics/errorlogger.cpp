@@ -48,23 +48,26 @@ void Errorlogger::Record(std::string errorMessage, std::string source)
 /// <summary>
 /// Displays the last 20 lines of the current Errorlog
 /// </summary>
-void Errorlogger::Display()
+std::string Errorlogger::Display()
 {
+    std::string message;
     if (ErrorLog.size() <= 20)
     {
         for(ErrorLogstruct error : ErrorLog)
         {
-            std::cout << "[" << error.time << "] Source: " << error.source << " -- " << error.message << "\n";
+            message += "[" + error.time + "] Source: " + error.source + " -- " + error.message + "\n";
         }
-        return;
+        return message;
     }
 
-    std::cout << "[...] skipped " << (ErrorLog.size() - 20) << "lines\n";
+    message += "[...] skipped " + (ErrorLog.size() - 20);
+    message += "lines\n";
     for (int i = ErrorLog.size() - 20; i < 20; i++)
     {
         ErrorLogstruct error = ErrorLog[i];
-        std::cout << "[" << error.time << "] Source: " << error.source << " -- " << error.message << "\n";
+        message += "[" + error.time + "] Source: " + error.source + " -- " + error.message + "\n";
     }
+    return message;
 }
 
 /// <summary>

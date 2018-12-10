@@ -43,7 +43,7 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
                     }
                     else if(commandos.at(1) == "display")
                     {
-                        Errorlogger::Display();
+                        std::cout << Errorlogger::Display();
                     }
                 }
             }
@@ -67,7 +67,7 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
                     }
                     else if(commandos.at(1) == "display")
                     {
-                        DebugLogger::Display();
+                        std::cout << DebugLogger::Display();
                     }
                 }
             }

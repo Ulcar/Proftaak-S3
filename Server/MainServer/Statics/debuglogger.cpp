@@ -48,23 +48,26 @@ void DebugLogger::Record(std::string errorMessage, std::string source)
 /// <summary>
 /// Displays the last 20 lines of the current DebugLog
 /// </summary>
-void DebugLogger::Display()
+std::string DebugLogger::Display()
 {
+    std::string message;
     if (DebugLog.size() <= 20)
     {
-        for(DebugLogstruct error : DebugLog)
+        for(DebugLogstruct debug : DebugLog)
         {
-            std::cout << "[" << error.time << "] Source: " << error.source << " -- " << error.message << "\n";
+            message += "[" + debug.time + "] Source: " + debug.source + " -- " + debug.message + "\n";
         }
-        return;
+        return message;
     }
 
-    std::cout << "[...] skipped " << (DebugLog.size() - 20) << "lines\n";
+    message += "[...] skipped " + (DebugLog.size() - 20);
+    message += "lines\n";
     for (int i = DebugLog.size() - 20; i < 20; i++)
     {
-        DebugLogstruct error = DebugLog[i];
-        std::cout << "[" << error.time << "] Source: " << error.source << " -- " << error.message << "\n";
+        DebugLogstruct debug = DebugLog[i];
+        message += "[" + debug.time + "] Source: " + debug.source + " -- " + debug.message + "\n";
     }
+    return message;
 }
 
 /// <summary>

@@ -16,7 +16,7 @@ class DebugLogger
 
         static bool LiveDebugLogging;
         static void Record(std::string errorMessage, std::string source);
-        static void Display();
+        static std::string Display();
         static void SaveAsFile();
 
     private:
