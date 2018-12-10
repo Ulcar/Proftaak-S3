@@ -31,7 +31,7 @@ void Client::SetSocket(Socket* tempSocket)
 {
     if(socket != nullptr)
     {
-        delete tempSocket;
+        delete socket;
     }
     socket = tempSocket;
 }

@@ -15,7 +15,12 @@ void Algorithm_test::Beat()
     std::vector<Client*> tempClients = database->GetClients();
     for(Client* client : tempClients)
     {
-        std::string message = client->GetSocket()->ReadLastMessage();
+        Socket* tmpSock = client->GetSocket();
+        if(tmpSock == nullptr)
+        {
+            continue;
+        }
+        std::string message = tmpSock->ReadLastMessage();
         if(message.empty())
         {
             return;

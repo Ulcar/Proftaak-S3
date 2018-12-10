@@ -54,6 +54,9 @@ static void ShutDown()
 
     Errorlogger::Record("System shutdown", "main");
     DebugLogger::Record("System shutdown", "main");
+    
+    Errorlogger::SaveAsFile();
+    DebugLogger::SaveAsFile();
 }
 
 //------------------------------------------------------------------------------//

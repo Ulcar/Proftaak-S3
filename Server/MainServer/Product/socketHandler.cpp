@@ -186,6 +186,10 @@ void SocketHandler::ConnectClient(int socketFd)
     }
 
     std::vector<std::string> message = Protocol::FromMachine(socket->ReadLastMessage());
+    for(std::string ff : message)
+    {
+        std::cout << ff << "\n";
+    }
     
     if((message.size() == 2) || (message.size() == 3))
     {
@@ -221,11 +225,12 @@ void SocketHandler::ConnectClient(int socketFd)
             return;
         }
 
-        else
+       
+    }  
+     else
         {
             std::cout << "THis is not a machine";
-        }
-    }    
+        }  
 }
 
 bool SocketHandler::ReadClient(Socket* socket)

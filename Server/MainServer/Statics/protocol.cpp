@@ -40,10 +40,13 @@ std::string Protocol::MakeString(int code, std::vector<std::string> value, char 
 
 std::vector<std::string> Protocol::SplitString(std::string text, char splitChar, char startChar, char endChar)
 {
-    if ((text.substr(0,1).at(0) == startChar) && (text.substr(text.length()-1 , 1).at(0) == endChar))
+    if(text.size() > 0)
     {
-        text = text.substr(1, text.length() -2 );
-        return SplitString(text, splitChar);
+        if ((text.substr(0,1).at(0) == startChar) && (text.substr(text.length()-1 , 1).at(0) == endChar))
+        {
+            text = text.substr(1, text.length() -2 );
+            return SplitString(text, splitChar);
+        }
     }
     std::vector<std::string> fu;
     return fu;
