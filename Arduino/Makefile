@@ -7,7 +7,7 @@ TEST_HEADERS=$(wildcard includes/*.h) \
 TEST_TARGET=client_test
 
 LFLAGS=-lgtest -lgmock -lgmock_main -lpthread
-CFLAGS=-std=c++11 -Wall -Werror -g -O0 -Iincludes -I./
+CFLAGS=-std=c++11 -Wall -Werror -g -O0 -I./
 CC=g++
 
 .PHONY: clean

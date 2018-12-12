@@ -10,6 +10,9 @@
 class Controls : public IControls
 {
 public:
+    Controls();
+    ~Controls();
+
     void Initialize(ICentipedeShield* centipede);
 
     void SetLock(HardwareState state);

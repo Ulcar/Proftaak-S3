@@ -10,6 +10,9 @@
 class Motor : public IMotor
 {
 public:
+    Motor();
+    ~Motor();
+
     void Initialize(ICentipedeShield* centipede);
 
     void SetDirection(MotorDirection direction);

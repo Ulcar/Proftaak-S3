@@ -1,5 +1,15 @@
 #include "includes/hardware/Water.h"
 
+Water::Water()
+{
+    // ...
+}
+
+Water::~Water()
+{
+    // ...
+}
+
 void Water::Initialize(ICentipedeShield* centipede)
 {
     _centipede = centipede;

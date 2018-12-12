@@ -1,5 +1,15 @@
 #include "includes/hardware/Motor.h"
 
+Motor::Motor()
+{
+    // ...
+}
+
+Motor::~Motor()
+{
+    // ...
+}
+
 void Motor::Initialize(ICentipedeShield* centipede)
 {
     _centipede = centipede;

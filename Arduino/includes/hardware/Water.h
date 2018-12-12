@@ -13,6 +13,9 @@
 class Water : public IWater
 {
 public:
+    Water();
+    ~Water();
+
     void Initialize(ICentipedeShield* centipede);
 
     WaterLevel GetLevel();

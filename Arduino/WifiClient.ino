@@ -34,7 +34,7 @@ void WifiClient::SendMessage(String data)
         return;
     }
 
-    _client.write((CLIENT_CHARACTER_START + data + CLIENT_CHARACTER_END).c_str());
+    _client.write((SEND_CHARACTER_START + data + SEND_CHARACTER_END).c_str());
 }
 
 String WifiClient::ReadMessage(bool shouldBlock = true)
@@ -52,11 +52,11 @@ String WifiClient::ReadMessage(bool shouldBlock = true)
         {
             char character = _client.read();
 
-            if (character == SERVER_CHARACTER_START)
+            if (character == RECEIVE_CHARACTER_START)
             {
                 message = "";
             }
-            else if (character == SERVER_CHARACTER_END)
+            else if (character == RECEIVE_CHARACTER_END)
             {
                 message = "";
             }

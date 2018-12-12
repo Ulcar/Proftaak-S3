@@ -1,11 +1,11 @@
 #ifndef ICLIENT_H
 #define ICLIENT_H
 
-#define SERVER_CHARACTER_START ('#')
-#define SERVER_CHARACTER_END   ('&')
+#define RECEIVE_CHARACTER_START ('#')
+#define RECEIVE_CHARACTER_END   ('&')
 
-#define CLIENT_CHARACTER_START ('&')
-#define CLIENT_CHARACTER_END   ('#')
+#define SEND_CHARACTER_START    ('&')
+#define SEND_CHARACTER_END      ('#')
 
 class IClient
 {

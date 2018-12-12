@@ -1,5 +1,15 @@
 #include "includes/hardware/Heater.h"
 
+Heater::Heater()
+{
+    // ...
+}
+
+Heater::~Heater()
+{
+    // ...
+}
+
 void Heater::Initialize(ICentipedeShield* centipede)
 {
     _centipede = centipede;

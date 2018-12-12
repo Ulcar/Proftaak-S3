@@ -1,5 +1,15 @@
 #include "includes/hardware/Controls.h"
 
+Controls::Controls()
+{
+    // ...
+}
+
+Controls::~Controls()
+{
+    // ...
+}
+
 void Controls::Initialize(ICentipedeShield* centipede)
 {
     _centipede = centipede;

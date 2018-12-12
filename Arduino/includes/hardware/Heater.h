@@ -11,6 +11,9 @@
 class Heater : public IHeater
 {
 public:
+    Heater();
+    ~Heater();
+
     void Initialize(ICentipedeShield* centipede);
 
     void Set(HardwareState state);
