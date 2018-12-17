@@ -64,7 +64,14 @@ void Algorithm_test::Beat()
                     break;
 
                     case CP_CODE_TOTALPOWER:
-                    client->Send(CP_CODE_TOTALWATER, std::to_string(database->AskCurrentPower()));
+                    client->Send(CP_CODE_TOTALPOWER, std::to_string(database->AskCurrentPower()));
+                    break;
+
+                    case CP_CODE_DISABLEALLCLIENTS:
+                    break;
+
+                    case CP_CODE_SETCLIENT:
+                    // we need a disable client protocol message lole
                     break;
 
                     
@@ -76,6 +83,7 @@ void Algorithm_test::Beat()
                {
                    Errorlogger::Record("start of message doesn't contain an int, or is out of range of the enum", "machine");
                }
+               break;
             }
             case Type::Wasmachine:
             {
@@ -86,6 +94,7 @@ void Algorithm_test::Beat()
                 {
                     //todo: add power and water checks to responses
                     case M_CODE_HEATER:
+                    
                     machine->Send(M_CODE_HEATER, 0);
                         break;
 

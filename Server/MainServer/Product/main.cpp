@@ -26,7 +26,7 @@ std::thread socketThread;
 std::thread consoleThread;
 
 
-static void Setup()
+void Setup()
 {
     Errorlogger::Record("System startup", "main");
     Errorlogger::LiveErrorLogging = true;
@@ -40,12 +40,12 @@ static void Setup()
     consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
 }
 
-static void Loop()
+void Loop()
 {
     algorithm->Beat();
 }
 
-static void ShutDown()
+void ShutDown()
 {    
     consoleThread.detach();
     socketThread.detach();

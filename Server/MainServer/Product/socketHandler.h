@@ -27,7 +27,7 @@ class SocketHandler
         static Database* database;
 
         static void Setup(int *socketFd);
-        static Client* CreateNewClient(int typeInt, std::string macAdress);
+        static Client* CreateNewClient(char typeChar, std::string macAdress);
         static void ConnectClient(int socketFd);
         static bool ReadClient(Socket* socket);
 };

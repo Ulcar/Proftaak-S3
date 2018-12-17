@@ -21,16 +21,11 @@ bool Socket::Read()
     if (nrBytesSend > 0)
     {
         buffer[nrBytesSend] = '\0';
-        std::string fu = "Received from " + this->getSocketFd();
-        fu += " a new message: ";
-        fu += buffer;
-        DebugLogger::Record(fu, "socket");
+        DebugLogger::Record("Received from " + std::to_string(this->getSocketFd()) + " a new message: " + buffer, "socket");
     }
     else if(nrBytesSend == 0)
     {
-        std::string fu = "Socket " + this->getSocketFd();
-        fu += " is shutdown. Disconnected";
-        DebugLogger::Record(fu, "socket");
+        DebugLogger::Record("Socket " + std::to_string(this->getSocketFd()) + " is shutdown. Disconnected", "socket");
         return false;
     }
 
@@ -48,12 +43,9 @@ void Socket::Send(std::string text)
     size_t nrBytesRec = send(socketFd, text.c_str(), text.length(), 0);
     if (nrBytesRec != text.length())
     {
-        std::string fu = "Socket " + this->getSocketFd();
-        fu += " has not send everything (" + nrBytesRec;
-        fu += "/" + text.length();
-        fu += ")";
-        DebugLogger::Record(fu, "socket");
+        DebugLogger::Record("Socket " + std::to_string(this->getSocketFd()) + " has not send everything (" + std::to_string(nrBytesRec) + "/" + std::to_string(text.length()) + ")", "socket");
     }
+    DebugLogger::Record("Socket: " + std::to_string(this->getSocketFd()) + " Send message: " + text, "socket");
 }
 
 void Socket::TrySend()
@@ -61,7 +53,6 @@ void Socket::TrySend()
     if(!waitingForClient && bufferOut.size() != 0)
     {
         Send(GetMessageToSend());
-        waitingForClient = true;
     }
 }
 
@@ -92,6 +83,7 @@ void Socket::NewSendMessage(std::string message)
 {
     std::unique_lock<std::mutex> lock (mtxBufferIn);
     bufferOut.push_back(message);
+    DebugLogger::Record("Socket: " + std::to_string(this->getSocketFd()) + " Added message to buffer: " + message, "Socket");
 }
 
 std::string Socket::GetMessageToSend()

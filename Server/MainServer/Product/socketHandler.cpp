@@ -126,20 +126,23 @@ void SocketHandler::Setup(int *socketFd)
 Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
 {
     Type type;
-    try
+
+    if(typeChar == '\0')
     {
-        if(typeChar == '\0')
+        type = Type::ControlPanel;
+    }
+    else
+    {
+        int typeInt = typeChar - '0';
+        if((typeInt >= 0) && (typeInt <= 4))
         {
-            type = Type::ControlPanel;
+            type = Type(typeInt);
         }
         else
         {
-            type = Type((int)typeChar);
+            Errorlogger::Record("Not a valid type: " + std::to_string(typeChar), "SocketHandler - CreateSocket");
+            return nullptr;
         }
-    }
-    catch(...)
-    {
-        return nullptr;
     }
 
     std::vector<Client*> tempClients = database->GetClients();
@@ -196,15 +199,17 @@ void SocketHandler::ConnectClient(int socketFd)
         if(message.at(0) == "0")
         {
             Client* client;
-            std::vector<std::string> temp = {0 + ""};
+            std::vector<std::string> temp = {std::to_string(0)};
 
             if(message.size() == 2)
             {
+                //ControlPanel
                 client = CreateNewClient('\0', message.at(1));
                 socket->NewSendMessage(Protocol::ToControlPanel(CP_CODE_CONNECT, temp));
             }
             else
             {
+                //client
                 client = CreateNewClient(message.at(1).at(0), message.at(2));
                 socket->NewSendMessage(Protocol::ToMachine(M_CODE_CONNECT, 0));
             }
@@ -219,9 +224,7 @@ void SocketHandler::ConnectClient(int socketFd)
             client->SetSocket(socket);
             database->AddClient(client);
 
-            std::string fu = "Added Client with type: " + client->GetType();
-            fu += "with id: " + client->GetMacAdress();
-            DebugLogger::Record(fu, "socketHandler");
+            DebugLogger::Record("Added Client with type: " + std::to_string(client->GetType()) + "with id: " + client->GetMacAdress(), "socketHandler");
             return;
         }
 

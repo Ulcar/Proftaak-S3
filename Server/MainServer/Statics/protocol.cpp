@@ -2,7 +2,7 @@
 
 std::string Protocol::ToMachine(M_Code code, int value)
 {
-    std::vector<std::string> temp = {value + ""};
+    std::vector<std::string> temp = {std::to_string(value)};
     std::string messageToMachine = MakeString(code, temp, startCharToMachine, endCharToMachine);
     return messageToMachine;
 }
@@ -26,13 +26,11 @@ std::vector<std::string> Protocol::FromControlPanel(std::string message)
 std::string Protocol::MakeString(int code, std::vector<std::string> value, char startChar, char endChar)
 {
     std::string newString;
-    newString = startChar;
-    newString += code;
+    newString = startChar + std::to_string(code);
 
     for(std::string mess : value)
     {
-        newString += seperatorChar;
-        newString += mess;
+        newString = newString + seperatorChar + mess;
     }
     newString += endChar;
     return newString;
