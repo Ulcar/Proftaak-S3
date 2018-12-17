@@ -26,7 +26,7 @@ void Controls::SetLock(HardwareState state)
 
 void Controls::SetSoap(HardwareState state, int dispenser)
 {
-    if (dispenser < 0 || dispenser > 2)
+    if (dispenser < 1 || dispenser > 2)
     {
         return;
     }
