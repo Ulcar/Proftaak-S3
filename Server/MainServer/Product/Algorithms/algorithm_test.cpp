@@ -33,6 +33,7 @@ void Algorithm_test::Beat()
             {
                 std::vector<std::string> messagevec = Protocol::FromControlPanel(message);
 
+               try{
                 switch(static_cast<CP_Code>(stoi(messagevec[0])))
                 {
                     case CP_CODE_CONSOLE:
@@ -70,19 +71,26 @@ void Algorithm_test::Beat()
                     default:
                         break;
                 }
-    
-                break;
+               }
+               catch(const std::bad_cast& e)
+               {
+                   Errorlogger::Record("start of message doesn't contain an int, or is out of range of the enum", "machine");
+               }
             }
             case Type::Wasmachine:
             {
                 std::vector<std::string> messagevec = Protocol::FromMachine(message);
+                Machine * machine = dynamic_cast<Machine*>(client);
 
                 switch(static_cast<M_Code>(stoi(messagevec[0])))
                 {
+                    //todo: add power and water checks to responses
                     case M_CODE_HEATER:
+                    machine->Send(M_CODE_HEATER, 0);
                         break;
 
                     case M_CODE_WATER:
+                    machine->Send(M_CODE_WATER, 0);
                         break;
 
                     case M_CODE_DONE:
