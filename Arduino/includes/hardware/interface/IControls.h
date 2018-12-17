@@ -7,8 +7,6 @@
 class IControls
 {
 public:
-    virtual ~IControls() = 0;
-
     virtual void Initialize(ICentipedeShield* centipede) = 0;
 
     virtual void SetLock(HardwareState state) = 0;

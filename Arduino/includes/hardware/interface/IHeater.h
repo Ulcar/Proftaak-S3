@@ -7,8 +7,6 @@
 class IHeater
 {
 public:
-    virtual ~IHeater() = 0;
-
     virtual void Initialize(ICentipedeShield* centipede) = 0;
 
     virtual void Set(HardwareState state) = 0;
