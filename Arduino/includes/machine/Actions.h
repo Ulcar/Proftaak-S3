@@ -31,4 +31,26 @@ private:
     int _level;
 };
 
+class MotorRotateLeft : public IAction
+{
+public:
+    MotorRotateLeft();
+
+    void Handle(HardwareControl& control);
+
+private:
+
+};
+
+class MotorRotateRight : public IAction
+{
+public:
+    MotorRotateRight();
+
+    void Handle(HardwareControl& control);
+
+private:
+
+};
+
 #endif
