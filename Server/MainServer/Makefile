@@ -1,22 +1,33 @@
-CXXFLAGS_NORMAL=-Wall -Werror -pedantic -ggdb -O0 -std=c++11 -Iproduct -pthread
+PRODUCT= Server
+
+CPPFLAGS=-IEnums -IInterfaces -IProduct -IStatics -IProduct/Machines -IProduct/Algorithms
+CXXFLAGS=-Wall -Werror -Wextra -pedantic -ggdb -O0 -std=c++11 -pthread $(CPPFLAGS)
+
+SOURCES=$(wildcard Product/*.cpp) \
+        $(wildcard Product/Machines/*.cpp) \
+        $(wildcard Product/Algorithms/*.cpp) \
+        $(wildcard Interfaces/*.cpp) \
+        $(wildcard Enums/*.cpp) \
+        $(wildcard Statics/*.cpp)
+
+HEADERS=$(wildcard Product/*.h) \
+        $(wildcard Product/Machines/*.h) \
+        $(wildcard Product/Algorithms/*.cpp) \
+        $(wildcard Interfaces/*.h) \
+        $(wildcard Enums/*.h) \
+        $(wildcard Statics/*.h)
+
 CXX=g++
 
-.phony: all clean
+.PHONY: all clean test
 
-all: Socket Client Protocol Main
+all: $(PRODUCT)
+
+$(PRODUCT): $(SOURCES) $(HEADERS)
+	@$(CXX) $(CXXFLAGS) $(SOURCES) -o $(PRODUCT)
 
 clean:
-	@rm -rf Server *.o
+	@rm -rf $(PRODUCT) *.o
 
-Socket: socket.cpp
-	@$(CXX) -c -g $(CXXFLAGS_NORMAL) socket.cpp
-
-Client: client.cpp
-	@$(CXX) -c -g $(CXXFLAGS_NORMAL) client.cpp
-
-Protocol: protocol.cpp
-	@$(CXX) -c -g $(CXXFLAGS_NORMAL) protocol.cpp
-
-Main: main.cpp
-	@$(CXX) -c -g $(CXXFLAGS_NORMAL) main.cpp 
-	@$(CXX) $(CXXFLAGS_NORMAL)  main.o socket.o client.o protocol.o -o Server
+test: $(PRODUCT)
+	@./$(PRODUCT)
