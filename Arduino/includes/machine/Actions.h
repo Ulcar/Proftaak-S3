@@ -31,26 +31,16 @@ private:
     int _level;
 };
 
-class MotorRotateLeft : public IAction
+class MotorRotate : public IAction
 {
 public:
-    MotorRotateLeft();
+    MotorRotate(MotorDirection direction, MotorSpeed speed);
 
     void Handle(HardwareControl& control);
-
+    bool IsDone();
 private:
-
-};
-
-class MotorRotateRight : public IAction
-{
-public:
-    MotorRotateRight();
-
-    void Handle(HardwareControl& control);
-
-private:
-
+    MotorDirection direction;
+    MotorSpeed speed;
 };
 
 #endif

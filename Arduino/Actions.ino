@@ -31,31 +31,23 @@ void FillWaterAction::Handle(HardwareControl& control)
 }
 
 
-MotorRotateLeft::MotorRotateLeft()
+void MotorRotate::Handle()
 {
-    //TODO
-    
+    IMotor* motor = _control.GetMotor();
+
+    motor->SetDirection(direction);
+    motor->SetSpeed(speed);
+
+    Serial.println("Rotating: " + String(direction) + " with speed: " + String(speed));
 }
 
-void MotorRotateLeft::Handle(HardwareControl& control)
+bool MotorRotate::IsDone()
 {
-    IMotor* motor = control.GetMotor();
-    motor->SetDirection(MotorDirection::MD_LEFT);
-
-    Serial.println("Start rotating left!");
+    return true;
 }
 
-
-MotorRotateRight::MotorRotateRight()
+MotorRotate::MotorRotate(MotorDirection direction, MotorSpeed speed)
 {
-    //TODO
-    
-}
-
-void MotorRotateRight::Handle(HardwareControl& control)
-{
-    IMotor* motor = control.GetMotor();
-    motor->SetDirection(MotorDirection::MD_RIGHT);
-
-    Serial.println("Start rotating right!");
+    this->direction = direction;
+    this->speed = speed;
 }
