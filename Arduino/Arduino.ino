@@ -5,8 +5,8 @@
 #include "includes/hardware/Motor.h"
 #include "includes/hardware/Water.h"
 
-// #include "includes/client/WifiClient.h"
 #include "includes/client/SerialClient.h"
+#include "includes/client/Protocol.h"
 
 #include "includes/machine/Machine.h"
 #include "includes/machine/Actions.h"
@@ -14,7 +14,6 @@
 #include "includes/Enums.h"
 
 HardwareControl* hardwareControl;
-/* WifiClient* client; */
 SerialClient* client;
 
 void setup()
@@ -24,35 +23,32 @@ void setup()
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    // client = new WifiClient("12connect", "192.168.200.73", 1337);
+    // client = new WifiClient("12connect", "192.168.200.73", Protocol::GetPort());
     client = new SerialClient();
 
     Serial.println("Connected to the Wi-Fi network.");
-    Serial.println("Connecting to the server...");
 
-    if (!client->ConnectToServer())
+    while (!client->IsConnectedToServer())
     {
-        Serial.println("Could not connect to the server. Aborting.");
+        Serial.println("Connecting to the server...");
 
-        while (true);
-    }
+        if (!client->ConnectToServer(MT_WASMACHINE))
+        {
+            Serial.println("Could not connect to the server.");
+        }
 
-    // Send the 'connect' message to the server.
-    client->SendMessage("CONNECT;" + String(MT_WASMACHINE) + ";" + String(client->GetMacAddress()));
+        if (!client->IsConnectedToServer())
+        {
+            delay(1000);
 
-    // Wait for the 'accept' response of the previous message.
-    if (client->ReadMessage() != "1")
-    {
-        Serial.println("Server denied access. Aborting.");
-
-        while (true);
+            Serial.println("Retrying connection...");
+        }
     }
 
     Serial.println("Connected to the server.");
 
     // Initialize the hardware control.
     hardwareControl = new HardwareControl(new CentipedeShield(), new Controls(), new Heater(), new Motor(), new Water());
-    hardwareControl->Initialize();
 
     Machine machine(*hardwareControl, client);
 
@@ -61,7 +57,6 @@ void setup()
     actions.push_back(new HeatAction(2));
 
     machine.NewProgram(0, actions);
-
     machine.StartProgram(0);
 }
 

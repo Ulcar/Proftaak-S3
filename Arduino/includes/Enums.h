@@ -9,6 +9,16 @@ enum MachineType
     MT_STOOMMACHINE = 3
 };
 
+enum Message
+{
+    M_CONNECT = 0,
+    M_MAY_TAKE_WATER = 1,
+    M_STOP_TAKE_WATER = 2,
+    M_MAY_HEAT_UP = 3,
+    M_STOP_HEAT_UP = 4,
+    M_PROGRAM_DONE = 5
+};
+
 enum HardwareState
 {
     STATE_ON,

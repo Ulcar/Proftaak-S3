@@ -1,6 +1,7 @@
 #include "includes/client/SerialClient.h"
 
 SerialClient::SerialClient()
+    : _isConnectedToServer(false)
 {
     // ...
 }
@@ -10,28 +11,39 @@ SerialClient::~SerialClient()
     // ...
 }
 
-bool SerialClient::ConnectToServer()
+bool SerialClient::ConnectToServer(MachineType type)
 {
-    return true;
-}
+    // Identify ourselves to the remote server as a washing machine.
+    String parameters[] = { String(type), this->GetMacAddress() };
+    client->SendMessage(M_CONNECT, parameters, 2);
 
-void SerialClient::SendMessage(String data)
-{
-    if (!this->IsConnected())
+    // Wait for the 'accept' response of the previous message.
+    Vector<String>* response = this->ReadMessage(true);
+
+    if (response[0] == String(M_CONNECT) && response[1] == "0")
     {
-        return;
+        _isConnectedToServer = true;
+
+        return true;
     }
 
-    Serial.println(SEND_CHARACTER_START + data + SEND_CHARACTER_END);
+    return false;
 }
 
-String SerialClient::ReadMessage(bool shouldBlock = true)
+void SerialClient::SendMessage(Message code, String* parameters, int parameterCount)
 {
-    if (!this->IsConnected())
+    Vector<String> parametersVector;
+
+    for (int i = 0; i < parameterCount; ++i)
     {
-        return;
+        parametersVector.push_back(parameters[i]);
     }
 
+    Serial.println(Protocol::ToServer(code, parametersVector));
+}
+
+Vector<String>* SerialClient::ReadMessage(bool shouldBlock = false)
+{
     String message = "";
 
     while (shouldBlock ? true : Serial.available())
@@ -40,11 +52,11 @@ String SerialClient::ReadMessage(bool shouldBlock = true)
         {
             char character = Serial.read();
 
-            if (character == RECEIVE_CHARACTER_START)
+            if (character == RECEIVE_START_CHARACTER)
             {
                 message = "";
             }
-            else if (character == RECEIVE_CHARACTER_END)
+            else if (character == RECEIVE_END_CHARACTER)
             {
                 break;
             }
@@ -55,15 +67,10 @@ String SerialClient::ReadMessage(bool shouldBlock = true)
         }
     }
 
-    return message;
+    return Protocol::FromServer(message);
 }
 
 String SerialClient::GetMacAddress()
 {
     return "AABBCCDDEEFF";
-}
-
-bool SerialClient::IsConnected()
-{
-    return true;
 }

@@ -31,4 +31,17 @@ private:
     int _level;
 };
 
+class MotorRotate : public IAction
+{
+public:
+    MotorRotate(MotorDirection direction, MotorSpeed speed);
+
+    void Handle();
+    bool IsDone();
+private:
+    HardwareControl& _control;
+    MotorDirection direction;
+    MotorSpeed speed;
+};
+
 #endif

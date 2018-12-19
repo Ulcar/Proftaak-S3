@@ -25,8 +25,6 @@ public:
     HardwareControl(ICentipedeShield* centipede, IControls* controls, IHeater* heater, IMotor* motor, IWater* water);
     ~HardwareControl();
 
-    void Initialize();
-
     IControls* GetControls() { return _controls; }
     IHeater* GetHeater() { return _heater; }
     IMotor* GetMotor() { return _motor; }

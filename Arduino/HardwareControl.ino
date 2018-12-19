@@ -7,20 +7,6 @@ HardwareControl::HardwareControl(ICentipedeShield* centipede, IControls* control
     , _motor(motor)
     , _water(water)
 {
-    // ...
-}
-
-HardwareControl::~HardwareControl()
-{
-    delete _centipede;
-    delete _controls;
-    delete _heater;
-    delete _motor;
-    delete _water;
-}
-
-void HardwareControl::Initialize()
-{
     _centipede->Initialize();
 
     for (int i = 0; i < 16; ++i)
@@ -40,4 +26,13 @@ void HardwareControl::Initialize()
     _heater->Initialize(_centipede);
     _motor->Initialize(_centipede);
     _water->Initialize(_centipede);
+}
+
+HardwareControl::~HardwareControl()
+{
+    delete _centipede;
+    delete _controls;
+    delete _heater;
+    delete _motor;
+    delete _water;
 }
