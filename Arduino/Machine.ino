@@ -19,7 +19,7 @@ void Machine::StartProgram(int number)
         }
     }
 
-    _client->SendMessage("Couldn't find program.\n");
+    //_client->SendMessage("Couldn't find program.\n");
 }
 
 void Machine::NewProgram(int number, Vector<IAction*>& actions)

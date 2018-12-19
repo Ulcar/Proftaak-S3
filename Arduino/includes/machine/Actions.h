@@ -36,9 +36,10 @@ class MotorRotate : public IAction
 public:
     MotorRotate(MotorDirection direction, MotorSpeed speed);
 
-    void Handle(HardwareControl& control);
+    void Handle();
     bool IsDone();
 private:
+    HardwareControl& _control;
     MotorDirection direction;
     MotorSpeed speed;
 };

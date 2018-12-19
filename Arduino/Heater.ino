@@ -14,6 +14,8 @@ void Heater::Initialize(ICentipedeShield* centipede)
 {
     _centipede = centipede;
 
+    // Due to the way the Centipede shield works, we have to set the HEATER pin
+    // to 'HIGH' in order to turn it off. And 'LOW' to turn it on.
     _centipede->DigitalWrite(OUTPUT_HEATER, HIGH);
 }
 
