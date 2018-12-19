@@ -1,6 +1,7 @@
 #include "includes/client/SerialClient.h"
 
 SerialClient::SerialClient()
+    : _isConnectedToServer(false)
 {
     // ...
 }
@@ -17,7 +18,7 @@ bool SerialClient::ConnectToServer(MachineType type)
     client->SendMessage(M_CONNECT, parameters, 2);
 
     // Wait for the 'accept' response of the previous message.
-    Vector<String>& response = this->ReadMessage(true);
+    Vector<String>* response = this->ReadMessage(true);
 
     if (response[0] == String(M_CONNECT) && response[1] == "0")
     {
@@ -31,11 +32,6 @@ bool SerialClient::ConnectToServer(MachineType type)
 
 void SerialClient::SendMessage(Message code, String* parameters, int parameterCount)
 {
-    if (!this->IsConnectedToServer())
-    {
-        return;
-    }
-
     Vector<String> parametersVector;
 
     for (int i = 0; i < parameterCount; ++i)
@@ -46,13 +42,8 @@ void SerialClient::SendMessage(Message code, String* parameters, int parameterCo
     Serial.println(Protocol::ToServer(code, parametersVector));
 }
 
-Vector<String>& SerialClient::ReadMessage(bool shouldBlock = false)
+Vector<String>* SerialClient::ReadMessage(bool shouldBlock = false)
 {
-    if (!this->IsConnectedToServer())
-    {
-        return;
-    }
-
     String message = "";
 
     while (shouldBlock ? true : Serial.available())

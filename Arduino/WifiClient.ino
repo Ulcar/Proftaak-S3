@@ -61,7 +61,7 @@ void WifiClient::SendMessage(Message code, String* parameters, int parameterCoun
     _client.write(Protocol::ToServer(code, parametersVector).c_str());
 }
 
-Vector<String>& WifiClient::ReadMessage(bool shouldBlock = false)
+Vector<String>* WifiClient::ReadMessage(bool shouldBlock = false)
 {
     if (!this->IsConnectedToNetwork())
     {

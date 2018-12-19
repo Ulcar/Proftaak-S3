@@ -21,7 +21,7 @@ public:
     }
 
     static String ToServer(Message code, Vector<String>& parameters);
-    static Vector<String>& FromServer(String);
+    static Vector<String>* FromServer(String);
 
 private:
     static const int port = 2018;

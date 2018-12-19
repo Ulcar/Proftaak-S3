@@ -14,7 +14,7 @@ String Protocol::ToServer(Message code, Vector<String>& parameters)
     return result;
 }
 
-Vector<String>& Protocol::FromServer(String message)
+Vector<String>* Protocol::FromServer(String message)
 {
     Vector<String> command;
     size_t prevIndex = 0;
@@ -38,5 +38,5 @@ Vector<String>& Protocol::FromServer(String message)
         prevIndex = index + 1;
     }
 
-    return command;
+    return &command;
 }

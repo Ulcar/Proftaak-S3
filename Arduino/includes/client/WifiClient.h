@@ -15,7 +15,7 @@ public:
     bool ConnectToServer(MachineType type);
 
     void SendMessage(Message code, String* parameters, int parameterCount);
-    Vector<String>& ReadMessage(bool shouldBlock = false);
+    Vector<String>* ReadMessage(bool shouldBlock = false);
 
     String GetMacAddress();
 

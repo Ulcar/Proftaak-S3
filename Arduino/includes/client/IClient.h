@@ -11,7 +11,7 @@ public:
     virtual bool ConnectToServer(MachineType type) = 0;
 
     void SendMessage(Message code, String* parameters, int parameterCount);
-    virtual Vector<String>& ReadMessage(bool shouldBlock = false) = 0;
+    virtual Vector<String>* ReadMessage(bool shouldBlock = false) = 0;
 
     virtual String GetMacAddress() = 0;
 
