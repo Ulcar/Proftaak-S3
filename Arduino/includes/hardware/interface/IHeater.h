@@ -14,6 +14,7 @@ public:
 
 protected:
     ICentipedeShield* _centipede;
+    Temperature _temp;
 };
 
 #endif

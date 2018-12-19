@@ -7,29 +7,38 @@ Machine::Machine(HardwareControl& control, IClient* client)
     // ...
 }
 
-void Machine::StartProgram(int number)
+void Machine::Update()
 {
-    for (int i = 0; i < _programs.size(); ++i)
-    {
-        if (_programs[i]->GetNumber() == number)
-        {
-            _programs[i]->Start(_control);
-
-            return;
-        }
-    }
-
-    //_client->SendMessage("Couldn't find program.\n");
+    _currentProgram->Update();
 }
 
-void Machine::NewProgram(int number, Vector<IAction*>& actions)
+void Machine::NewProgram(int number, std::vector<IAction*>& actions)
 {
     Program* program = new Program(number);
 
     for (int i = 0; i < actions.size(); ++i)
     {
-        program->AddAction(actions[i]);
+        IAction* action = actions[i];
+
+        action->SetHardwareControl(&_control);
+        action->SetClient(_client);
+
+        program->AddAction(action);
     }
 
     _programs.push_back(program);
+}
+
+bool Machine::SetProgram(int number)
+{
+    for (int i = 0; i < _programs.size(); ++i)
+    {
+        if (_programs[i]->GetNumber() == number)
+        {
+            _currentProgram = _programs[i];
+            return true;
+        }
+    }
+
+    return false;
 }

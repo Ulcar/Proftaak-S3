@@ -16,7 +16,9 @@ enum Message
     M_STOP_TAKE_WATER = 2,
     M_MAY_HEAT_UP = 3,
     M_STOP_HEAT_UP = 4,
-    M_PROGRAM_DONE = 5
+    M_PROGRAM_DONE = 5,
+    M_PING = 6,
+    M_PROGRAM_START = 7
 };
 
 enum HardwareState

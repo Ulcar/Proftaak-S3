@@ -1,9 +1,9 @@
 #ifndef WIFICLIENT_H
 #define WIFICLIENT_H
 
+#include <ArduinoSTL.h>
 #include <WiFi.h>
 
-#include "../library/Vector.h"
 #include "IClient.h"
 
 class WifiClient : public IClient
@@ -14,14 +14,19 @@ public:
 
     bool ConnectToServer(MachineType type);
 
-    void SendMessage(Message code, String* parameters, int parameterCount);
-    Vector<String>* ReadMessage(bool shouldBlock = false);
+    void SendMessage(Message code, String* parameters = NULL, int parameterCount = 0);
+    std::vector<String> ReadMessage(bool shouldBlock = false);
 
     String GetMacAddress();
 
     bool IsConnectedToServer()
     {
         return _isConnectedToServer;
+    }
+
+    bool IsDataAvailable()
+    {
+        return _client.available() > 0;
     }
 
 private:

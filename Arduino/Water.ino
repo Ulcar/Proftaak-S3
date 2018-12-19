@@ -35,10 +35,10 @@ bool Water::HasPressure()
 
 void Water::SetSink(HardwareState state)
 {
-    _centipede->DigitalWrite(OUTPUT_SINK, state == STATE_ON);
+    _centipede->DigitalWrite(OUTPUT_SINK, (_sinkState = state) == STATE_ON);
 }
 
 void Water::SetDrain(HardwareState state)
 {
-    _centipede->DigitalWrite(OUTPUT_DRAIN, state == STATE_ON);
+    _centipede->DigitalWrite(OUTPUT_DRAIN, (_drainState = state) == STATE_ON);
 }

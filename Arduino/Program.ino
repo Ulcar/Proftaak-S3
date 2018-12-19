@@ -6,6 +6,24 @@ Program::Program(int number)
     // ...
 }
 
+void Program::Update()
+{
+    _currentAction->Handle();
+
+    if (_currentAction->IsDone())
+    {
+        GoToNextAction();
+    }
+}
+
+void Program::GoToNextAction()
+{
+    if (_currentActionIndex < _actions.size())
+    {
+        _currentAction = _actions[_currentActionIndex++];
+    }
+}
+
 int Program::GetNumber()
 {
     return _number;
@@ -14,12 +32,4 @@ int Program::GetNumber()
 void Program::AddAction(IAction* action)
 {
     _actions.push_back(action);
-}
-
-void Program::Start(HardwareControl& control)
-{
-    for (int i = 0; i < _actions.size(); ++i)
-    {
-        _actions[i]->Handle(control);
-    }
 }

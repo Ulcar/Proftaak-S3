@@ -1,3 +1,5 @@
+#include <ArduinoSTL.h>
+
 #include "includes/hardware/HardwareControl.h"
 #include "includes/hardware/CentipedeShield.h"
 #include "includes/hardware/Controls.h"
@@ -15,6 +17,41 @@
 
 HardwareControl* hardwareControl;
 SerialClient* client;
+Machine* machine;
+
+void handleIncomingMessages()
+{
+    std::vector<String> message = client->ReadMessage();
+
+    if (message.size() < 1)
+    {
+        return;
+    }
+
+    // PING
+    else if (message[0].equals("0"))
+    {
+        client->SendMessage(M_PING);
+    }
+
+    // START PROGRAM
+    else if (message[0].equals("1"))
+    {
+        if (message.size() < 2)
+        {
+            String response = "1";
+            client->SendMessage(M_PROGRAM_START, &response, 1);
+            return;
+        }
+
+        int program = message[1].toInt();
+        String response = machine->SetProgram(program)
+            ? "0"
+            : "1";
+
+        client->SendMessage(M_PROGRAM_START, &response, 1);
+    }
+}
 
 void setup()
 {
@@ -50,16 +87,23 @@ void setup()
     // Initialize the hardware control.
     hardwareControl = new HardwareControl(new CentipedeShield(), new Controls(), new Heater(), new Motor(), new Water());
 
-    Machine machine(*hardwareControl, client);
+    // Initialize the machine.
+    machine = new Machine(*hardwareControl, client);
 
-    Vector<IAction*> actions;
-    actions.push_back(new FillWaterAction(3));
-    actions.push_back(new HeatAction(2));
+    // Define the programs.
+    std::vector<IAction*> actions;
+    actions.push_back(new RequestWaterAction());
+    actions.push_back(new FillWaterAction(WL_50));
 
-    machine.NewProgram(0, actions);
-    machine.StartProgram(0);
+    machine->NewProgram(0, actions);
 }
 
 void loop()
 {
+    machine->Update();
+
+    if (client->IsDataAvailable())
+    {
+        handleIncomingMessages();
+    }
 }

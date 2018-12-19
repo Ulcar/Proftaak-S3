@@ -18,6 +18,15 @@ public:
 
     void Set(HardwareState state);
     Temperature GetTemperature();
+
+    HardwareState GetState()
+    {
+        return _state;
+    }
+
+
+private:
+    HardwareState _state;
 };
 
 #endif

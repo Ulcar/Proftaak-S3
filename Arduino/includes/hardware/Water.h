@@ -23,6 +23,20 @@ public:
 
     void SetSink(HardwareState state);
     void SetDrain(HardwareState state);
+
+    HardwareState GetSinkState()
+    {
+        return _sinkState;
+    }
+
+    HardwareState GetDrainState()
+    {
+        return _drainState;
+    }
+
+private:
+    HardwareState _sinkState;
+    HardwareState _drainState;
 };
 
 #endif

@@ -32,7 +32,7 @@ bool WifiClient::ConnectToServer(MachineType type)
     client->SendMessage(M_CONNECT, parameters, 2);
 
     // Wait for the 'accept' response of the previous message.
-    Vector<String>& response = this->ReadMessage(true);
+    std::vector<String> response = this->ReadMessage(true);
 
     if (response[0] == String(M_CONNECT) && response[1] == "0")
     {
@@ -44,14 +44,14 @@ bool WifiClient::ConnectToServer(MachineType type)
     return false;
 }
 
-void WifiClient::SendMessage(Message code, String* parameters, int parameterCount)
+void WifiClient::SendMessage(Message code, String* parameters = NULL, int parameterCount = 0)
 {
     if (!this->IsConnectedToNetwork())
     {
         return;
     }
 
-    Vector<String> parametersVector;
+    std::vector<String> parametersVector;
 
     for (int i = 0; i < parameterCount; ++i)
     {
@@ -61,7 +61,7 @@ void WifiClient::SendMessage(Message code, String* parameters, int parameterCoun
     _client.write(Protocol::ToServer(code, parametersVector).c_str());
 }
 
-Vector<String>* WifiClient::ReadMessage(bool shouldBlock = false)
+std::vector<String> WifiClient::ReadMessage(bool shouldBlock = false)
 {
     if (!this->IsConnectedToNetwork())
     {

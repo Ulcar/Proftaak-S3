@@ -13,6 +13,7 @@ Heater::~Heater()
 void Heater::Initialize(ICentipedeShield* centipede)
 {
     _centipede = centipede;
+    _state = STATE_OFF;
 
     // Due to the way the Centipede shield works, we have to set the HEATER pin
     // to 'HIGH' in order to turn it off. And 'LOW' to turn it on.
@@ -21,7 +22,7 @@ void Heater::Initialize(ICentipedeShield* centipede)
 
 void Heater::Set(HardwareState state)
 {
-    _centipede->DigitalWrite(OUTPUT_HEATER, state != STATE_ON);
+    _centipede->DigitalWrite(OUTPUT_HEATER, (_state = state) != STATE_ON);
 }
 
 Temperature Heater::GetTemperature()

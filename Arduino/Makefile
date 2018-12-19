@@ -14,9 +14,12 @@ CC=g++
 clean:
 	@ rm -f $(TEST_TARGET)
 
-.PHONY: arduino
-arduino:
+.PHONY: compile
+compile:
 	@ arduino-cli compile -b ${BOARD}
+
+.PHONY: run
+run:
 	@ arduino-cli upload -p ${TTY} -b ${BOARD}
 
 .PHONY: test

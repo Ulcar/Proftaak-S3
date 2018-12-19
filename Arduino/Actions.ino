@@ -1,53 +1,134 @@
 #include "includes/machine/Actions.h"
 
 //
+// IAction
+//=============
+
+void IAction::SetHardwareControl(HardwareControl* control)
+{
+    _control = control;
+}
+
+void IAction::SetClient(IClient* client)
+{
+    _client = client;
+}
+
+//
 // HeatAction
 //=============
 
-HeatAction::HeatAction(int level)
-    : _level(level)
+HeatAction::HeatAction(Temperature temp)
+    : _temp(temp)
 {
     // ...
 }
 
-void HeatAction::Handle(HardwareControl& control)
+void HeatAction::Handle()
 {
-    Serial.println("Heating: " + String(_level));
+    Heater* heater = _control->GetHeater();
+
+    if (heater->GetState() != STATE_ON)
+    {
+        HardwareState state = heater->GetTemperature() < _temp
+            ? STATE_ON
+            : STATE_OFF;
+
+        heater->Set(state);
+    }
+}
+
+bool HeatAction::IsDone()
+{
+    Heater* heater = _control->GetHeater();
+
+    return heater->GetTemperature() == _temp;
 }
 
 //
 // FillWaterAction
 //==================
 
-FillWaterAction::FillWaterAction(int level)
+FillWaterAction::FillWaterAction(WaterLevel level)
     : _level(level)
 {
     // ...
 }
 
-void FillWaterAction::Handle(HardwareControl& control)
+void FillWaterAction::Handle()
 {
-    Serial.println("Fill Water: " + String(_level));
+    Water* water = _control->GetWater();
+
+    if (water->GetDrainState() != STATE_ON)
+    {
+        water->SetDrain(STATE_ON);
+    }
 }
 
-
-void MotorRotate::Handle()
+bool FillWaterAction::IsDone()
 {
-    IMotor* motor = _control.GetMotor();
+    Water* water = _control->GetWater();
 
-    motor->SetDirection(direction);
-    motor->SetSpeed(speed);
+    if (water->GetLevel() == _level)
+    {
+        water->SetDrain(STATE_OFF);
+        return true;
+    }
 
-    Serial.println("Rotating: " + String(direction) + " with speed: " + String(speed));
+    return false;
 }
 
-bool MotorRotate::IsDone()
+//
+// RequestWaterAction
+//==================
+
+RequestWaterAction::RequestWaterAction()
+    : _mayTakeWater(false)
+{
+    // ...
+}
+
+void RequestWaterAction::Handle()
+{
+    while (!_mayTakeWater)
+    {
+        Serial.println("Taking water without asking mwahaha...");
+
+        //_client->SendMessage("MAY_TAKE_WATER;0");
+
+        //_mayTakeWater = _client->ReadMessage() == "1";
+
+        delay(5000);
+    }
+}
+
+bool RequestWaterAction::IsDone()
+{
+    return _mayTakeWater;
+}
+
+//
+// MotorRotateAction
+//==================
+
+MotorRotateAction::MotorRotateAction(MotorDirection direction, MotorSpeed speed)
+    : _direction(direction)
+    , _speed(speed)
+{
+    // Nothing to do...
+}
+
+void MotorRotateAction::Handle()
+{
+    Motor* motor = _control->GetMotor();
+
+    motor->SetDirection(_direction);
+    motor->SetSpeed(_speed);
+
+    Serial.println("Rotating: " + String(_direction) + " with speed: " + String(_speed));
+}
+
+bool MotorRotateAction::IsDone()
 {
     return true;
-}
-
-MotorRotate::MotorRotate(MotorDirection direction, MotorSpeed speed)
-{
-    this->direction = direction;
-    this->speed = speed;
 }

@@ -1,6 +1,6 @@
 #include "includes/client/Protocol.h"
 
-String Protocol::ToServer(Message code, Vector<String>& parameters)
+String Protocol::ToServer(Message code, std::vector<String> parameters)
 {
     String result = SEND_START_CHARACTER + String(code);
 
@@ -14,9 +14,9 @@ String Protocol::ToServer(Message code, Vector<String>& parameters)
     return result;
 }
 
-Vector<String>* Protocol::FromServer(String message)
+std::vector<String> Protocol::FromServer(String message)
 {
-    Vector<String> command;
+    std::vector<String> command;
     size_t prevIndex = 0;
 
     while (true)
@@ -38,5 +38,5 @@ Vector<String>* Protocol::FromServer(String message)
         prevIndex = index + 1;
     }
 
-    return &command;
+    return command;
 }

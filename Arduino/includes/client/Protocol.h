@@ -1,7 +1,8 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
-#include "../library/Vector.h"
+#include <ArduinoSTL.h>
+
 #include "../Enums.h"
 
 #define SEPARATOR_CHARACTER     (';')
@@ -20,8 +21,8 @@ public:
         return port;
     }
 
-    static String ToServer(Message code, Vector<String>& parameters);
-    static Vector<String>* FromServer(String);
+    static String ToServer(Message code, std::vector<String> parameters);
+    static std::vector<String> FromServer(String);
 
 private:
     static const int port = 2018;
