@@ -2,6 +2,8 @@
 #define IALGORITHM_H
 
 #include <string>
+#include "machine.h"
+#include "client.h"
 
 class iAlgorithm
 {
