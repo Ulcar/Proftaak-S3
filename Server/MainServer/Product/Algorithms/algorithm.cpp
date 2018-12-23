@@ -80,7 +80,7 @@ void Algorithm::HandleControlPanel(Client* client, std::vector<std::string> mess
                 break;
 
             case CP_CODE_SETCLIENT:
-                // we need a disable client protocol message lole
+                algorithm->HandleControlPanelSetClient(client, messageVector);
                 break;
 
             
