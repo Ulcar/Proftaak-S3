@@ -46,12 +46,20 @@ void Algorithm_easy::HandleControlPanelTotalPower(Client* client, std::vector<st
 
 void Algorithm_easy::HandleControlPanelDisableAllClients(Client* client, std::vector<std::string> messageVector, std::vector<Client*> clients)
 {
-    //ToDo
+    for(Client* client : clients)
+    {
+        if(client->GetType() != Type::ControlPanel)
+        {
+            client->SetEnable(false);
+        }
+    }
 }
 
 void Algorithm_easy::HandleControlPanelSetClient(Client* client, std::vector<std::string> messageVector)
 {
+    //Maken van indefier om te weten enabled moet worden.
     // we need a disable client protocol message lole
+    //client->SetEnable(true);
 }
 
 
