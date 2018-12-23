@@ -1,4 +1,5 @@
 .vscode
+#Server:
 Server/.vscode
 Server/MainServer/.vscode
 Server/MainServer/Server
@@ -6,8 +7,18 @@ Server/MainServer/main.o
 Server/MainServer/client.o
 Server/MainServer/socket.o
 Server/MainServer/protocol.o
+Server/MainServer/loggers/*.txt
+
+#ControlPanel
 /Interface/Server_Interface/.vs/Server_Interface/v15/Server/sqlite3
 /Interface/Server_Interface/.vs/Server_Interface/v15/.suo
 /Interface/Server_Interface/.vs/Server_Interface/DesignTimeBuild
 /Interface/Server_Interface/.vs/Server_Interface/obj/Debug
-Server/MainServer/loggers/*.txt
+
+#TestServer&Interface
+Test_Interfaces/client
+Test_Interfaces/client.o
+Test_Interfaces/server
+Test_Interfaces/server.o
+
+#Client
