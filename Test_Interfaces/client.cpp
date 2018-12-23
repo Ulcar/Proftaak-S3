@@ -31,6 +31,7 @@ static void sendMessage(int *socketFd, std::string text)
     {
         std::cout << "not everything is sent (" << nrBytesRec << "/" << text.length() << " bytes sent)\n";
     }
+    std::cout << "send: " + text;
 }
 
 static std::string readMessage(int *socketFd, bool *connected)
@@ -149,6 +150,9 @@ int main(void)
         {
             case '1' :
                 connectToServer(&socketFd, &connected);
+                //message from server
+                reply = readMessage(&socketFd, &connected);
+                std::cout << reply;
                 break;
 
             case '2' :
