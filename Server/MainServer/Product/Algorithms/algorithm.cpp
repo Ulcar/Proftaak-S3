@@ -1,9 +1,10 @@
 #include "algorithm.h"
 
 Algorithm::Algorithm(Database* database, iAlgorithm* algorithm)
+    : database(database)
+    , algorithm(algorithm)
 {
-    this->database = database;
-    this->algorithm = algorithm;
+    
 }
 
 Algorithm::~Algorithm()

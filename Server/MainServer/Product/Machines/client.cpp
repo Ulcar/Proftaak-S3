@@ -4,7 +4,7 @@ Client::Client(std::string macAdress, Type type)
     : macAdress(macAdress)
     , clientType(type)
 {
-    
+    enabled = true;
 }
 
 Client::~Client()
@@ -43,5 +43,6 @@ bool Client::IsEnabled()
 
 void Client::SetEnable(bool enabled)
 {
+    DebugLogger::Record(macAdress + " is now enabled: " + std::to_string(enabled), "client");
     this->enabled = enabled;
 }

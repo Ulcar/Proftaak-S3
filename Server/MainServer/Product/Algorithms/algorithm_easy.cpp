@@ -1,8 +1,9 @@
 #include "algorithm_easy.h"
 
 Algorithm_easy::Algorithm_easy(Database* database)
+    : database(database)
 {
-    this->database = database;
+    
 }
 
 Algorithm_easy::~Algorithm_easy()
