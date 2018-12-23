@@ -71,7 +71,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
         {
             Socket* tempsocket = tempClient->GetSocket();
 
-            if(tempsocket == nullptr)
+            if((tempsocket == nullptr) || (!tempClient->IsEnabled()))
             {
                 continue;
             }

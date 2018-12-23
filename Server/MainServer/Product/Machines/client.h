@@ -18,6 +18,9 @@ class Client : public iClient
         void Send(CP_Code code, std::string value);
         void SetSocket(Socket* socket);
 
+        bool IsEnabled();
+        void SetEnable(bool enabled);
+
         Socket* GetSocket()
         {
             return socket;
@@ -37,6 +40,7 @@ class Client : public iClient
         const std::string macAdress;
         const Type clientType;
         Socket* socket;
+        bool enabled;
 };
 
 #endif

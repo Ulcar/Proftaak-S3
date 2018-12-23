@@ -35,3 +35,13 @@ void Client::SetSocket(Socket* tempSocket)
     }
     socket = tempSocket;
 }
+
+bool Client::IsEnabled()
+{
+    return enabled;
+}
+
+void Client::SetEnable(bool enabled)
+{
+    this->enabled = enabled;
+}
