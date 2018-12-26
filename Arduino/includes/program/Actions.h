@@ -19,6 +19,15 @@ protected:
     IClient* _client;
 };
 
+class DrainWaterAction : public IAction
+{
+public:
+    DrainWaterAction();
+
+    void Handle();
+    bool IsDone();
+};
+
 class HeatAction : public IAction
 {
 public:

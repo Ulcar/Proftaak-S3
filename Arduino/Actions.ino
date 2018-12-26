@@ -15,6 +15,40 @@ void IAction::SetClient(IClient* client)
 }
 
 //
+// DrainWaterAction
+//=============
+
+DrainWaterAction::DrainWaterAction()
+{
+    // ...
+}
+
+void DrainWaterAction::Handle()
+{
+    Serial.println("DrainWaterAction::Handle()");
+
+    Water* water = _control->GetWater();
+
+    if (water->GetSinkState() != STATE_ON)
+    {
+        water->SetSink(STATE_ON);
+    }
+}
+
+bool DrainWaterAction::IsDone()
+{
+    Water* water = _control->GetWater();
+
+    if (water->GetLevel() == WL_EMPTY)
+    {
+        water->SetSink(STATE_OFF);
+        return true;
+    }
+
+    return false;
+}
+
+//
 // HeatAction
 //=============
 
