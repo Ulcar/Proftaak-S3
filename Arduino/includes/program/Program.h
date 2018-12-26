@@ -8,19 +8,15 @@
 class Program
 {
 public:
-    Program(int number);
+    Program(HardwareControl* control, IClient* client);
 
     void Update();
-
-    void GoToNextAction();
-
-    int GetNumber();
+    void SetNextAction();
     void AddAction(IAction* action);
 
-    void Start(HardwareControl& control);
-
 private:
-    int _number;
+    HardwareControl* _control;
+    IClient* _client;
 
     std::vector<IAction*> _actions;
     IAction* _currentAction;

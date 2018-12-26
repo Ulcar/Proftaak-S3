@@ -19,7 +19,7 @@ compile:
 	@ arduino-cli compile -b ${BOARD}
 
 .PHONY: run
-run:
+run: compile
 	@ arduino-cli upload -p ${TTY} -b ${BOARD}
 
 .PHONY: test

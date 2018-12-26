@@ -27,11 +27,6 @@ public:
     void Handle();
     bool IsDone();
 
-    /*
-    void SetHardwareControl(HardwareControl* control);
-    void SetClient(IClient* client);
-    */
-
 private:
     Temperature _temp;
 };
@@ -71,6 +66,19 @@ public:
 private:
     MotorDirection _direction;
     MotorSpeed _speed;
+};
+
+class DelayAction : public IAction
+{
+public:
+    DelayAction(unsigned long ms);
+
+    void Handle();
+    bool IsDone();
+
+private:
+    unsigned long _ms;
+    unsigned long _startMs;
 };
 
 #endif

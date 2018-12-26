@@ -1,22 +1,27 @@
-#include "includes/machine/Program.h"
+#include "includes/program/Program.h"
 
-Program::Program(int number)
-    : _number(number)
+Program::Program(HardwareControl* control, IClient* client)
+    : _control(control)
+    , _client(client)
+    , _currentActionIndex(0)
 {
     // ...
 }
 
 void Program::Update()
 {
-    _currentAction->Handle();
-
-    if (_currentAction->IsDone())
+    if (_currentAction != NULL)
     {
-        GoToNextAction();
+        _currentAction->Handle();
+
+        if (_currentAction->IsDone())
+        {
+            SetNextAction();
+        }
     }
 }
 
-void Program::GoToNextAction()
+void Program::SetNextAction()
 {
     if (_currentActionIndex < _actions.size())
     {
@@ -24,12 +29,10 @@ void Program::GoToNextAction()
     }
 }
 
-int Program::GetNumber()
-{
-    return _number;
-}
-
 void Program::AddAction(IAction* action)
 {
+    action->SetHardwareControl(_control);
+    action->SetClient(_client);
+
     _actions.push_back(action);
 }

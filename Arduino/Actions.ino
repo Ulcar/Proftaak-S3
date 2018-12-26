@@ -1,4 +1,4 @@
-#include "includes/machine/Actions.h"
+#include "includes/program/Actions.h"
 
 //
 // IAction
@@ -26,6 +26,8 @@ HeatAction::HeatAction(Temperature temp)
 
 void HeatAction::Handle()
 {
+    Serial.println("HeatAction::Handle()");
+
     Heater* heater = _control->GetHeater();
 
     if (heater->GetState() != STATE_ON)
@@ -57,6 +59,8 @@ FillWaterAction::FillWaterAction(WaterLevel level)
 
 void FillWaterAction::Handle()
 {
+    Serial.println("FillWaterAction::Handle()");
+
     Water* water = _control->GetWater();
 
     if (water->GetDrainState() != STATE_ON)
@@ -99,6 +103,8 @@ void RequestWaterAction::Handle()
         //_mayTakeWater = _client->ReadMessage() == "1";
 
         delay(5000);
+
+        _mayTakeWater = true;
     }
 }
 
@@ -120,6 +126,8 @@ MotorRotateAction::MotorRotateAction(MotorDirection direction, MotorSpeed speed)
 
 void MotorRotateAction::Handle()
 {
+    Serial.println("MotorRotateAction::Handle()");
+
     Motor* motor = _control->GetMotor();
 
     motor->SetDirection(_direction);
@@ -131,4 +139,28 @@ void MotorRotateAction::Handle()
 bool MotorRotateAction::IsDone()
 {
     return true;
+}
+
+//
+// DelayAction
+//==================
+
+DelayAction::DelayAction(unsigned long ms)
+    : _ms(ms)
+    , _startMs(0)
+{
+    // Nothing to do...
+}
+
+void DelayAction::Handle()
+{
+    if (_startMs == 0)
+    {
+        _startMs = millis();
+    }
+}
+
+bool DelayAction::IsDone()
+{
+    return millis() - _startMs > _ms;
 }

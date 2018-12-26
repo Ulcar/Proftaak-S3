@@ -10,15 +10,16 @@
 #include "includes/client/SerialClient.h"
 #include "includes/client/Protocol.h"
 
-#include "includes/machine/Machine.h"
-#include "includes/machine/Actions.h"
+#include "includes/program/Actions.h"
+#include "includes/program/Program.h"
 
 #include "includes/Enums.h"
 
 HardwareControl* hardwareControl;
 SerialClient* client;
-Machine* machine;
+Program* program;
 
+/*
 void handleIncomingMessages()
 {
     std::vector<String> message = client->ReadMessage();
@@ -52,6 +53,7 @@ void handleIncomingMessages()
         client->SendMessage(M_PROGRAM_START, &response, 1);
     }
 }
+*/
 
 void setup()
 {
@@ -87,23 +89,31 @@ void setup()
     // Initialize the hardware control.
     hardwareControl = new HardwareControl(new CentipedeShield(), new Controls(), new Heater(), new Motor(), new Water());
 
-    // Initialize the machine.
-    machine = new Machine(*hardwareControl, client);
+    program = new Program(hardwareControl, client);
 
-    // Define the programs.
-    std::vector<IAction*> actions;
-    actions.push_back(new RequestWaterAction());
-    actions.push_back(new FillWaterAction(WL_50));
+    program->AddAction(new MotorRotateAction(MD_LEFT, SPEED_LOW));
+    program->AddAction(new DelayAction(5000L));
+    program->AddAction(new MotorRotateAction(MD_RIGHT, SPEED_LOW));
+    program->AddAction(new DelayAction(5000L));
+    program->AddAction(new MotorRotateAction(MD_LEFT, SPEED_LOW));
+    program->AddAction(new DelayAction(5000L));
+    program->AddAction(new MotorRotateAction(MD_RIGHT, SPEED_LOW));
+    program->AddAction(new DelayAction(5000L));
 
-    machine->NewProgram(0, actions);
+    Serial.println("Starting...");
+
+    // Must set first action otherwise nothing will happen.
+    program->SetNextAction();
 }
 
 void loop()
 {
-    machine->Update();
+    program->Update();
 
+    /*
     if (client->IsDataAvailable())
     {
         handleIncomingMessages();
     }
+    */
 }
