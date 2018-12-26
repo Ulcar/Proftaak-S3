@@ -15,6 +15,28 @@ void IAction::SetClient(IClient* client)
 }
 
 //
+// BuzzerAction
+//=============
+
+BuzzerAction::BuzzerAction(unsigned long ms)
+    : _ms(ms)
+{
+    // ...
+}
+
+void BuzzerAction::Handle()
+{
+    Controls* controls = _control->GetControls();
+
+    controls->EnableBuzzer(_ms);
+}
+
+bool BuzzerAction::IsDone()
+{
+    return true;
+}
+
+//
 // DrainWaterAction
 //=============
 
