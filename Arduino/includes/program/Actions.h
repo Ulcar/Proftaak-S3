@@ -22,13 +22,13 @@ protected:
 class BuzzerAction : public IAction
 {
 public:
-    BuzzerAction(unsigned long ms);
+    BuzzerAction(int ms);
 
     void Handle();
     bool IsDone();
 
 private:
-    unsigned long _ms;
+    int _ms;
 };
 
 class DrainWaterAction : public IAction

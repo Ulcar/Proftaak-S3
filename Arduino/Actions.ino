@@ -18,7 +18,7 @@ void IAction::SetClient(IClient* client)
 // BuzzerAction
 //=============
 
-BuzzerAction::BuzzerAction(unsigned long ms)
+BuzzerAction::BuzzerAction(int ms)
     : _ms(ms)
 {
     // ...
