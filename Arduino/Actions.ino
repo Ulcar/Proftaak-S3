@@ -15,6 +15,29 @@ void IAction::SetClient(IClient* client)
 }
 
 //
+// AddSoapAction
+//=============
+
+AddSoapAction::AddSoapAction(int dispenser)
+    : _dispenser(dispenser)
+{
+    // ...
+}
+
+void AddSoapAction::Handle()
+{
+    Controls* controls = _control->GetControls();
+
+    controls->SetSoap(STATE_ON, _dispenser);
+    controls->SetSoap(STATE_OFF, _dispenser);
+}
+
+bool AddSoapAction::IsDone()
+{
+    return true;
+}
+
+//
 // BuzzerAction
 //=============
 
@@ -139,11 +162,46 @@ bool FillWaterAction::IsDone()
 }
 
 //
+// RequestPowerAction
+//==================
+
+RequestPowerAction::RequestPowerAction(int watt)
+    : _watt(watt)
+    , _mayUsePower(false)
+{
+    // ...
+}
+
+void RequestPowerAction::Handle()
+{
+    while (!_mayUsePower)
+    {
+        Serial.println("Asking for power...");
+
+        String parameters[] = { String(_watt) };
+        _client->SendMessage(M_MAY_HEAT_UP, parameters, 1);
+
+        std::vector<String> response = _client->ReadMessage(true);
+
+        if (response[0] == String(M_MAY_HEAT_UP) && response[1] == "0")
+        {
+            _mayUsePower = true;
+        }
+    }
+}
+
+bool RequestPowerAction::IsDone()
+{
+    return _mayUsePower;
+}
+
+//
 // RequestWaterAction
 //==================
 
-RequestWaterAction::RequestWaterAction()
-    : _mayTakeWater(false)
+RequestWaterAction::RequestWaterAction(int liters)
+    : _liters(liters)
+    , _mayTakeWater(false)
 {
     // ...
 }
@@ -152,15 +210,17 @@ void RequestWaterAction::Handle()
 {
     while (!_mayTakeWater)
     {
-        Serial.println("Taking water without asking mwahaha...");
+        Serial.println("Asking for water...");
 
-        //_client->SendMessage("MAY_TAKE_WATER;0");
+        String parameters[] = { String(_liters) };
+        _client->SendMessage(M_MAY_TAKE_WATER, parameters, 1);
 
-        //_mayTakeWater = _client->ReadMessage() == "1";
+        std::vector<String> response = _client->ReadMessage(true);
 
-        delay(5000);
-
-        _mayTakeWater = true;
+        if (response[0] == String(M_MAY_TAKE_WATER) && response[1] == "0")
+        {
+            _mayTakeWater = true;
+        }
     }
 }
 

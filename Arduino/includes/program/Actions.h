@@ -19,6 +19,18 @@ protected:
     IClient* _client;
 };
 
+class AddSoapAction : public IAction
+{
+public:
+    AddSoapAction(int dispenser);
+
+    void Handle();
+    bool IsDone();
+
+private:
+    int _dispenser;
+};
+
 class BuzzerAction : public IAction
 {
 public:
@@ -64,15 +76,29 @@ private:
     WaterLevel _level;
 };
 
-class RequestWaterAction : public IAction
+class RequestPowerAction : public IAction
 {
 public:
-    RequestWaterAction();
+    RequestPowerAction(int watt);
 
     void Handle();
     bool IsDone();
 
 private:
+    int _watt;
+    bool _mayUsePower;
+};
+
+class RequestWaterAction : public IAction
+{
+public:
+    RequestWaterAction(int liters);
+
+    void Handle();
+    bool IsDone();
+
+private:
+    int _liters;
     bool _mayTakeWater;
 };
 
