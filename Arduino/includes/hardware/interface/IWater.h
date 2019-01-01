@@ -15,6 +15,9 @@ public:
     virtual void SetSink(HardwareState state) = 0;
     virtual void SetDrain(HardwareState state) = 0;
 
+    virtual HardwareState GetSinkState() = 0;
+    virtual HardwareState GetDrainState() = 0;
+
 protected:
     ICentipedeShield* _centipede;
 };

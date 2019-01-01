@@ -18,9 +18,6 @@ public:
     void SetLock(HardwareState state);
     void SetSoap(HardwareState state, int dispenser);
     void EnableBuzzer(int timeInMs);
-
-private:
-    int* _soapDispensers;
 };
 
 #endif

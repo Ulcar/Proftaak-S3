@@ -12,6 +12,8 @@ public:
     virtual void Set(HardwareState state) = 0;
     virtual Temperature GetTemperature() = 0;
 
+    virtual HardwareState GetState() = 0;
+
 protected:
     ICentipedeShield* _centipede;
     Temperature _temp;

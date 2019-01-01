@@ -25,10 +25,25 @@ public:
     HardwareControl(ICentipedeShield* centipede, IControls* controls, IHeater* heater, IMotor* motor, IWater* water);
     ~HardwareControl();
 
-    IControls* GetControls() { return _controls; }
-    IHeater* GetHeater() { return _heater; }
-    IMotor* GetMotor() { return _motor; }
-    IWater* GetWater() { return _water; }
+    IControls* GetControls()
+    {
+        return _controls;
+    }
+
+    IHeater* GetHeater()
+    {
+        return _heater;
+    }
+
+    IMotor* GetMotor()
+    {
+        return _motor;
+    }
+
+    IWater* GetWater()
+    {
+        return _water;
+    }
 
 private:
     ICentipedeShield* _centipede;
