@@ -22,3 +22,5 @@ Test_Interfaces/server
 Test_Interfaces/server.o
 
 #Client
+Clients/bin/
+Clients/client
