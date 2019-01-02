@@ -71,7 +71,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
         {
             Socket* tempsocket = tempClient->GetSocket();
 
-            if(tempsocket == nullptr)
+            if((tempsocket == nullptr) || (!tempClient->IsEnabled()))
             {
                 continue;
             }
@@ -189,10 +189,6 @@ void SocketHandler::ConnectClient(int socketFd)
     }
 
     std::vector<std::string> message = Protocol::FromMachine(socket->ReadLastMessage());
-    for(std::string ff : message)
-    {
-        std::cout << ff << "\n";
-    }
     
     if((message.size() == 2) || (message.size() == 3))
     {

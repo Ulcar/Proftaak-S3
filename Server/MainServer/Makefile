@@ -1,7 +1,8 @@
 PRODUCT= Server
 
 CPPFLAGS=-IEnums -IInterfaces -IProduct -IStatics -IProduct/Machines -IProduct/Algorithms
-CXXFLAGS=-Wall -Werror -Wextra -pedantic -ggdb -O0 -std=c++11 -pthread $(CPPFLAGS)
+CXXFLAGS=-Wall -Werror -Wextra -Wno-unused-parameter -pedantic -ggdb -O0 -std=c++11 -pthread $(CPPFLAGS)
+# -Wno-unused-parameter is to ignore the warning that a paramater is not used in the method
 
 SOURCES=$(wildcard Product/*.cpp) \
         $(wildcard Product/Machines/*.cpp) \

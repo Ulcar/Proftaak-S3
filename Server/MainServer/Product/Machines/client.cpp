@@ -4,7 +4,7 @@ Client::Client(std::string macAdress, Type type)
     : macAdress(macAdress)
     , clientType(type)
 {
-    
+    enabled = true;
 }
 
 Client::~Client()
@@ -34,4 +34,15 @@ void Client::SetSocket(Socket* tempSocket)
         delete socket;
     }
     socket = tempSocket;
+}
+
+bool Client::IsEnabled()
+{
+    return enabled;
+}
+
+void Client::SetEnable(bool enabled)
+{
+    DebugLogger::Record(macAdress + " is now enabled: " + std::to_string(enabled), "client");
+    this->enabled = enabled;
 }

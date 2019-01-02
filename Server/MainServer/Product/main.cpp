@@ -1,4 +1,6 @@
-#include "algorithm_test.h"
+#include "algorithm.h"
+#include "iAlgorithm.h"
+#include "algorithm_easy.h"
 #include "errorlogger.h"
 #include "debuglogger.h"
 #include "client.h"
@@ -20,7 +22,8 @@
 
 bool quit = false;
 Database* database;
-iAlgorithm* algorithm;
+Algorithm* algorithm;
+iAlgorithm* iAlgorithm;
 std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
@@ -35,14 +38,15 @@ void Setup()
     DebugLogger::Record("System startup", "main");
 
     database = new Database();
-    algorithm = new Algorithm_test(database);
+    iAlgorithm = new Algorithm_easy(database);
+    algorithm = new Algorithm(database, iAlgorithm);
     socketThread = std::thread(SocketHandler::RunSocketHandler, database);
     consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
 }
 
 void Loop()
 {
-    algorithm->Beat();
+    algorithm->HandleMessages();
 }
 
 void ShutDown()
@@ -51,6 +55,7 @@ void ShutDown()
     socketThread.detach();
 
     delete database;
+    delete algorithm;
 
     Errorlogger::Record("System shutdown", "main");
     DebugLogger::Record("System shutdown", "main");

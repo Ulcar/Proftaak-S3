@@ -15,6 +15,10 @@ Server/MainServer/loggers/*.txt
 /Interface/Server_Interface/.vs/Server_Interface/DesignTimeBuild
 /Interface/Server_Interface/.vs/Server_Interface/obj/Debug
 
-#Ignore Client files
-Clients/bin/
-Clients/client
+#TestServer&Interface
+Test_Interfaces/client
+Test_Interfaces/client.o
+Test_Interfaces/server
+Test_Interfaces/server.o
+
+#Client
