@@ -28,8 +28,11 @@ public:
         return Serial.available() > 0;
     }
 
+    void Update();
+
 private:
     bool _isConnectedToServer;
+    String _message;
 };
 
 #endif

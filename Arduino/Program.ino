@@ -8,6 +8,16 @@ Program::Program(HardwareControl* control, IClient* client)
     // ...
 }
 
+void Program::SetNumber(int number)
+{
+    _number = number;
+}
+
+int Program::GetNumber()
+{
+    return _number;
+}
+
 void Program::Update()
 {
     if (_currentAction != NULL)
@@ -19,6 +29,13 @@ void Program::Update()
             SetNextAction();
         }
     }
+}
+
+void Program::Reset()
+{
+    _currentActionIndex = 0;
+
+    SetNextAction();
 }
 
 void Program::SetNextAction()

@@ -6,6 +6,8 @@
 #include "../Enums.h"
 #include "Protocol.h"
 
+typedef void (*OnMessageReceivedCallback)(std::vector<String>);
+
 class IClient
 {
 public:
@@ -18,6 +20,16 @@ public:
 
     virtual bool IsConnectedToServer() = 0;
     virtual bool IsDataAvailable() = 0;
+
+    virtual void Update() = 0;
+
+    virtual void SetOnMessageReceived(OnMessageReceivedCallback callback)
+    {
+        _onMessageReceived = callback;
+    }
+
+protected:
+    OnMessageReceivedCallback _onMessageReceived;
 };
 
 #endif

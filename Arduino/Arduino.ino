@@ -12,32 +12,25 @@
 
 #include "includes/program/Actions.h"
 #include "includes/program/Program.h"
+#include "includes/program/Programs.h"
 
 #include "includes/Enums.h"
 
 HardwareControl* hardwareControl;
 SerialClient* client;
-Program* program;
+Programs* programs;
 
-/*
-void handleIncomingMessages()
+void onMessageReceived(std::vector<String> message)
 {
-    std::vector<String> message = client->ReadMessage();
+    int command = message[0].toInt();
 
-    if (message.size() < 1)
+    switch (command)
     {
-        return;
-    }
-
-    // PING
-    else if (message[0].equals("0"))
-    {
+    case 0: // PING
         client->SendMessage(M_PING);
-    }
+        break;
 
-    // START PROGRAM
-    else if (message[0].equals("1"))
-    {
+    case 7: // START_PROGRAM
         if (message.size() < 2)
         {
             String response = "1";
@@ -46,14 +39,19 @@ void handleIncomingMessages()
         }
 
         int program = message[1].toInt();
-        String response = machine->SetProgram(program)
+        String response = programs->Start(program)
             ? "0"
             : "1";
 
+        Serial.println("Starting program: " + String(program));
         client->SendMessage(M_PROGRAM_START, &response, 1);
+        break;
+
+    default:
+        Serial.println("Unrecognized command.");
+        break;
     }
 }
-*/
 
 void setup()
 {
@@ -64,6 +62,7 @@ void setup()
 
     // client = new WifiClient("12connect", "192.168.200.73", Protocol::GetPort());
     client = new SerialClient();
+    client->SetOnMessageReceived(onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");
 
@@ -86,34 +85,41 @@ void setup()
 
     Serial.println("Connected to the server.");
 
-    // Initialize the hardware control.
+    // Initialize the hardware control and program manager.
     hardwareControl = new HardwareControl(new CentipedeShield(), new Controls(), new Heater(), new Motor(), new Water());
+    programs = new Programs(hardwareControl, client);
 
-    program = new Program(hardwareControl, client);
+    Serial.println("Loading programs...");
 
-    program->AddAction(new MotorRotateAction(MD_LEFT, SPEED_LOW));
-    program->AddAction(new DelayAction(5000L));
-    program->AddAction(new MotorRotateAction(MD_RIGHT, SPEED_LOW));
-    program->AddAction(new DelayAction(5000L));
-    program->AddAction(new MotorRotateAction(MD_LEFT, SPEED_LOW));
-    program->AddAction(new DelayAction(5000L));
-    program->AddAction(new MotorRotateAction(MD_RIGHT, SPEED_LOW));
-    program->AddAction(new DelayAction(5000L));
+    // Load program A
+    programs->Add(0, {
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(5000L),
+    });
 
-    Serial.println("Starting...");
+    // Load program B
+    programs->Add(1, {
+        new MotorRotateAction(MD_LEFT, SPEED_MEDIUM),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_MEDIUM),
+        new DelayAction(5000L),
+    });
 
-    // Must set first action otherwise nothing will happen.
-    program->SetNextAction();
+    // Load program C
+    programs->Add(2, {
+        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
+        new DelayAction(5000L),
+    });
+
+    Serial.println("Done!");
 }
 
 void loop()
 {
-    program->Update();
-
-    /*
-    if (client->IsDataAvailable())
-    {
-        handleIncomingMessages();
-    }
-    */
+    programs->Update();
+    client->Update();
 }

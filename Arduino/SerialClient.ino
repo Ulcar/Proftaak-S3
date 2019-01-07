@@ -70,6 +70,31 @@ std::vector<String> SerialClient::ReadMessage(bool shouldBlock = false)
     return Protocol::FromServer(message);
 }
 
+void SerialClient::Update()
+{
+    while (Serial.available())
+    {
+        char character = Serial.read();
+
+        if (character == RECEIVE_START_CHARACTER)
+        {
+            _message = "";
+        }
+        else if (character == RECEIVE_END_CHARACTER)
+        {
+            if (_onMessageReceived != NULL)
+            {
+                _onMessageReceived(Protocol::FromServer(_message));
+            }
+            return;
+        }
+        else
+        {
+            _message += character;
+        }
+    }
+}
+
 String SerialClient::GetMacAddress()
 {
     return "AABBCCDDEEFF";

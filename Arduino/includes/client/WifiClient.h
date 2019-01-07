@@ -29,6 +29,11 @@ public:
         return _client.available() > 0;
     }
 
+    void Update()
+    {
+        // ...
+    }
+
 private:
     WiFiClient _client;
 
