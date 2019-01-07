@@ -15,6 +15,9 @@ void Program::Start()
     _currentAction = NULL;
     _started = true;
 
+    Controls* controls = _control->GetControls();
+    controls->SetLock(STATE_ON);
+
     SetNextAction();
 }
 
@@ -41,6 +44,9 @@ bool Program::SetNextAction()
     }
 
     _started = false;
+
+    Controls* controls = _control->GetControls();
+    controls->SetLock(STATE_OFF);
 
     return false;
 }

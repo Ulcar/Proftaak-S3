@@ -1,5 +1,3 @@
-#include <ArduinoSTL.h>
-
 #include "includes/hardware/HardwareControl.h"
 #include "includes/hardware/CentipedeShield.h"
 #include "includes/hardware/Controls.h"
@@ -54,7 +52,7 @@ void onMessageReceived(std::vector<String> message)
 
 void onProgramDone()
 {
-    Serial.println("Program done!");
+    client->SendMessage(M_PROGRAM_DONE, { "0" });
 }
 
 void setup()
@@ -72,15 +70,14 @@ void setup()
 
     while (!client->IsConnectedToServer())
     {
+        // client->Update();
+
         Serial.println("Connecting to the server...");
 
         if (!client->ConnectToServer(MT_WASMACHINE))
         {
             Serial.println("Could not connect to the server.");
-        }
 
-        if (!client->IsConnectedToServer())
-        {
             delay(1000);
 
             Serial.println("Retrying connection...");
@@ -125,7 +122,7 @@ void setup()
         new DelayAction(5000L),
     });
 
-    Serial.println("Done!");
+    Serial.println("Done loading programs.");
 }
 
 void loop()
