@@ -14,8 +14,7 @@ SerialClient::~SerialClient()
 bool SerialClient::ConnectToServer(MachineType type)
 {
     // Identify ourselves to the remote server as a washing machine.
-    String parameters[] = { String(type), this->GetMacAddress() };
-    client->SendMessage(M_CONNECT, parameters, 2);
+    client->SendMessage(M_CONNECT, { String(type), this->GetMacAddress() });
 
     // Wait for the 'accept' response of the previous message.
     std::vector<String> response = this->ReadMessage(true);
@@ -30,16 +29,14 @@ bool SerialClient::ConnectToServer(MachineType type)
     return false;
 }
 
-void SerialClient::SendMessage(Message code, String* parameters = NULL, int parameterCount = 0)
+void SerialClient::SendMessage(MessageCode code)
 {
-    std::vector<String> parametersVector;
+    SendMessage(code, { "" });
+}
 
-    for (int i = 0; i < parameterCount; ++i)
-    {
-        parametersVector.push_back(parameters[i]);
-    }
-
-    Serial.println(Protocol::ToServer(code, parametersVector));
+void SerialClient::SendMessage(MessageCode code, std::vector<String> parameters)
+{
+    Serial.println(Protocol::ToServer(code, parameters));
 }
 
 std::vector<String> SerialClient::ReadMessage(bool shouldBlock = false)
@@ -86,6 +83,7 @@ void SerialClient::Update()
             {
                 _onMessageReceived(Protocol::FromServer(_message));
             }
+
             return;
         }
         else

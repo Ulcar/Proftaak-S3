@@ -178,8 +178,7 @@ void RequestPowerAction::Handle()
     {
         Serial.println("Asking for power...");
 
-        String parameters[] = { String(_watt) };
-        _client->SendMessage(M_MAY_HEAT_UP, parameters, 1);
+        _client->SendMessage(M_MAY_HEAT_UP, { String(_watt) });
 
         std::vector<String> response = _client->ReadMessage(true);
 
@@ -212,8 +211,7 @@ void RequestWaterAction::Handle()
     {
         Serial.println("Asking for water...");
 
-        String parameters[] = { String(_liters) };
-        _client->SendMessage(M_MAY_TAKE_WATER, parameters, 1);
+        _client->SendMessage(M_MAY_TAKE_WATER, { String(_liters) });
 
         std::vector<String> response = _client->ReadMessage(true);
 

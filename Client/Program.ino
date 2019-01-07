@@ -1,7 +1,8 @@
 #include "includes/program/Program.h"
 
 Program::Program(HardwareControl* control, IClient* client)
-    : _control(control)
+    : _currentAction(NULL)
+    , _control(control)
     , _client(client)
     , _currentActionIndex(0)
 {

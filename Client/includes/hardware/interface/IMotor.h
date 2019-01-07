@@ -7,6 +7,8 @@
 class IMotor
 {
 public:
+    virtual ~IMotor() { };
+
     virtual void Initialize(ICentipedeShield* centipede) = 0;
 
     virtual void SetDirection(MotorDirection direction) = 0;

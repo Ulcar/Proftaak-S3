@@ -1,12 +1,15 @@
 #include "includes/client/Protocol.h"
 
-String Protocol::ToServer(Message code, std::vector<String> parameters)
+String Protocol::ToServer(MessageCode code, std::vector<String> parameters)
 {
     String result = SEND_START_CHARACTER + String(code);
 
     for (int i = 0; i < parameters.size(); ++i)
     {
-        result += SEPARATOR_CHARACTER + parameters[i];
+        if (parameters[i].length() > 0)
+        {
+            result += SEPARATOR_CHARACTER + parameters[i];
+        }
     }
 
     result += SEND_END_CHARACTER;

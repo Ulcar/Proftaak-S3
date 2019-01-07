@@ -1,11 +1,11 @@
 #include "includes/program/Programs.h"
 
 Programs::Programs(HardwareControl* control, IClient* client)
-    : _control(control)
+    : _currentProgram(NULL)
+    , _control(control)
     , _client(client)
 {
     // ...
-    Serial.println("Programs::Programs");
 }
 
 void Programs::Update()
@@ -19,7 +19,6 @@ void Programs::Update()
 void Programs::Add(int number, std::vector<IAction*> actions)
 {
     Program* program = new Program(_control, _client);
-
     program->SetNumber(number);
 
     for (int i = 0; i < actions.size(); ++i)
@@ -38,6 +37,7 @@ bool Programs::Start(int number)
         {
             _currentProgram = _programs[i];
             _currentProgram->SetNextAction();
+
             return true;
         }
     }

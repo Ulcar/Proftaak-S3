@@ -1,7 +1,9 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#ifdef __AVR__
 #include <ArduinoSTL.h>
+#endif
 
 #include "../Enums.h"
 
@@ -21,8 +23,8 @@ public:
         return port;
     }
 
-    static String ToServer(Message code, std::vector<String> parameters);
-    static std::vector<String> FromServer(String);
+    static String ToServer(MessageCode code, std::vector<String> parameters);
+    static std::vector<String> FromServer(String message);
 
 private:
     static const int port = 2018;

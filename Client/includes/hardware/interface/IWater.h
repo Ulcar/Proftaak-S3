@@ -7,6 +7,8 @@
 class IWater
 {
 public:
+    virtual ~IWater() { };
+
     virtual void Initialize(ICentipedeShield* centipede) = 0;
 
     virtual WaterLevel GetLevel() = 0;

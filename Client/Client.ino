@@ -26,25 +26,24 @@ void onMessageReceived(std::vector<String> message)
 
     switch (command)
     {
-    case 0: // PING
-        client->SendMessage(M_PING);
+    case M_PING:
+        client->SendMessage(M_PING, { "0" });
         break;
 
-    case 7: // START_PROGRAM
+    case M_PROGRAM_START:
+        // If we don't have two parameters, we know that the command is invalid.
         if (message.size() < 2)
         {
-            String response = "1";
-            client->SendMessage(M_PROGRAM_START, &response, 1);
+            client->SendMessage(M_PROGRAM_START, { "1" });
+
             return;
         }
 
         int program = message[1].toInt();
-        String response = programs->Start(program)
-            ? "0"
-            : "1";
 
-        Serial.println("Starting program: " + String(program));
-        client->SendMessage(M_PROGRAM_START, &response, 1);
+        // If the program doesn't exist we send a "1" back, otherwise we start
+        // the program and send a "0" back.
+        client->SendMessage(M_PROGRAM_START, { programs->Start(program) ? "0" : "1" });
         break;
 
     default:
@@ -91,7 +90,7 @@ void setup()
 
     Serial.println("Loading programs...");
 
-    // Load program A
+    // Load program A.
     programs->Add(0, {
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
         new DelayAction(5000L),
@@ -99,7 +98,7 @@ void setup()
         new DelayAction(5000L),
     });
 
-    // Load program B
+    // Load program B.
     programs->Add(1, {
         new MotorRotateAction(MD_LEFT, SPEED_MEDIUM),
         new DelayAction(5000L),
@@ -107,7 +106,7 @@ void setup()
         new DelayAction(5000L),
     });
 
-    // Load program C
+    // Load program C.
     programs->Add(2, {
         new MotorRotateAction(MD_LEFT, SPEED_HIGH),
         new DelayAction(5000L),

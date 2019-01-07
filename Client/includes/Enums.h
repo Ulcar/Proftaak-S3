@@ -9,7 +9,7 @@ enum MachineType
     MT_STOOMMACHINE = 3
 };
 
-enum Message
+enum MessageCode
 {
     M_CONNECT = 0,
     M_MAY_TAKE_WATER = 1,

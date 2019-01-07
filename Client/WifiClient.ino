@@ -26,10 +26,8 @@ bool WifiClient::ConnectToServer(MachineType type)
 
     _client.connect(_ipAddress.c_str(), _port);
 
-
     // Identify ourselves to the remote server.
-    String parameters[] = { String(type), this->GetMacAddress() };
-    client->SendMessage(M_CONNECT, parameters, 2);
+    client->SendMessage(M_CONNECT, { String(type), this->GetMacAddress() });
 
     // Wait for the 'accept' response of the previous message.
     std::vector<String> response = this->ReadMessage(true);
@@ -44,21 +42,19 @@ bool WifiClient::ConnectToServer(MachineType type)
     return false;
 }
 
-void WifiClient::SendMessage(Message code, String* parameters = NULL, int parameterCount = 0)
+void WifiClient::SendMessage(MessageCode code)
+{
+    SendMessage(code, { "" });
+}
+
+void WifiClient::SendMessage(MessageCode code, std::vector<String> parameters)
 {
     if (!this->IsConnectedToNetwork())
     {
         return;
     }
 
-    std::vector<String> parametersVector;
-
-    for (int i = 0; i < parameterCount; ++i)
-    {
-        parametersVector.push_back(parameters[i]);
-    }
-
-    _client.write(Protocol::ToServer(code, parametersVector).c_str());
+    _client.write(Protocol::ToServer(code, parameters).c_str());
 }
 
 std::vector<String> WifiClient::ReadMessage(bool shouldBlock = false)
@@ -96,7 +92,8 @@ std::vector<String> WifiClient::ReadMessage(bool shouldBlock = false)
 
 String WifiClient::GetMacAddress()
 {
-    String result;
+    String result = "";
+
     byte macAddress[6];
     char buffer[3];
 

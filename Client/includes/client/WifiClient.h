@@ -14,7 +14,9 @@ public:
 
     bool ConnectToServer(MachineType type);
 
-    void SendMessage(Message code, String* parameters = NULL, int parameterCount = 0);
+    void SendMessage(MessageCode code);
+    void SendMessage(MessageCode code, std::vector<String> parameters);
+
     std::vector<String> ReadMessage(bool shouldBlock = false);
 
     String GetMacAddress();

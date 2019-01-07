@@ -4,6 +4,8 @@
 class ICentipedeShield
 {
 public:
+    virtual ~ICentipedeShield() { };
+
     virtual void Initialize() = 0;
     virtual void PinMode(int pin, int mode) = 0;
     virtual void DigitalWrite(int pin, int mode) = 0;

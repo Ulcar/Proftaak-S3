@@ -5,28 +5,30 @@
 #include <string>
 
 #include "includes/client/IClient.h"
+#include "includes/Enums.h"
 
 class MockClient : public IClient
 {
 public:
-    MOCK_METHOD0(ConnectToServer, bool());
+    MOCK_METHOD1(ConnectToServer, bool(MachineType));
 
-    MOCK_METHOD1(SendMessage, void(String));
-    MOCK_METHOD0(GetMacAddress, std::string());
-    MOCK_METHOD0(IsConnected, bool());
+    MOCK_METHOD2(SendMessage, void(MessageCode, std::vector<String>));
+    MOCK_METHOD0(GetMacAddress, String());
+    MOCK_METHOD0(IsConnectedToServer, bool());
+    MOCK_METHOD0(IsDataAvailable, bool());
 
-    void InjectMessage(std::string message)
+    void InjectMessage(std::vector<String> message)
     {
         _injectedMessage = message;
     }
 
-    std::string ReadMessage(bool shouldBlock = true)
+    std::vector<String> ReadMessage(bool shouldBlock = false)
     {
         return _injectedMessage;
     }
 
 private:
-    String _injectedMessage;
+    std::vector<String> _injectedMessage;
 };
 
 #endif

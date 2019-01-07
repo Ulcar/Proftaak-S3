@@ -1,7 +1,9 @@
 #ifndef ICLIENT_H
 #define ICLIENT_H
 
+#ifdef __AVR__
 #include <ArduinoSTL.h>
+#endif
 
 #include "../Enums.h"
 #include "Protocol.h"
@@ -13,7 +15,9 @@ class IClient
 public:
     virtual bool ConnectToServer(MachineType type) = 0;
 
-    virtual void SendMessage(Message code, String* parameters, int parameterCount) = 0;
+    virtual void SendMessage(MessageCode code) = 0;
+    virtual void SendMessage(MessageCode code, std::vector<String> parameters) = 0;
+
     virtual std::vector<String> ReadMessage(bool shouldBlock = false) = 0;
 
     virtual String GetMacAddress() = 0;
