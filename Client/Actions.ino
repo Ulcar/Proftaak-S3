@@ -216,7 +216,7 @@ MotorRotateAction::MotorRotateAction(MotorDirection direction, MotorSpeed speed)
     : _direction(direction)
     , _speed(speed)
 {
-    // Nothing to do...
+    // ...
 }
 
 void MotorRotateAction::Handle()
@@ -225,8 +225,6 @@ void MotorRotateAction::Handle()
 
     motor->SetDirection(_direction);
     motor->SetSpeed(_speed);
-
-    Serial.println("Rotating: " + String(_direction) + " with speed: " + String(_speed));
 }
 
 bool MotorRotateAction::IsDone()

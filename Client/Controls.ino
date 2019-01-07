@@ -64,6 +64,5 @@ void Controls::SetSoap(HardwareState state, int dispenser)
 
 void Controls::SetBuzzer(HardwareState state)
 {
-    Serial.println("Turning the buzzer " + String(state == STATE_ON ? "on": "off"));
     _centipede->DigitalWrite(OUTPUT_BUZZER, state == STATE_ON);
 }
