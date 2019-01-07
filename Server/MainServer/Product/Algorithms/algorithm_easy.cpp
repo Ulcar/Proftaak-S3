@@ -114,6 +114,7 @@ void Algorithm_easy::HandleStomerWater(Machine* machine, std::vector<std::string
     {
         machine->SetUsedWater(stoi(messageVector[1]));
         machine->Send(M_CODE_WATER, 1);
+        database->HandleWashFinish(machine->GetMacAdress());
         return;
     }
     machine->Send(M_CODE_WATER, 0);
@@ -122,6 +123,7 @@ void Algorithm_easy::HandleStomerWater(Machine* machine, std::vector<std::string
 void Algorithm_easy::HandleStomerDone(Machine* machine, std::vector<std::string> messageVector)
 {
     DebugLogger::Record("Stomer " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
+    database->HandleWashFinish(machine->GetMacAdress());
     machine->SetProgram(Program::PROGRAM_NONE);       
 }
 

@@ -9,6 +9,7 @@
 #include "database.h"
 #include "machine.h"
 #include "protocol.h"
+#include "wasbak.h"
 
 #include <arpa/inet.h>
 #include <cstdio>
@@ -28,12 +29,14 @@ std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
 
+std::vector<wasbak> WasToDo;
+std::vector<wasbak> finishedWas;
+
 
 void Setup()
 {
     Errorlogger::Record("System startup", "main");
     Errorlogger::LiveErrorLogging = true;
-
     DebugLogger::LiveDebugLogging = true;
     DebugLogger::Record("System startup", "main");
 

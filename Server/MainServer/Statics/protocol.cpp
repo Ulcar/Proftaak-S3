@@ -7,6 +7,19 @@ std::string Protocol::ToMachine(M_Code code, int value)
     return messageToMachine;
 }
 
+std::string Protocol::ToMachine(M_Code code, std::vector<int> values)
+{
+    std::vector<std::string> temp;
+    for(int value : values)
+    {
+        temp.push_back(std::to_string(value));
+    }
+    
+    std::string messageToMachine = MakeString(code, temp, startCharToMachine, endCharToMachine);
+    return messageToMachine;
+}
+
+
 std::vector<std::string> Protocol::FromMachine(std::string message)
 {
     return SplitString(message, seperatorChar, endCharToMachine, startCharToMachine);

@@ -52,3 +52,13 @@ void Machine::SetProgram(Program SetProgram)
 {
     currentProgram = SetProgram;
 }
+
+bool Machine::IsInProgress()
+{
+    return inProgress;
+}
+
+void Machine::SetInProgress(bool inProgress)
+{
+    this->inProgress = inProgress;
+}

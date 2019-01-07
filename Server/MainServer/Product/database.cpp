@@ -112,3 +112,31 @@ bool Database::RemoveCurrentWater(int removeCurrentWater)
     currentWater += removeCurrentWater;
     return true;
 }
+
+void Database::HandleWashFinish(std::string macAdress)
+{
+    std::vector<Was> wasToHandle;
+    for (Wasbak was : wasbakken)
+    {
+        if(was.GetMacAdress() == macAdress)
+        {
+            was.OnWashFinish(wasToHandle);
+        }
+    }
+
+    for(Was was : wasToHandle)
+    {
+        for(Wasbak bak : wasbakken)
+        {
+            if(!bak.GetBusy() && bak.tasks[0] == was.tasksToDo[0])
+            {
+                bak.AddWasToWasbak(was);
+                return;
+            }
+        }
+
+        Wasbak newWasbak = Wasbak();
+        wasbakken.push_back(newWasbak);
+        
+    }
+}

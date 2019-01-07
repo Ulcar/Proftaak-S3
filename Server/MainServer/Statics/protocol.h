@@ -23,6 +23,7 @@ class Protocol
         static std::string ToControlPanel(CP_Code code, std::vector<std::string> value);
         static std::vector<std::string> FromControlPanel(std::string);
         static std::vector<std::string> SplitString(std::string text, char splitChar);
+        static std::string ToMachine(M_Code code, std::vector<int> values);
 
     private:
         static const char startCharToMachine = '#';
