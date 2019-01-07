@@ -21,6 +21,7 @@ class Algorithm
         void HandleControlPanel(Client* client, std::vector<std::string> messageVector, std::vector<Client*> clients);
         void HandleWasmachine(Machine* machine, std::vector<std::string> messageVector);
         void HandleStomer(Machine* machine, std::vector<std::string> messageVector);
+        void UpdateLaundryBaskets();
 };
 
 #endif

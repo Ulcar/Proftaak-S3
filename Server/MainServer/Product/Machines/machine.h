@@ -17,10 +17,14 @@ class Machine : public Client
         Program GetProgram();
         void SetProgram(Program SetProgram);
 
+        bool IsInProgress();
+        void SetInProgress(bool inProgress);
+
     private:
         int usedWater;
         int usedPower;
-        Program currentProgram;  
+        Program currentProgram;
+        bool inProgress;
 };
 
 #endif

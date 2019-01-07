@@ -6,6 +6,7 @@
 
 #include "client.h"
 #include "socket.h"
+#include "wasbak.h"
 
 #include <mutex>
 #include <unistd.h>
@@ -17,6 +18,7 @@ class Database
         Database();
         ~Database();
         std::vector<Client*> GetClients();
+        std::vector<Wasbak> GetWasbakken();
         void AddClient(Client* client);
         bool AskQuit();
         void SetQuit(bool quit);
@@ -28,9 +30,14 @@ class Database
         bool UpdatePower(int amountPower);
         void ResetPower(int amountPower);
 
+        void HandleWashFinish(std::string macAdress);
+        void HandleWash(std::vector<Was> washToHandle);
+        void HandleLaundryBaskets();
+
     private:
         bool quit;
         std::vector<Client*> clients;
+        std::vector<Wasbak> wasbakken;
 
         std::mutex mtxClient;
         std::mutex mtxQuit;

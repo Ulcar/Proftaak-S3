@@ -110,3 +110,74 @@ bool Database::UpdateWater(int amountWater)
     currentWater += amountWater;
     return true;
 }
+
+void Database::HandleWashFinish(std::string macAdress)
+{
+    std::vector<Was> wasToHandle;
+    for (Wasbak was : wasbakken)
+    {
+        if(was.GetMacAdress() == macAdress)
+        {
+            was.OnWashFinish(wasToHandle);
+        }
+    }
+
+    for(Was was : wasToHandle)
+    {
+        for(Wasbak bak : wasbakken)
+        {
+            if(!bak.IsBusy() && bak.tasks[0] == was.tasksToDo[0])
+            {
+                bak.AddWasToWasbak(was);
+                return;
+            }
+        }
+
+        Wasbak newWasbak = Wasbak(was.tasksToDo);
+        wasbakken.push_back(newWasbak);
+        
+    }
+}
+
+void Database::HandleWash(std::vector<Was> washToHandle)
+{
+    bool found = false;
+    for(Was was : washToHandle)
+    {
+        for(Wasbak bak : wasbakken)
+        {
+            if(!bak.IsBusy() && bak.tasks[0] == was.tasksToDo[0])
+            {
+                bak.AddWasToWasbak(was);
+                found = true;
+                break;
+            }
+        }
+
+        if(!found)
+        {
+        Wasbak newWasbak = Wasbak(was.tasksToDo);
+        wasbakken.push_back(newWasbak);
+        }
+
+       
+        
+    }
+}
+
+void Database::HandleLaundryBaskets()
+{
+    for(Wasbak bak : wasbakken)
+    {
+        if(!bak.IsBusy())
+        {
+            for(Client* client : clients)
+            {
+                if(bak.tasks[0] == client->GetType())
+                {
+                    //add checks to make sure machine isn't doing anything
+                    // Do StartProgram on machine, and                 }
+            }
+        }
+    }
+}

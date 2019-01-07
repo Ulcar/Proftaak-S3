@@ -114,6 +114,7 @@ void Algorithm_easy::HandleStomerWater(Machine* machine, std::vector<std::string
     {
         machine->SetUsedWater(stoi(messageVector[1]));
         machine->Send(M_CODE_WATER, 1);
+        database->HandleWashFinish(machine->GetMacAdress());
         return;
     }
     machine->Send(M_CODE_WATER, 0);

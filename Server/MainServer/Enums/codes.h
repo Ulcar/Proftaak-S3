@@ -8,7 +8,8 @@ enum M_Code
     M_CODE_STOP_WATER,
     M_CODE_REQUEST_HEATER,
     M_CODE_STOP_HEATER,
-    M_CODE_DONE
+    M_CODE_DONE,
+    M_CODE_SENDPROGRAM
 };
 
 enum CP_Code

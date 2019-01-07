@@ -5,7 +5,9 @@ enum Type
 {
     ControlPanel = -1,
     Wasmachine,
-    Stomer
+    Stomer,
+    Centrifuge,
+    Droogmachine
 };
 
 enum Program

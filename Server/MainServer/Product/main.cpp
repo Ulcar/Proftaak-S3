@@ -8,6 +8,7 @@
 #include "database.h"
 #include "machine.h"
 #include "protocol.h"
+#include "wasbak.h"
 
 #include <vector>
 #include <thread> 
@@ -19,6 +20,9 @@ iAlgorithm* iAlgorithm;
 std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
+
+std::vector<Wasbak> WasToDo;
+std::vector<Wasbak> finishedWas;
 
 
 void Setup()
