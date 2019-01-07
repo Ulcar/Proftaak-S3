@@ -128,15 +128,58 @@ void Database::HandleWashFinish(std::string macAdress)
     {
         for(Wasbak bak : wasbakken)
         {
-            if(!bak.GetBusy() && bak.tasks[0] == was.tasksToDo[0])
+            if(!bak.IsBusy() && bak.tasks[0] == was.tasksToDo[0])
             {
                 bak.AddWasToWasbak(was);
                 return;
             }
         }
 
-        Wasbak newWasbak = Wasbak();
+        Wasbak newWasbak = Wasbak(was.tasksToDo);
         wasbakken.push_back(newWasbak);
         
+    }
+}
+
+void Database::HandleWash(std::vector<Was> washToHandle)
+{
+    bool found = false;
+    for(Was was : washToHandle)
+    {
+        for(Wasbak bak : wasbakken)
+        {
+            if(!bak.IsBusy() && bak.tasks[0] == was.tasksToDo[0])
+            {
+                bak.AddWasToWasbak(was);
+                found = true;
+                break;
+            }
+        }
+
+        if(!found)
+        {
+        Wasbak newWasbak = Wasbak(was.tasksToDo);
+        wasbakken.push_back(newWasbak);
+        }
+
+       
+        
+    }
+}
+
+void Database::HandleLaundryBaskets()
+{
+    for(Wasbak bak : wasbakken)
+    {
+        if(!bak.IsBusy())
+        {
+            for(Client* client : clients)
+            {
+                if(bak.tasks[0] == client->GetType())
+                {
+                    //add checks to make sure machine isn't doing anything
+                    // Do StartProgram on machine, and                 }
+            }
+        }
     }
 }

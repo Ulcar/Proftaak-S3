@@ -22,6 +22,12 @@ bool Wasbak::AddWasToWasbak(Was was)
     }
 
     wasVector.push_back(was);
+    return true;
+}
+
+bool Wasbak::IsBusy()
+{
+    return busy;
 }
 
 Wasbak::Wasbak(std::vector<Type> machines)
@@ -30,4 +36,9 @@ Wasbak::Wasbak(std::vector<Type> machines)
     weightLimit = MAX_WEIGHT;
 
     tasks = machines;
+}
+
+std::string Wasbak::GetMacAdress()
+{
+    return usedClientId;
 }

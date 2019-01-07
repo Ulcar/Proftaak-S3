@@ -71,6 +71,7 @@ std::vector<std::string> Protocol::SplitString(std::string text, char splitChar)
 
     while(true)
     {
+        
         size_t index = text.find_first_of(splitChar, prevIndex);
         if(index > text.length())
         {

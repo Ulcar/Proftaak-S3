@@ -37,6 +37,8 @@ class Database
         void AddCurrentPower(int addCurrentPower);
 
         void HandleWashFinish(std::string macAdress);
+        void HandleWash(std::vector<Was> washToHandle);
+        void HandleLaundryBaskets();
 
     private:
         bool quit;

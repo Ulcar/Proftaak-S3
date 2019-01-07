@@ -1,0 +1,4 @@
+class WasbakHandler
+{
+    void Update(){}
+};

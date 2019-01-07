@@ -216,7 +216,7 @@ void SocketHandler::ConnectClient(int socketFd)
                 return;
             }
 
-            socket->TrySend();
+        //    socket->TrySend();
             client->SetSocket(socket);
             database->AddClient(client);
 

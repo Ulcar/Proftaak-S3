@@ -1,4 +1,5 @@
-#include "Was.h"
+
+#include "was.h"
 
 int Was::GetWeight()
 {

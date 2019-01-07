@@ -29,8 +29,8 @@ std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
 
-std::vector<wasbak> WasToDo;
-std::vector<wasbak> finishedWas;
+std::vector<Wasbak> WasToDo;
+std::vector<Wasbak> finishedWas;
 
 
 void Setup()

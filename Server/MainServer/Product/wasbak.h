@@ -1,3 +1,5 @@
+#ifndef LAUNDRY_BASKET_H
+    #define LAUNDRY_BASKET_H
 #include <string>
 #include <vector>
 #include "was.h"
@@ -25,7 +27,9 @@ class Wasbak
 
     std::string GetMacAdress();
 
-    bool GetBusy();
+    
+    
+    bool IsBusy();
     bool GetDone();
 
     int GetCurrentWeight();
@@ -41,3 +45,5 @@ class Wasbak
  
 
 };
+
+#endif
