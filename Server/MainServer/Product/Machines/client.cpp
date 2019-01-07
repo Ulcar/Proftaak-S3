@@ -43,6 +43,6 @@ bool Client::IsEnabled()
 
 void Client::SetEnable(bool enabled)
 {
-    DebugLogger::Record(macAdress + " is now enabled: " + std::to_string(enabled), "client");
+    Logger::Record(false, macAdress + " is now enabled: " + std::to_string(enabled), "client");
     this->enabled = enabled;
 }

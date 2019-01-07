@@ -89,7 +89,7 @@ void Algorithm_easy::HandleWasmachineWater(Machine* machine, std::vector<std::st
 
 void Algorithm_easy::HandleWasmachineDone(Machine* machine, std::vector<std::string> messageVector)
 {
-    DebugLogger::Record("Wasmachine " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
+    Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
     machine->SetProgram(Program::PROGRAM_NONE);        
 }
 
@@ -121,7 +121,7 @@ void Algorithm_easy::HandleStomerWater(Machine* machine, std::vector<std::string
 
 void Algorithm_easy::HandleStomerDone(Machine* machine, std::vector<std::string> messageVector)
 {
-    DebugLogger::Record("Stomer " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
+    Logger::Record(false, "Stomer " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
     machine->SetProgram(Program::PROGRAM_NONE);       
 }
 

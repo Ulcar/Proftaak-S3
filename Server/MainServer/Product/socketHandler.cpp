@@ -12,7 +12,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
 
     Setup(&masterFd);
 
-    DebugLogger::Record("Sockets started", "socketHandler");
+    Logger::Record(false, "Sockets started", "socketHandler");
 
     while (true)
     {        
@@ -53,7 +53,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
 
         if (nrSockets < 0) // error situation
         {
-            Errorlogger::Record("error from calling socket", "socketHandler");
+            Logger::Record(true, "error from calling socket", "socketHandler");
         }
         else if (nrSockets == 0) // timeout
         {
@@ -86,7 +86,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
                 { 
                     tempClient->SetSocket(nullptr);
                     tempsocket = nullptr;
-                    DebugLogger::Record("Removed socket of " + tempClient->GetMacAdress(), "socketHandler");
+                    Logger::Record(false, "Removed socket of " + tempClient->GetMacAdress(), "socketHandler");
                 }
             }
         }
@@ -98,7 +98,7 @@ void SocketHandler::Setup(int *socketFd)
     *socketFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (*socketFd < 0)
     {
-        Errorlogger::Record("Can't create socket", "socketHandler");
+        Logger::Record(true, "Can't create socket", "socketHandler");
         return;
     }
 
@@ -110,14 +110,14 @@ void SocketHandler::Setup(int *socketFd)
 
     if (bind(*socketFd, (struct sockaddr*)&sa, sizeof sa) < 0)
     {
-       Errorlogger::Record("bind failed", "socketHandler");
+        Logger::Record(true, "bind failed", "socketHandler");
         close(*socketFd);
         exit(EXIT_FAILURE);
     }
     
     if (listen(*socketFd, SOCKET_SIZE) < 0)
     {
-        Errorlogger::Record("listen failed", "socketHandler");
+        Logger::Record(true, "listen failed", "socketHandler");
         close(*socketFd);
         exit(EXIT_FAILURE);
     }
@@ -140,7 +140,7 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
         }
         else
         {
-            Errorlogger::Record("Not a valid type: " + std::to_string(typeChar), "SocketHandler - CreateSocket");
+            Logger::Record(true, "Not a valid type: " + std::to_string(typeChar), "SocketHandler - CreateSocket");
             return nullptr;
         }
     }
@@ -153,7 +153,7 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
             return client;
         }
     }
-    DebugLogger::Record("Created new Client: " + type, "socketHandler");
+    Logger::Record(false, "Created new Client: " + type, "socketHandler");
             
     if(type == Type::ControlPanel)
     {
@@ -173,17 +173,17 @@ void SocketHandler::ConnectClient(int socketFd)
     int connectFd = accept(socketFd, NULL, NULL);
     if (connectFd < 0)
     {
-        Errorlogger::Record("Accept failed", "socketHandler");
+        Logger::Record(true, "Accept failed", "socketHandler");
         close(socketFd);
         exit(EXIT_FAILURE);
     }
     
     Socket* socket = new Socket(connectFd);
-    DebugLogger::Record("New socket connected: " + connectFd, "socketHandler");
+    Logger::Record(false, "New socket connected: " + connectFd, "socketHandler");
 
     if(!socket->Read())
     {
-        DebugLogger::Record("Removed socket: " + connectFd, "socketHandler");
+        Logger::Record(false, "Removed socket: " + connectFd, "socketHandler");
         delete socket;
         return;
     }
@@ -220,7 +220,7 @@ void SocketHandler::ConnectClient(int socketFd)
             client->SetSocket(socket);
             database->AddClient(client);
 
-            DebugLogger::Record("Added Client with type: " + std::to_string(client->GetType()) + "with id: " + client->GetMacAdress(), "socketHandler");
+            Logger::Record(false, "Added Client with type: " + std::to_string(client->GetType()) + "with id: " + client->GetMacAdress(), "socketHandler");
             return;
         }
 

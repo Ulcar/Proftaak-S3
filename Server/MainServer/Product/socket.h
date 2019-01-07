@@ -5,8 +5,7 @@
 #include "enums.h"
 #include "iSocketQueue.h"
 #include "iSocketIO.h"
-#include "errorlogger.h"
-#include "debuglogger.h"
+#include "logger.h"
 
 #include <arpa/inet.h>
 #include <cstdio>
@@ -18,6 +17,8 @@ class Socket : public iSocketQueue , public iSocketIO
 {
     public:
         Socket(int socketFd);
+        // Socket(const Socket &other);
+        // Socket &operator = (const Socket &other);
         virtual ~Socket();
         int Ping();
         void TrySend();

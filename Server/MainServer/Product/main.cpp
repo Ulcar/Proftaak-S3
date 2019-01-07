@@ -1,8 +1,7 @@
 #include "algorithm.h"
 #include "iAlgorithm.h"
 #include "algorithm_easy.h"
-#include "errorlogger.h"
-#include "debuglogger.h"
+#include "logger.h"
 #include "client.h"
 #include "socketHandler.h"
 #include "consoleHandler.h"
@@ -24,11 +23,11 @@ std::thread consoleThread;
 
 void Setup()
 {
-    Errorlogger::Record("System startup", "main");
-    Errorlogger::LiveErrorLogging = true;
+    Logger::Record(true, "System startup", "main");
+    Logger::LiveErrorLogging = true;
 
-    DebugLogger::LiveDebugLogging = true;
-    DebugLogger::Record("System startup", "main");
+    Logger::LiveDebugLogging = true;
+    Logger::Record(false, "System startup", "main");
 
     database = new Database();
     iAlgorithm = new Algorithm_easy(database);
@@ -50,11 +49,11 @@ void ShutDown()
     delete database;
     delete algorithm;
 
-    Errorlogger::Record("System shutdown", "main");
-    DebugLogger::Record("System shutdown", "main");
+    Logger::Record(true, "System shutdown", "main");
+    Logger::Record(false, "System shutdown", "main");
     
-    Errorlogger::SaveAsFile();
-    DebugLogger::SaveAsFile();
+    Logger::SaveErrorAsFile();
+    Logger::SaveDebugAsFile();
 }
 
 //------------------------------------------------------------------------------//

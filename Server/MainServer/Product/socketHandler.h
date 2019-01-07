@@ -2,8 +2,7 @@
 #define SOCKETHANDLER_H
 
 #include "socket.h"
-#include "debuglogger.h"
-#include "errorlogger.h"
+#include "logger.h"
 #include "machine.h"
 #include "database.h"
 #include "client.h"
