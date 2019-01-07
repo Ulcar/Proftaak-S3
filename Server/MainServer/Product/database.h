@@ -8,12 +8,6 @@
 #include "socket.h"
 #include "wasbak.h"
 
-#include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <string>
-#include <iostream>
 #include <mutex>
 #include <unistd.h>
 #include <vector>
@@ -30,11 +24,11 @@ class Database
         void SetQuit(bool quit);
         
         int AskCurrentWater();
-        bool RemoveCurrentWater(int removeCurrentWater);
-        void AddCurrentWater(int addCurrentWater);
+        bool UpdateWater(int amountWater);
+        void ResetWater(int amountWater);
         int AskCurrentPower();
-        bool RemoveCurrentPower(int removeCurrentPower);
-        void AddCurrentPower(int addCurrentPower);
+        bool UpdatePower(int amountPower);
+        void ResetPower(int amountPower);
 
         void HandleWashFinish(std::string macAdress);
         void HandleWash(std::vector<Was> washToHandle);

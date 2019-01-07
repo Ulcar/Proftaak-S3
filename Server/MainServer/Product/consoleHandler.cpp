@@ -6,7 +6,7 @@ Database* ConsoleHandler::database;
 void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
 {
     database = tempdatabase;
-    DebugLogger::Record("Console started", "consoleHandler");
+    Logger::Record(false, "Console started", "consoleHandler");
 
     while(true)
     {
@@ -41,17 +41,17 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
             {
                 if(commandos.at(1) == "save")
                 {
-                    Errorlogger::SaveAsFile();
+                    Logger::SaveErrorAsFile();
                 }
                 else if(commandos.at(1) == "live")
                 {
-                    Errorlogger::LiveErrorLogging = !Errorlogger::LiveErrorLogging;
-                    message += "Live Errorlogging: " + Errorlogger::LiveErrorLogging;
+                    Logger::LiveErrorLogging = !Logger::LiveErrorLogging;
+                    message += "Live Errorlogging: " + Logger::LiveErrorLogging;
                     message += "\n";
                 }
                 else if(commandos.at(1) == "display")
                 {
-                    message += Errorlogger::Display();
+                    message += Logger::DisplayErrorLog();
                 }
             }
         }
@@ -67,17 +67,17 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
             {
                 if(commandos.at(1) == "save")
                 {
-                    DebugLogger::SaveAsFile();
+                    Logger::SaveDebugAsFile();
                 }
                 else if(commandos.at(1) == "live")
                 {
-                    DebugLogger::LiveDebugLogging = !DebugLogger::LiveDebugLogging;
-                    message += "Live Debuglogging: " + DebugLogger::LiveDebugLogging;
+                    Logger::LiveDebugLogging = !Logger::LiveDebugLogging;
+                    message += "Live Debuglogging: " + Logger::LiveDebugLogging;
                     message += "\n";
                 }
                 else if(commandos.at(1) == "display")
                 {
-                    message += DebugLogger::Display();
+                    message += Logger::DisplayDebugLog();
                 }
             }
         }
@@ -92,7 +92,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
     }
     catch(std::exception)
     {
-        Errorlogger::Record("Exception in handling command: " + commando, "consoleHandler");
+        Logger::Record(true, "Exception in handling command: " + commando, "consoleHandler");
         message += "Exception: " + commando + "/n";
     }
     return message;

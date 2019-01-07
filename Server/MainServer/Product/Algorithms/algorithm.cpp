@@ -91,7 +91,7 @@ void Algorithm::HandleControlPanel(Client* client, std::vector<std::string> mess
     }
     catch(const std::bad_cast& e)
     {
-        Errorlogger::Record("start of message doesn't contain an int, or is out of range of the enum", "Algorithm");
+        Logger::Record(true, "Start of message doesn't contain an int, or is out of range of the enum", "Algorithm");
     }
 }
 
