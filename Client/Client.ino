@@ -52,6 +52,11 @@ void onMessageReceived(std::vector<String> message)
     }
 }
 
+void onProgramDone()
+{
+    Serial.println("Program done!");
+}
+
 void setup()
 {
     Serial.begin(9600);
@@ -88,6 +93,8 @@ void setup()
     hardwareControl = new HardwareControl(new CentipedeShield(), new Controls(), new Heater(), new Motor(), new Water());
     programs = new Programs(hardwareControl, client);
 
+    programs->SetOnProgramDone(onProgramDone);
+
     Serial.println("Loading programs...");
 
     // Load program A.
@@ -96,6 +103,10 @@ void setup()
         new DelayAction(5000L),
         new MotorRotateAction(MD_RIGHT, SPEED_LOW),
         new DelayAction(5000L),
+
+        new BuzzerAction(STATE_ON),
+        new DelayAction(1000L),
+        new BuzzerAction(STATE_OFF),
     });
 
     // Load program B.

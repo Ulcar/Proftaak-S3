@@ -12,7 +12,15 @@ void Programs::Update()
 {
     if (_currentProgram != NULL)
     {
-        _currentProgram->Update();
+        bool result = _currentProgram->Update();
+
+        // If the result is 'false' we know that the program is done.
+        if (!result && _onProgramDone != NULL)
+        {
+            _currentProgram = NULL;
+
+            _onProgramDone();
+        }
     }
 }
 
@@ -36,7 +44,7 @@ bool Programs::Start(int number)
         if (_programs[i]->GetNumber() == number)
         {
             _currentProgram = _programs[i];
-            _currentProgram->SetNextAction();
+            _currentProgram->Start();
 
             return true;
         }

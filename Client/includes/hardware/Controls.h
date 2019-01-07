@@ -17,7 +17,7 @@ public:
 
     void SetLock(HardwareState state);
     void SetSoap(HardwareState state, int dispenser);
-    void EnableBuzzer(int timeInMs);
+    void SetBuzzer(HardwareState state);
 };
 
 #endif

@@ -9,42 +9,40 @@ Program::Program(HardwareControl* control, IClient* client)
     // ...
 }
 
-void Program::SetNumber(int number)
+void Program::Start()
 {
-    _number = number;
+    _currentActionIndex = 0;
+    _currentAction = NULL;
+    _started = true;
+
+    SetNextAction();
 }
 
-int Program::GetNumber()
+bool Program::Update()
 {
-    return _number;
-}
-
-void Program::Update()
-{
-    if (_currentAction != NULL)
+    if (_started && _currentAction != NULL)
     {
         _currentAction->Handle();
 
         if (_currentAction->IsDone())
         {
-            SetNextAction();
+            return SetNextAction();
         }
     }
 }
 
-void Program::Reset()
-{
-    _currentActionIndex = 0;
-
-    SetNextAction();
-}
-
-void Program::SetNextAction()
+bool Program::SetNextAction()
 {
     if (_currentActionIndex < _actions.size())
     {
         _currentAction = _actions[_currentActionIndex++];
+
+        return true;
     }
+
+    _started = false;
+
+    return false;
 }
 
 void Program::AddAction(IAction* action)

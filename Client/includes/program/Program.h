@@ -10,22 +10,30 @@ class Program
 public:
     Program(HardwareControl* control, IClient* client);
 
-    void SetNumber(int number);
-    int GetNumber();
-
-    void Update();
-    void Reset();
-    void SetNextAction();
+    void Start();
+    bool Update();
+    bool SetNextAction();
     void AddAction(IAction* action);
 
+    void SetNumber(int number)
+    {
+        _number = number;
+    }
+
+    int Program::GetNumber()
+    {
+        return _number;
+    }
+
 private:
+    std::vector<IAction*> _actions;
+
     HardwareControl* _control;
+    IAction* _currentAction;
     IClient* _client;
 
+    bool _started;
     int _number;
-
-    std::vector<IAction*> _actions;
-    IAction* _currentAction;
     int _currentActionIndex;
 };
 

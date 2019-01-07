@@ -11,8 +11,15 @@ public:
     virtual void Handle() = 0;
     virtual bool IsDone() = 0;
 
-    void SetHardwareControl(HardwareControl* control);
-    void SetClient(IClient* client);
+    void SetHardwareControl(HardwareControl* control)
+    {
+        _control = control;
+    }
+
+    void SetClient(IClient* client)
+    {
+        _client = client;
+    }
 
 protected:
     HardwareControl* _control;
@@ -34,13 +41,13 @@ private:
 class BuzzerAction : public IAction
 {
 public:
-    BuzzerAction(int ms);
+    BuzzerAction(HardwareState state);
 
     void Handle();
     bool IsDone();
 
 private:
-    int _ms;
+    HardwareState _state;
 };
 
 class DrainWaterAction : public IAction

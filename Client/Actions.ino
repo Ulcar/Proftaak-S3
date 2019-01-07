@@ -1,20 +1,6 @@
 #include "includes/program/Actions.h"
 
 //
-// IAction
-//=============
-
-void IAction::SetHardwareControl(HardwareControl* control)
-{
-    _control = control;
-}
-
-void IAction::SetClient(IClient* client)
-{
-    _client = client;
-}
-
-//
 // AddSoapAction
 //=============
 
@@ -29,7 +15,6 @@ void AddSoapAction::Handle()
     Controls* controls = _control->GetControls();
 
     controls->SetSoap(STATE_ON, _dispenser);
-    controls->SetSoap(STATE_OFF, _dispenser);
 }
 
 bool AddSoapAction::IsDone()
@@ -41,8 +26,8 @@ bool AddSoapAction::IsDone()
 // BuzzerAction
 //=============
 
-BuzzerAction::BuzzerAction(int ms)
-    : _ms(ms)
+BuzzerAction::BuzzerAction(HardwareState state)
+    : _state(state)
 {
     // ...
 }
@@ -51,7 +36,7 @@ void BuzzerAction::Handle()
 {
     Controls* controls = _control->GetControls();
 
-    controls->EnableBuzzer(_ms);
+    controls->SetBuzzer(_state);
 }
 
 bool BuzzerAction::IsDone()
@@ -70,8 +55,6 @@ DrainWaterAction::DrainWaterAction()
 
 void DrainWaterAction::Handle()
 {
-    Serial.println("DrainWaterAction::Handle()");
-
     Water* water = _control->GetWater();
 
     if (water->GetSinkState() != STATE_ON)
@@ -87,6 +70,7 @@ bool DrainWaterAction::IsDone()
     if (water->GetLevel() == WL_EMPTY)
     {
         water->SetSink(STATE_OFF);
+
         return true;
     }
 
@@ -105,17 +89,11 @@ HeatAction::HeatAction(Temperature temp)
 
 void HeatAction::Handle()
 {
-    Serial.println("HeatAction::Handle()");
-
     Heater* heater = _control->GetHeater();
 
     if (heater->GetState() != STATE_ON)
     {
-        HardwareState state = heater->GetTemperature() < _temp
-            ? STATE_ON
-            : STATE_OFF;
-
-        heater->Set(state);
+        heater->Set(heater->GetTemperature() < _temp ? STATE_ON : STATE_OFF);
     }
 }
 
@@ -138,8 +116,6 @@ FillWaterAction::FillWaterAction(WaterLevel level)
 
 void FillWaterAction::Handle()
 {
-    Serial.println("FillWaterAction::Handle()");
-
     Water* water = _control->GetWater();
 
     if (water->GetDrainState() != STATE_ON)
@@ -155,6 +131,7 @@ bool FillWaterAction::IsDone()
     if (water->GetLevel() == _level)
     {
         water->SetDrain(STATE_OFF);
+
         return true;
     }
 
@@ -176,8 +153,6 @@ void RequestPowerAction::Handle()
 {
     while (!_mayUsePower)
     {
-        Serial.println("Asking for power...");
-
         _client->SendMessage(M_MAY_HEAT_UP, { String(_watt) });
 
         std::vector<String> response = _client->ReadMessage(true);
@@ -185,6 +160,10 @@ void RequestPowerAction::Handle()
         if (response[0] == String(M_MAY_HEAT_UP) && response[1] == "0")
         {
             _mayUsePower = true;
+        }
+        else
+        {
+            delay(500);
         }
     }
 }
@@ -209,8 +188,6 @@ void RequestWaterAction::Handle()
 {
     while (!_mayTakeWater)
     {
-        Serial.println("Asking for water...");
-
         _client->SendMessage(M_MAY_TAKE_WATER, { String(_liters) });
 
         std::vector<String> response = _client->ReadMessage(true);
@@ -218,6 +195,10 @@ void RequestWaterAction::Handle()
         if (response[0] == String(M_MAY_TAKE_WATER) && response[1] == "0")
         {
             _mayTakeWater = true;
+        }
+        else
+        {
+            delay(500);
         }
     }
 }
@@ -240,8 +221,6 @@ MotorRotateAction::MotorRotateAction(MotorDirection direction, MotorSpeed speed)
 
 void MotorRotateAction::Handle()
 {
-    Serial.println("MotorRotateAction::Handle()");
-
     Motor* motor = _control->GetMotor();
 
     motor->SetDirection(_direction);
@@ -263,7 +242,7 @@ DelayAction::DelayAction(unsigned long ms)
     : _ms(ms)
     , _startMs(0)
 {
-    // Nothing to do...
+    // ...
 }
 
 void DelayAction::Handle()
@@ -276,5 +255,12 @@ void DelayAction::Handle()
 
 bool DelayAction::IsDone()
 {
-    return millis() - _startMs > _ms;
+    bool result = millis() - _startMs > _ms;
+
+    if (result)
+    {
+        _startMs = 0;
+    }
+
+    return result;
 }
