@@ -110,7 +110,7 @@ void SocketHandler::Setup(int *socketFd)
 
     if (bind(*socketFd, (struct sockaddr*)&sa, sizeof sa) < 0)
     {
-        Logger::Record(true, "bind failed", "socketHandler");
+        Logger::Record(true, "Port already in use", "socketHandler");
         close(*socketFd);
         exit(EXIT_FAILURE);
     }

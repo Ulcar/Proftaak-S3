@@ -83,7 +83,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
         }
         else if(commandos.at(0) == "ping")
         {
-            message += "Pong";
+            message += "Pong\n";
         }
         else
         {

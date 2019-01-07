@@ -52,8 +52,11 @@ void Socket::TrySend()
 {
     if(!waitingForClient && bufferOut.size() != 0)
     {
+
         Send(GetMessageToSend());
     }
+
+    
 }
 
 

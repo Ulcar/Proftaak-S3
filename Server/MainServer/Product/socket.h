@@ -17,8 +17,6 @@ class Socket : public iSocketQueue , public iSocketIO
 {
     public:
         Socket(int socketFd);
-        // Socket(const Socket &other);
-        // Socket &operator = (const Socket &other);
         virtual ~Socket();
         int Ping();
         void TrySend();
@@ -32,6 +30,10 @@ class Socket : public iSocketQueue , public iSocketIO
         }
 
     private:
+        //Copy disabled
+        Socket(const Socket &other);
+        Socket &operator = (const Socket &other);
+
         int ETA;
         int socketFd;
         bool waitingForClient;

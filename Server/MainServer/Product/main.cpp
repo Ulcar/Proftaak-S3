@@ -48,6 +48,7 @@ void ShutDown()
 
     delete database;
     delete algorithm;
+    //delete iAlgorithm;
 
     Logger::Record(true, "System shutdown", "main");
     Logger::Record(false, "System shutdown", "main");
