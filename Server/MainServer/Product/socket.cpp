@@ -81,14 +81,14 @@ std::string Socket::ReadLastMessage()
 
 void Socket::NewSendMessage(std::string message)
 {
-    std::unique_lock<std::mutex> lock (mtxBufferIn);
+    std::unique_lock<std::mutex> lock (mtxBufferOut);
     bufferOut.push_back(message);
     DebugLogger::Record("Socket: " + std::to_string(this->getSocketFd()) + " Added message to buffer: " + message, "Socket");
 }
 
 std::string Socket::GetMessageToSend()
 {
-    std::unique_lock<std::mutex> lock (mtxBufferIn);
+    std::unique_lock<std::mutex> lock (mtxBufferOut);
     if(bufferOut.size() == 0)
     {
         return "";

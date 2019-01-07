@@ -10,9 +10,6 @@
 
 #include <arpa/inet.h>
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
 #include <mutex>
 #include <unistd.h>
 #include <vector>

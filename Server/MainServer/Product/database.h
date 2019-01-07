@@ -7,11 +7,6 @@
 #include "client.h"
 #include "socket.h"
 
-#include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
 #include <mutex>
 #include <unistd.h>
 #include <vector>
@@ -27,11 +22,11 @@ class Database
         void SetQuit(bool quit);
         
         int AskCurrentWater();
-        bool RemoveCurrentWater(int removeCurrentWater);
-        void AddCurrentWater(int addCurrentWater);
+        bool UpdateWater(int amountWater);
+        void ResetWater(int amountWater);
         int AskCurrentPower();
-        bool RemoveCurrentPower(int removeCurrentPower);
-        void AddCurrentPower(int addCurrentPower);
+        bool UpdatePower(int amountPower);
+        void ResetPower(int amountPower);
 
     private:
         bool quit;

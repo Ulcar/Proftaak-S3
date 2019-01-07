@@ -9,13 +9,7 @@
 #include "client.h"
 #include "enums.h"
 
-#include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
 #include <mutex>
-#include <unistd.h>
 #include <vector>
 
 class SocketHandler

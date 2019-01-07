@@ -67,7 +67,7 @@ void Algorithm_easy::HandleControlPanelSetClient(Client* client, std::vector<std
 
 void Algorithm_easy::HandleWasmachineHeater(Machine* machine, std::vector<std::string> messageVector)
 {
-    if(database->RemoveCurrentPower(stoi(messageVector[1])))
+    if(database->UpdatePower(stoi(messageVector[1])))
     {
         machine->SetUsedPower(stoi(messageVector[1]));
         machine->Send(M_CODE_HEATER, 1);
@@ -78,7 +78,7 @@ void Algorithm_easy::HandleWasmachineHeater(Machine* machine, std::vector<std::s
 
 void Algorithm_easy::HandleWasmachineWater(Machine* machine, std::vector<std::string> messageVector)
 {
-    if(database->RemoveCurrentWater(stoi(messageVector[1])))
+    if(database->UpdateWater(stoi(messageVector[1])))
     {
         machine->SetUsedWater(stoi(messageVector[1]));
         machine->Send(M_CODE_WATER, 1);
@@ -99,7 +99,7 @@ void Algorithm_easy::HandleWasmachineDone(Machine* machine, std::vector<std::str
 
 void Algorithm_easy::HandleStomerHeater(Machine* machine, std::vector<std::string> messageVector)
 {
-    if(database->RemoveCurrentPower(stoi(messageVector[1])))
+    if(database->UpdatePower(stoi(messageVector[1])))
     {
         machine->SetUsedPower(stoi(messageVector[1]));
         machine->Send(M_CODE_HEATER, 1);
@@ -110,7 +110,7 @@ void Algorithm_easy::HandleStomerHeater(Machine* machine, std::vector<std::strin
 
 void Algorithm_easy::HandleStomerWater(Machine* machine, std::vector<std::string> messageVector)
 {
-    if(database->RemoveCurrentWater(stoi(messageVector[1])))
+    if(database->UpdateWater(stoi(messageVector[1])))
     {
         machine->SetUsedWater(stoi(messageVector[1]));
         machine->Send(M_CODE_WATER, 1);

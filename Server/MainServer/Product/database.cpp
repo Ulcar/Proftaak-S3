@@ -45,34 +45,33 @@ int Database::AskCurrentPower()
     return currentPower;
 }
 
-void Database::AddCurrentPower(int addCurrentPower)
+void Database::ResetPower(int amountPower)
 {
-    if(addCurrentPower <= 0)
+    if(amountPower <= 0)
     {
         return;
     }
     std::unique_lock<std::mutex> lock (mtxPower);
-    if(currentPower + addCurrentPower > MAXPOWER)
+    if(currentPower + amountPower < 0)
     {
-        currentPower = MAXPOWER;
+        currentPower = 0;
         return;
     }
-    currentPower += addCurrentPower;
+    currentPower -= amountPower;
 }
 
-bool Database::RemoveCurrentPower(int removeCurrentPower)
+bool Database::UpdatePower(int amountPower)
 {
-    if(removeCurrentPower <= 0)
+    if(amountPower <= 0)
     {
         return false;
     }
     std::unique_lock<std::mutex> lock (mtxPower);
-    if(currentPower - removeCurrentPower < 0)
+    if(currentPower + amountPower > MAXPOWER)
     {
-        currentPower = MAXPOWER;
         return false;
     }
-    currentPower += removeCurrentPower;
+    currentPower += amountPower;
     return true;
 }
 
@@ -82,33 +81,32 @@ int Database::AskCurrentWater()
     return currentWater;
 }
 
-void Database::AddCurrentWater(int addCurrentWater)
+void Database::ResetWater(int amountWater)
 {
-    if(addCurrentWater <= 0)
+    if(amountWater <= 0)
     {
         return;
     }
     std::unique_lock<std::mutex> lock (mtxWater);
-    if(currentWater + addCurrentWater > MAXPOWER)
+    if(currentWater + amountWater < 0)
     {
-        currentWater = MAXPOWER;
+        currentWater = 0;
         return;
     }
-    currentWater += addCurrentWater;
+    currentWater -= amountWater;
 }
 
-bool Database::RemoveCurrentWater(int removeCurrentWater)
+bool Database::UpdateWater(int amountWater)
 {
-    if(removeCurrentWater <= 0)
+    if(amountWater <= 0)
     {
         return false;
     }
     std::unique_lock<std::mutex> lock (mtxWater);
-    if(currentWater - removeCurrentWater < 0)
+    if(currentWater + amountWater > MAXWATER)
     {
-        currentWater = MAXPOWER;
         return false;
     }
-    currentWater += removeCurrentWater;
+    currentWater += amountWater;
     return true;
 }
