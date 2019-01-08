@@ -2,6 +2,7 @@
 #define MACHINE_H
 
 #include "client.h"
+#include "wasbak.h"
 
 class Machine : public Client
 {

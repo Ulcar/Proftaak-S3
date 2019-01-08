@@ -62,3 +62,13 @@ void Machine::SetInProgress(bool inProgress)
 {
     this->inProgress = inProgress;
 }
+
+bool Machine::IsRequestingInProgress()
+{
+    return requestingInProgress;
+}
+
+void Machine::SetRequestingInProgress(bool requestingInProgress)
+{
+    this->requestingInProgress = requestingInProgress;
+}

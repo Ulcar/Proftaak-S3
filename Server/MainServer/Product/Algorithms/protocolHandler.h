@@ -6,13 +6,15 @@
 #include "iAlgorithm.h"
 #include "client.h"
 #include "machine.h"
+#include <chrono>
 
 class ProtocolHandler
 {
     public:
         ProtocolHandler(Database* database);
         ~ProtocolHandler();
-        void HandleMessages();
+        
+        void Update();
 
     private:
         Database* database;
@@ -20,7 +22,10 @@ class ProtocolHandler
         void HandleControlPanel(Client* client, std::vector<std::string> messageVector, std::vector<Client*> clients);
         void HandleWasmachine(Machine* machine, std::vector<std::string> messageVector);
         void HandleStomer(Machine* machine, std::vector<std::string> messageVector);
-        void UpdateLaundryBaskets();
+        void HandleMessages();
+        
+     //   std::chrono::time_point startTime;
+      //  std::chrono::time_point currentTime;
 };
 
 #endif

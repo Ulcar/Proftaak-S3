@@ -23,10 +23,22 @@ std::vector<Client*> Database::GetClients()
     return clients;
 }
 
+std::vector<Wasbak*> Database::GetWasbakken()
+{
+    std::unique_lock<std::mutex> lock (mtxWash);
+    return wasbakken;
+}
+
 void Database::AddClient(Client* client)
 {
     std::unique_lock<std::mutex> lock (mtxClient);
     clients.push_back(client);
+}
+
+void Database::AddWash(Was was)
+{
+      std::unique_lock<std::mutex> lock (mtxWash);
+      unhandledWash.push_back(was);
 }
 
 bool Database::AskQuit()
@@ -116,13 +128,13 @@ bool Database::UpdateWater(int amountWater)
 void Database::HandleWashFinish(std::string macAdress)
 {
     std::vector<Was> wasToHandle;
-    for (Wasbak was : wasbakken)
+    for (Wasbak* was : wasbakken)
     {
-        if(was.GetMacAdress() == macAdress)
+        if(was->GetMacAdress() == macAdress)
         {
-            was.OnWashFinish(wasToHandle);
+            was->OnWashFinish(wasToHandle);
 
-            if(was.GetDone())
+            if(was->GetDone())
             {
                 //do something when the wash is done!!!!!
             }
@@ -131,70 +143,99 @@ void Database::HandleWashFinish(std::string macAdress)
 
     for(Was was : wasToHandle)
     {
-        for(Wasbak bak : wasbakken)
+        for(Wasbak* bak : wasbakken)
         {
-            if(!bak.IsBusy() && bak.tasks[0] == was.tasksToDo[0])
+            if(!bak->IsBusy() && bak->tasks[0] == was.tasksToDo[0])
             {
-                bak.AddWasToWasbak(was);
+                bak->AddWasToWasbak(was);
                 return;
             }
         }
 
-        Wasbak newWasbak = Wasbak(was.tasksToDo);
+        Wasbak* newWasbak = new Wasbak(was.tasksToDo);
         wasbakken.push_back(newWasbak);
         
     }
 }
 
-void Database::HandleWash(std::vector<Was> washToHandle)
+void Database::HandleWash(std::vector<Was>& washToHandle)
 {
-    bool found = false;
+     std::unique_lock<std::mutex> lock (mtxWash);
+     
+    
     for(Was was : washToHandle)
     {
-        for(Wasbak bak : wasbakken)
+        bool found = false;
+         for(Wasbak* bak : wasbakken)
         {
-            if(!bak.IsBusy() && bak.tasks[0] == was.tasksToDo[0] && !bak.GetDone())
+            if(!bak->IsBusy() && (bak->tasks[0] == was.tasksToDo[0]) && !bak->GetDone())
             {
-                bak.AddWasToWasbak(was);
+                bak->AddWasToWasbak(was);
                 found = true;
+                 Logger::Record(false, "Adding Laundry to Laundry Basket", "Database");
                 break;
             }
         }
 
         if(!found)
         {
-        Wasbak newWasbak = Wasbak(was.tasksToDo);
+        Wasbak* newWasbak = new Wasbak(was.tasksToDo);
         wasbakken.push_back(newWasbak);
+        newWasbak->AddWasToWasbak(was);
+
+        Logger::Record(false, "Created new Laundry Basket", "Database");
         }
 
-       
-        
     }
+
+    washToHandle.clear();
+
+
+}
+
+void Database::HandleWash()
+{
+   
+    HandleWash(unhandledWash);
+}
+
+void Database::Update()
+{
+    
 }
 
 void Database::HandleLaundryBaskets()
 {
-    for(Wasbak bak : wasbakken)
+    
+    
+     std::unique_lock<std::mutex> lock (mtxWash);
+    for(Wasbak* bak : wasbakken)
     {
-        if(!bak.IsBusy())
+        if(!bak->IsBusy())
         {
+            std::unique_lock<std::mutex> lock (mtxClient);
             for(Client* client : clients)
             {
-                if(bak.tasks[0] == client->GetType())
+                if(bak->tasks[0] == client->GetType())
                 {
                     if(Machine* machine = dynamic_cast<Machine*>(client))
                     {
+                        //add checks to make sure machine isn't doing anything
                         if(!machine->IsInProgress() && !machine->IsRequestingInProgress() && machine->GetSocket() != nullptr)
                         {
                           
                             
 
-                            switch(bak.GetTemperature())
+                            switch(bak->GetTemperature())
                             {
                                 case Cold:
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_XX);
+                                machine->SetProgram(Program::PROGRAM_XX);
                                 break;
 
                                 case Medium:
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_XX);
+                                machine->SetProgram(Program::PROGRAM_XX);
                                 break;
 
                                 case Hot:
@@ -202,13 +243,14 @@ void Database::HandleLaundryBaskets()
                                 machine->SetProgram(Program::PROGRAM_XX);
                                 break;
                             }
+                              // Do StartProgram on machine, and set Inprogress if you get a response  
                               machine->SetRequestingInProgress(true);
-                              bak.SetBusy(true);
+                              bak->SetBusy(true);
 
                         }
                     }
-                    //add checks to make sure machine isn't doing anything
-                    // Do StartProgram on machine, and set Inprogress if you get a response           
+                    
+                             
                 }
             }
         }
