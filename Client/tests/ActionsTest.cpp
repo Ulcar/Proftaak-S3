@@ -1,8 +1,13 @@
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "harnass/ArduinoWrapper.h"
 
 #include "Actions.ino"
+
+using ::testing::AllOf;
+using ::testing::Ge;
+using ::testing::Le;
 
 TEST(ActionsTest, TestDelayTakesTheCorrectTimeToBeDone)
 {
@@ -23,5 +28,10 @@ TEST(ActionsTest, TestDelayTakesTheCorrectTimeToBeDone)
 
     // Because of small deviations in times between test runs, we add a margin to
     // the original runTime to accomodate for these deviations.
-    EXPECT_TRUE(time <= (runTime + margin) && (runTime - margin) <= time);
+    EXPECT_THAT(time, AllOf(Ge(runTime - margin), Le(runTime + margin)));
+}
+
+TEST(ActionsTest, TestBuzzerCorrectlyGetsSet)
+{
+    BuzzerAction action = BuzzerAction(STATE_ON);
 }
