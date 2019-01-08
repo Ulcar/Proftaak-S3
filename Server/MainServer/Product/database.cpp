@@ -3,6 +3,8 @@
 Database::Database()
 {
     quit = false;
+    currentWater = 0;
+    currentPower = 0;
 }
 
 Database::~Database()
