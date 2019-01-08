@@ -85,16 +85,16 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
             message += "Pong\n";
         }
 
-        else if(commandos.at(0) == "was")
+        else if(commandos.at(0) == "laundry")
         {
-            Was* was = new Was(stoi(commandos.at(1)));
-            was->colorType = static_cast<Color>(stoi(commandos.at(2)));
+            Laundry* laundry = new Laundry(stoi(commandos.at(1)));
+            laundry->ColorType = static_cast<Color>(stoi(commandos.at(2)));
             for(uint i = 3; i < commandos.size(); i++)
             {
-                was->tasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
+                laundry->TasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
 
             }
-            database->AddWash(was);
+            database->AddLaundry(laundry);
 
 
         }

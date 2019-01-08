@@ -15,7 +15,7 @@ ProtocolHandler::~ProtocolHandler()
 void ProtocolHandler::Update()
 {
     HandleMessages();
-    database->HandleWash();
+    database->HandleLaundry();
     database->HandleLaundryBaskets();
 
     
@@ -219,12 +219,12 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
 
                 else
                 {
-                    for(Wasbak* was : database->GetWasbakken())
+                    for(LaundryBasket* laundry : database->GetLaundryBaskets())
                     {
-                        if(machine->GetMacAdress() == was->GetMacAdress())
+                        if(machine->GetMacAdress() == laundry->GetMacAdress())
                         {
-                              Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()), "Algorithm");
-                            was->SetBusy(false);
+                            Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()), "Algorithm");
+                            laundry->SetBusy(false);
                         }
                     }
                 }
@@ -271,7 +271,7 @@ void ProtocolHandler::HandleStomer(Machine* machine, std::vector<std::string> me
             {
                 machine->SetUsedWater(stoi(messageVector[1]));
                 machine->Send(M_CODE_REQUEST_WATER, 1);
-                database->HandleWashFinish(machine->GetMacAdress());
+                database->HandleLaundryFinish(machine->GetMacAdress());
                 return;
             }
             machine->Send(M_CODE_REQUEST_WATER, 0);

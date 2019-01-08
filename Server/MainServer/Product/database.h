@@ -7,7 +7,7 @@
 #include "client.h"
 #include "machine.h"
 #include "socket.h"
-#include "wasbak.h"
+
 
 #include <mutex>
 #include <unistd.h>
@@ -19,8 +19,8 @@ class Database
         Database();
         ~Database();
         std::vector<Client*> GetClients();
-        std::vector<Wasbak*> GetWasbakken();
-        void AddWash(Was* was);
+        std::vector<LaundryBasket*> GetLaundryBaskets();
+        void AddLaundry(Laundry* laundry);
         void AddClient(Client* client);
         bool AskQuit();
         void SetQuit(bool quit);
@@ -32,23 +32,23 @@ class Database
         bool UpdatePower(int amountPower);
         void ResetPower(int amountPower);
 
-        void HandleWashFinish(std::string macAdress);
-        void HandleWash(std::vector<Was*>& washToHandle);
-        void HandleWash();
+        void HandleLaundryFinish(std::string macAdress);
+        void HandleLaundry(std::vector<Laundry*>& laundryToHandle);
+        void HandleLaundry();
         void HandleLaundryBaskets();
         void Update();
 
     private:
         bool quit;
         std::vector<Client*> clients;
-        std::vector<Wasbak*> wasbakken;
-        std::vector<Was*> unhandledWash;
+        std::vector<LaundryBasket*> laundryBaskets;
+        std::vector<Laundry*> unhandledLaundry;
 
         std::mutex mtxClient;
         std::mutex mtxQuit;
         std::mutex mtxPower;
         std::mutex mtxWater;
-        std::mutex mtxWash;
+        std::mutex mtxLaundry;
 
         //Water is in Liters
         int currentWater;

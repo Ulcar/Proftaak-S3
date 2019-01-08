@@ -24,7 +24,7 @@ class Socket : public iSocketQueue , public iSocketIO
         void NewSendMessage(std::string text);
         std::string ReadLastMessage();
 
-        int getSocketFd()
+        int GetSocketFd()
         {
             return socketFd;
         }

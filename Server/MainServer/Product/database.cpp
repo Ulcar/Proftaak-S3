@@ -23,10 +23,10 @@ std::vector<Client*> Database::GetClients()
     return clients;
 }
 
-std::vector<Wasbak*> Database::GetWasbakken()
+std::vector<LaundryBasket*> Database::GetLaundryBaskets()
 {
-    std::unique_lock<std::mutex> lock (mtxWash);
-    return wasbakken;
+    std::unique_lock<std::mutex> lock (mtxLaundry);
+    return laundryBaskets;
 }
 
 void Database::AddClient(Client* client)
@@ -35,10 +35,10 @@ void Database::AddClient(Client* client)
     clients.push_back(client);
 }
 
-void Database::AddWash(Was* was)
+void Database::AddLaundry(Laundry* laundry)
 {
-      std::unique_lock<std::mutex> lock (mtxWash);
-      unhandledWash.push_back(was);
+      std::unique_lock<std::mutex> lock (mtxLaundry);
+      unhandledLaundry.push_back(laundry);
 }
 
 bool Database::AskQuit()
@@ -125,52 +125,52 @@ bool Database::UpdateWater(int amountWater)
     return true;
 }
 
-void Database::HandleWashFinish(std::string macAdress)
+void Database::HandleLaundryFinish(std::string macAdress)
 {
-    std::vector<Was*> wasToHandle;
-    for (Wasbak* was : wasbakken)
+    std::vector<Laundry*> laundryToHandle;
+    for (LaundryBasket* laundry : laundryBaskets)
     {
-        if(was->GetMacAdress() == macAdress)
+        if(laundry->GetMacAdress() == macAdress)
         {
-            was->OnWashFinish(wasToHandle);
+            laundry->OnLaundryFinish(laundryToHandle);
 
-            if(was->GetDone())
+            if(laundry->GetDone())
             {
-                //do something when the wash is done!!!!!
+                //do something when the Laundry is done!!!!!
             }
         }
     }
 
-    for(Was* was : wasToHandle)
+    for(Laundry* laundry : laundryToHandle)
     {
-        for(Wasbak* bak : wasbakken)
+        for(LaundryBasket* bak : laundryBaskets)
         {
-            if(!bak->IsBusy() && bak->tasks[0] == was->tasksToDo[0])
+            if(!bak->IsBusy() && bak->Tasks[0] == laundry->TasksToDo[0])
             {
-                bak->AddWasToWasbak(was);
+                bak->AddLaundryToLaundryBasket(laundry);
                 return;
             }
         }
 
-        Wasbak* newWasbak = new Wasbak(was->tasksToDo);
-        wasbakken.push_back(newWasbak);
+        LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo);
+        laundryBaskets.push_back(newLaundryBasket);
         
     }
 }
 
-void Database::HandleWash(std::vector<Was*>& washToHandle)
+void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
 {
-     std::unique_lock<std::mutex> lock (mtxWash);
+     std::unique_lock<std::mutex> lock (mtxLaundry);
      
     
-    for(Was* was : washToHandle)
+    for(Laundry* laundry : laundryToHandle)
     {
         bool found = false;
-         for(Wasbak* bak : wasbakken)
+         for(LaundryBasket* bak : laundryBaskets)
         {
-            if(!bak->IsBusy() && (bak->tasks[0] == was->tasksToDo[0]) && !bak->GetDone())
+            if(!bak->IsBusy() && (bak->Tasks[0] == laundry->TasksToDo[0]) && !bak->GetDone())
             {
-                bak->AddWasToWasbak(was);
+                bak->AddLaundryToLaundryBasket(laundry);
                 found = true;
                  Logger::Record(false, "Adding Laundry to Laundry Basket", "Database");
                 break;
@@ -179,24 +179,24 @@ void Database::HandleWash(std::vector<Was*>& washToHandle)
 
         if(!found)
         {
-        Wasbak* newWasbak = new Wasbak(was->tasksToDo);
-        wasbakken.push_back(newWasbak);
-        newWasbak->AddWasToWasbak(was);
+        LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo);
+        laundryBaskets.push_back(newLaundryBasket);
+        newLaundryBasket->AddLaundryToLaundryBasket(laundry);
 
         Logger::Record(false, "Created new Laundry Basket", "Database");
         }
 
     }
 
-    washToHandle.clear();
+    laundryToHandle.clear();
 
 
 }
 
-void Database::HandleWash()
+void Database::HandleLaundry()
 {
    
-    HandleWash(unhandledWash);
+    HandleLaundry(unhandledLaundry);
 }
 
 void Database::Update()
@@ -208,15 +208,15 @@ void Database::HandleLaundryBaskets()
 {
     
     
-     std::unique_lock<std::mutex> lock (mtxWash);
-    for(Wasbak* bak : wasbakken)
+     std::unique_lock<std::mutex> lock (mtxLaundry);
+    for(LaundryBasket* bak : laundryBaskets)
     {
         if(!bak->IsBusy())
         {
             std::unique_lock<std::mutex> lock (mtxClient);
             for(Client* client : clients)
             {
-                if(bak->tasks[0] == client->GetType())
+                if(bak->Tasks[0] == client->GetType())
                 {
                     if(Machine* machine = dynamic_cast<Machine*>(client))
                     {

@@ -10,7 +10,7 @@ public:
 
     virtual void NewSendMessage(std::string text) = 0;
     virtual std::string ReadLastMessage() = 0;
-    virtual int getSocketFd() = 0;
+    virtual int GetSocketFd() = 0;
 
     //virtual void TurnLeft() = 0;
 };

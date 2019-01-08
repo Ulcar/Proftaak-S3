@@ -2,7 +2,7 @@
 #define MACHINE_H
 
 #include "client.h"
-#include "wasbak.h"
+#include "laundryBasket.h"
 
 class Machine : public Client
 {
@@ -30,7 +30,7 @@ class Machine : public Client
         bool inProgress;
         bool requestingInProgress;
 
-        Wasbak* bakUsing;
+        LaundryBasket* bakUsing;
 };
 
 #endif

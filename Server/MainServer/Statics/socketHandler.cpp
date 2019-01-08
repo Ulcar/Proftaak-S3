@@ -30,7 +30,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
                 continue;
             }
 
-            int sd = client->GetSocket()->getSocketFd();
+            int sd = client->GetSocket()->GetSocketFd();
                 //if valid socket descriptor then add to read list
             if(sd > 0)
             {
@@ -80,7 +80,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
             tempsocket->TrySend();
 
             //Try Reading a message
-            if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
+            if (FD_ISSET(tempsocket->GetSocketFd(), &readFds))
             {
                 if(!ReadClient(tempsocket))
                 { 

@@ -6,7 +6,6 @@
 #include "protocolHandler.h"
 #include "socketHandler.h"
 #include "translator.h"
-#include "wasbak.h"
 
 #include <thread>
 #include <vector>
@@ -18,9 +17,6 @@ ProtocolHandler* protocolHandler;
 std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
-
-std::vector<Wasbak> WasToDo;
-std::vector<Wasbak> finishedWas;
 
 
 void Setup()
@@ -42,7 +38,7 @@ void Loop()
     protocolHandler->Update();
 }
 
-void ShutDown()
+void Shutdown()
 {    
     consoleThread.detach();
     socketThread.detach();
@@ -72,7 +68,7 @@ int main( void )
         Loop();
     }
 
-    ShutDown();
+    Shutdown();
 
     return 0;
 }

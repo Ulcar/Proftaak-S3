@@ -1,19 +1,19 @@
 PRODUCT= Server
 
-CPPFLAGS=-IEnums -IInterfaces -IProduct -IStatics -IProduct/Machines -IProduct/Algorithms
+CPPFLAGS=-IEnums -IInterfaces -IProduct -IStatics -IProduct/Machines -IProduct/Protocol
 CXXFLAGS=-Wall -Werror -Wextra -Wno-unused-parameter -pedantic -ggdb -O0 -std=c++11 -pthread $(CPPFLAGS)
 # -Wno-unused-parameter is to ignore the warning that a paramater is not used in the method
 
 SOURCES=$(wildcard Product/*.cpp) \
         $(wildcard Product/Machines/*.cpp) \
-        $(wildcard Product/Algorithms/*.cpp) \
+        $(wildcard Product/Protocol/*.cpp) \
         $(wildcard Interfaces/*.cpp) \
         $(wildcard Enums/*.cpp) \
         $(wildcard Statics/*.cpp)
 
 HEADERS=$(wildcard Product/*.h) \
         $(wildcard Product/Machines/*.h) \
-        $(wildcard Product/Algorithms/*.cpp) \
+        $(wildcard Product/Protocol/*.cpp) \
         $(wildcard Interfaces/*.h) \
         $(wildcard Enums/*.h) \
         $(wildcard Statics/*.h)

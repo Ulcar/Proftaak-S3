@@ -17,6 +17,13 @@ enum Temperature
     Hot
 };
 
+enum Color
+{
+    Red, 
+    Blue, 
+    White
+};
+
 enum Program
 {
     PROGRAM_NONE = 0,
