@@ -103,6 +103,7 @@ void setup()
         // Prewash
         new RequestWaterAction(50),
         new FillWaterAction(WL_50),
+        new HeatAction(TEMP_OFF),
         new SoapAction(STATE_ON, 1),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
         new DelayAction(10 * 1000L),
@@ -113,7 +114,7 @@ void setup()
         new SoapAction(STATE_OFF, 1),
 
         // Main wash (1)
-        /*new RequestWaterAction(50),
+        new RequestWaterAction(50),
         new FillWaterAction(WL_50),
         new RequestPowerAction(50),
         new HeatAction(TEMP_MEDIUM),
@@ -128,33 +129,189 @@ void setup()
         new DelayAction(10 * 1000L),
         new MotorRotateAction(MD_RIGHT, SPEED_OFF),
         new DrainWaterAction(),
-        new SoapAction(STATE_OFF, 2),*/
+        new SoapAction(STATE_OFF, 2),
 
-        /*new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(5000L),
+        // Main wash (2)
+        new RequestWaterAction(50),
+        new FillWaterAction(WL_50),
+        new HeatAction(TEMP_OFF),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
         new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(5000L),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+        new DrainWaterAction(),
 
-        new BuzzerAction(STATE_ON),
-        new DelayAction(1000L),
-        new BuzzerAction(STATE_OFF),*/
-    });
-
-    // Load program B.
-    /*programs->Add(1, {
-        new MotorRotateAction(MD_LEFT, SPEED_MEDIUM),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_MEDIUM),
-        new DelayAction(5000L),
-    });
-
-    // Load program C.
-    programs->Add(2, {
+        // Centrifugation
         new MotorRotateAction(MD_LEFT, SPEED_HIGH),
         new DelayAction(5000L),
         new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
         new DelayAction(5000L),
-    });*/
+        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+
+        // Beep!
+        new BuzzerAction(STATE_ON),
+        new DelayAction(1000L),
+        new BuzzerAction(STATE_OFF),
+    });
+
+    // Load program B.
+    programs->Add(1, {
+        // Prewash
+        new RequestWaterAction(50),
+        new FillWaterAction(WL_50),
+        new HeatAction(TEMP_MEDIUM),
+        new SoapAction(STATE_ON, 1),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+        new DrainWaterAction(),
+        new SoapAction(STATE_OFF, 1),
+
+        // Main wash (1)
+        new RequestWaterAction(50),
+        new FillWaterAction(WL_50),
+        new RequestPowerAction(50),
+        new HeatAction(TEMP_MEDIUM),
+        new SoapAction(STATE_ON, 2),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+        new DrainWaterAction(),
+        new SoapAction(STATE_OFF, 2),
+
+        // Main wash (2)
+        new RequestWaterAction(50),
+        new FillWaterAction(WL_50),
+        new HeatAction(TEMP_OFF),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+        new DrainWaterAction(),
+
+        // Centrifugation
+        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+
+        // Beep!
+        new BuzzerAction(STATE_ON),
+        new DelayAction(1000L),
+        new BuzzerAction(STATE_OFF),
+    });
+
+    // Load program C.
+    programs->Add(0, {
+        // Prewash
+        new RequestWaterAction(50),
+        new FillWaterAction(WL_50),
+        new HeatAction(TEMP_MEDIUM),
+        new SoapAction(STATE_ON, 1),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+        new DrainWaterAction(),
+        new SoapAction(STATE_OFF, 1),
+
+        // Main wash (1)
+        new RequestWaterAction(50),
+        new FillWaterAction(WL_FULL),
+        new RequestPowerAction(100),
+        new HeatAction(TEMP_HOT),
+        new SoapAction(STATE_ON, 2),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+        new DrainWaterAction(),
+        new SoapAction(STATE_OFF, 2),
+
+        // Main wash (2)
+        new RequestWaterAction(50),
+        new FillWaterAction(WL_50),
+        new HeatAction(TEMP_OFF),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+        new DrainWaterAction(),
+
+        // Centrifugation
+        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
+        new DelayAction(5000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+
+        // Beep!
+        new BuzzerAction(STATE_ON),
+        new DelayAction(1000L),
+        new BuzzerAction(STATE_OFF),
+    });
 
     Serial.println("Done loading programs.");
 }
