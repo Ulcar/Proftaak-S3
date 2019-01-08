@@ -26,15 +26,16 @@ protected:
     IClient* _client;
 };
 
-class AddSoapAction : public IAction
+class SoapAction : public IAction
 {
 public:
-    AddSoapAction(int dispenser);
+    SoapAction(HardwareState state, int dispenser);
 
     void Handle();
     bool IsDone();
 
 private:
+    HardwareState _state;
     int _dispenser;
 };
 

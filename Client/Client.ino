@@ -96,14 +96,24 @@ void setup()
 
     // Load program A.
     programs->Add(0, {
+        new RequestWaterAction(50),
+        new FillWaterAction(WL_50),
+        new SoapAction(STATE_ON, 1),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(60 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(60 * 1000L),
+        new DrainWaterAction(),
+        new SoapAction(STATE_OFF, 1),
+
+        /*new MotorRotateAction(MD_LEFT, SPEED_LOW),
         new DelayAction(5000L),
         new MotorRotateAction(MD_RIGHT, SPEED_LOW),
         new DelayAction(5000L),
 
         new BuzzerAction(STATE_ON),
         new DelayAction(1000L),
-        new BuzzerAction(STATE_OFF),
+        new BuzzerAction(STATE_OFF),*/
     });
 
     // Load program B.

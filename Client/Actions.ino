@@ -4,20 +4,21 @@
 // AddSoapAction
 //=============
 
-AddSoapAction::AddSoapAction(int dispenser)
+SoapAction::SoapAction(HardwareState state, int dispenser)
     : _dispenser(dispenser)
+    , _state(state)
 {
     // ...
 }
 
-void AddSoapAction::Handle()
+void SoapAction::Handle()
 {
     Controls* controls = _control->GetControls();
 
-    controls->SetSoap(STATE_ON, _dispenser);
+    controls->SetSoap(_state, _dispenser);
 }
 
-bool AddSoapAction::IsDone()
+bool SoapAction::IsDone()
 {
     return true;
 }
@@ -101,7 +102,14 @@ bool HeatAction::IsDone()
 {
     Heater* heater = _control->GetHeater();
 
-    return heater->GetTemperature() == _temp;
+    if (heater->GetTemperature() == _temp)
+    {
+        _client->SendMessage(M_STOP_HEAT_UP, { "0" });
+
+        return true;
+    }
+
+    return false;
 }
 
 //
@@ -130,6 +138,8 @@ bool FillWaterAction::IsDone()
 
     if (water->GetLevel() == _level)
     {
+        _client->SendMessage(M_STOP_TAKE_WATER, { "0" });
+
         water->SetDrain(STATE_OFF);
 
         return true;
@@ -170,7 +180,14 @@ void RequestPowerAction::Handle()
 
 bool RequestPowerAction::IsDone()
 {
-    return _mayUsePower;
+    bool result = _mayUsePower;
+
+    if (result)
+    {
+        _mayUsePower = false;
+    }
+
+    return result;
 }
 
 //
@@ -205,7 +222,14 @@ void RequestWaterAction::Handle()
 
 bool RequestWaterAction::IsDone()
 {
-    return _mayTakeWater;
+    bool result = _mayTakeWater;
+
+    if (result)
+    {
+        _mayTakeWater = false;
+    }
+
+    return result;
 }
 
 //
