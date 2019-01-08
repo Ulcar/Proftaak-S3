@@ -75,23 +75,23 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
             case CP_CODE_CONSOLE:
             {
                 client->Send(CP_CODE_CONSOLE, ConsoleHandler::HandleConsoleCommando(messageVector[1]));           
-                break;\
+                break;
             }
 
             case CP_CODE_GETCLIENTS: 
             {
                 for(Client* client : clients)
                 {
-                    client->Send(CP_CODE_GETCLIENTS, clients.size() + "");
                     if(client->GetType() == Type::Wasmachine)
                     {
                         Machine* machine = (Machine*)client;
                         //send water, power, program and macAdress
                         std::vector<std::string> tmp;
+                        tmp.push_back(machine->GetMacAdress());
                         tmp.push_back(std::to_string(machine->GetUsedWater()));
                         tmp.push_back(std::to_string(machine->GetUsedPower()));
                         tmp.push_back(std::to_string(machine->GetProgram()));
-                        tmp.push_back(machine->GetMacAdress());
+                        tmp.push_back(std::to_string(machine->IsEnabled()));
                         client->Send(CP_CODE_GETCLIENTS, tmp) ;
                     }
                 }
@@ -129,6 +129,16 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                     if((client->GetType() != Type::ControlPanel) && (client->GetMacAdress() == messageVector[1]))
                     {
                         client->SetEnable(stoi(messageVector[2]));
+
+                        Machine* machine = (Machine*)client;
+                        //send macAdress, water, power, program and enabled
+                        std::vector<std::string> tmp;
+                        tmp.push_back(machine->GetMacAdress());
+                        tmp.push_back(std::to_string(machine->GetUsedWater()));
+                        tmp.push_back(std::to_string(machine->GetUsedPower()));
+                        tmp.push_back(std::to_string(machine->GetProgram()));
+                        tmp.push_back(std::to_string(machine->IsEnabled()));
+                        client->Send(CP_CODE_GETCLIENTS, tmp) ;
                     }
                 }
                 break;
