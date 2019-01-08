@@ -19,6 +19,17 @@ String Protocol::ToServer(MessageCode code, std::vector<String> parameters)
 
 std::vector<String> Protocol::FromServer(String message)
 {
+    // Make sure that there are no start and end characters.
+    if (message[0] == RECEIVE_START_CHARACTER)
+    {
+        message = message.substring(1, message.length());
+    }
+
+    if (message[message.length() - 1] == RECEIVE_END_CHARACTER)
+    {
+        message = message.substring(0, message.length() - 1);
+    }
+
     std::vector<String> command;
     size_t prevIndex = 0;
 
