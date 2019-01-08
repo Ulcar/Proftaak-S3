@@ -4,7 +4,7 @@
 #include "enums.h"
 #include "socket.h"
 #include "codes.h"
-#include "protocol.h"
+#include "translator.h"
 #include "iClient.h"
 
 #include <cstring>

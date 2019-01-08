@@ -21,7 +21,7 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
 std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
 {  
     std::string message;
-    std::vector<std::string> commandos = Protocol::SplitString(commando, ' ');
+    std::vector<std::string> commandos = Translator::SplitString(commando, ' ');
 
     try
     {

@@ -1,13 +1,13 @@
-#include "protocol.h"
+#include "translator.h"
 
-std::string Protocol::ToMachine(M_Code code, int value)
+std::string Translator::ToMachine(M_Code code, int value)
 {
     std::vector<std::string> temp = {std::to_string(value)};
     std::string messageToMachine = MakeString(code, temp, startCharToMachine, endCharToMachine);
     return messageToMachine;
 }
 
-std::string Protocol::ToMachine(M_Code code, std::vector<int> values)
+std::string Translator::ToMachine(M_Code code, std::vector<int> values)
 {
     std::vector<std::string> temp;
     for(int value : values)
@@ -20,23 +20,23 @@ std::string Protocol::ToMachine(M_Code code, std::vector<int> values)
 }
 
 
-std::vector<std::string> Protocol::FromMachine(std::string message)
+std::vector<std::string> Translator::FromMachine(std::string message)
 {
     return SplitString(message, seperatorChar, endCharToMachine, startCharToMachine);
 }
 
-std::string Protocol::ToControlPanel(CP_Code code, std::vector<std::string> value)
+std::string Translator::ToControlPanel(CP_Code code, std::vector<std::string> value)
 {
     std::string messageToControlPanel = MakeString(code, value, startCharToControlPanel, endCharToControlPanel);
     return messageToControlPanel;
 }
 
-std::vector<std::string> Protocol::FromControlPanel(std::string message)
+std::vector<std::string> Translator::FromControlPanel(std::string message)
 {
     return SplitString(message, seperatorChar, endCharToControlPanel, startCharToControlPanel);
 }
 
-std::string Protocol::MakeString(int code, std::vector<std::string> value, char startChar, char endChar)
+std::string Translator::MakeString(int code, std::vector<std::string> value, char startChar, char endChar)
 {
     std::string newString;
     newString = startChar + std::to_string(code);
@@ -49,7 +49,7 @@ std::string Protocol::MakeString(int code, std::vector<std::string> value, char 
     return newString;
 }
 
-std::vector<std::string> Protocol::SplitString(std::string text, char splitChar, char startChar, char endChar)
+std::vector<std::string> Translator::SplitString(std::string text, char splitChar, char startChar, char endChar)
 {
     if(text.size() > 0)
     {
@@ -63,7 +63,7 @@ std::vector<std::string> Protocol::SplitString(std::string text, char splitChar,
     return fu;
 }
 
-std::vector<std::string> Protocol::SplitString(std::string text, char splitChar)
+std::vector<std::string> Translator::SplitString(std::string text, char splitChar)
 {
     std::vector<std::string> commando;
 

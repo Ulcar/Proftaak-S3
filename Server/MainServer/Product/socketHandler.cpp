@@ -105,7 +105,7 @@ void SocketHandler::Setup(int *socketFd)
     struct sockaddr_in sa;
     memset(&sa, 0, sizeof sa);
     sa.sin_family = AF_INET;
-    sa.sin_port = Protocol::GetPort();
+    sa.sin_port = Translator::GetPort();
     sa.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(*socketFd, (struct sockaddr*)&sa, sizeof sa) < 0)
@@ -188,7 +188,7 @@ void SocketHandler::ConnectClient(int socketFd)
         return;
     }
 
-    std::vector<std::string> message = Protocol::FromMachine(socket->ReadLastMessage());
+    std::vector<std::string> message = Translator::FromMachine(socket->ReadLastMessage());
     
     if((message.size() == 2) || (message.size() == 3))
     {
@@ -201,13 +201,13 @@ void SocketHandler::ConnectClient(int socketFd)
             {
                 //ControlPanel
                 client = CreateNewClient('\0', message.at(1));
-                socket->NewSendMessage(Protocol::ToControlPanel(CP_CODE_CONNECT, temp));
+                socket->NewSendMessage(Translator::ToControlPanel(CP_CODE_CONNECT, temp));
             }
             else
             {
                 //client
                 client = CreateNewClient(message.at(1).at(0), message.at(2));
-                socket->NewSendMessage(Protocol::ToMachine(M_CODE_CONNECT, 0));
+                socket->NewSendMessage(Translator::ToMachine(M_CODE_CONNECT, 0));
             }
 
             if(client == nullptr)
