@@ -1,5 +1,5 @@
-#ifndef PROTOCOL_H
-#define PROTOCOL_H
+#ifndef TRANSLATOR_H
+#define TRANSLATOR_H
 
 #include "codes.h"
 
@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <vector>
 
-class Protocol
+class Translator
 {
     public:
         static int GetPort()
@@ -31,7 +31,9 @@ class Protocol
         static const char startCharToControlPanel = '#';
         static const char endCharToControlPanel = '$';
         static const char seperatorChar = ';';
+
         static const int port = 2018; //set port here
+
         static std::string MakeString(int code, std::vector<std::string> value, char startChar, char endChar);
         static std::vector<std::string> SplitString(std::string text, char splitChar, char startChar, char endChar);
 

@@ -19,7 +19,7 @@ void Machine::Send(M_Code code, int value)
     {
         return;
     }
-    socket->NewSendMessage(Protocol::ToMachine(code, value));
+    socket->NewSendMessage(Translator::ToMachine(code, value));
 }
 
 

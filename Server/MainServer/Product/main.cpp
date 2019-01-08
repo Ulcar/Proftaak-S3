@@ -1,13 +1,11 @@
-#include "algorithm.h"
-#include "iAlgorithm.h"
-#include "algorithm_easy.h"
+#include "protocolHandler.h"
 #include "logger.h"
 #include "client.h"
 #include "socketHandler.h"
 #include "consoleHandler.h"
 #include "database.h"
 #include "machine.h"
-#include "protocol.h"
+#include "translator.h"
 #include "wasbak.h"
 
 #include <vector>
@@ -15,8 +13,7 @@
 
 bool quit = false;
 Database* database;
-Algorithm* algorithm;
-iAlgorithm* iAlgorithm;
+ProtocolHandler* protocolHandler;
 std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
@@ -34,15 +31,14 @@ void Setup()
     Logger::Record(false, "System startup", "main");
 
     database = new Database();
-    iAlgorithm = new Algorithm_easy(database);
-    algorithm = new Algorithm(database, iAlgorithm);
+    protocolHandler = new ProtocolHandler(database);
     socketThread = std::thread(SocketHandler::RunSocketHandler, database);
     consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
 }
 
 void Loop()
 {
-    algorithm->HandleMessages();
+    protocolHandler->HandleMessages();
 }
 
 void ShutDown()
@@ -51,7 +47,7 @@ void ShutDown()
     socketThread.detach();
 
     delete database;
-    delete algorithm;
+    delete protocolHandler;
     //delete iAlgorithm;
 
     Logger::Record(true, "System shutdown", "main");

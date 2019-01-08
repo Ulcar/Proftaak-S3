@@ -24,7 +24,7 @@ void Client::Send(CP_Code code, std::vector<std::string> value)
     {
         return;
     }
-    socket->NewSendMessage(Protocol::ToControlPanel(code, value));
+    socket->NewSendMessage(Translator::ToControlPanel(code, value));
 }
 
 void Client::SetSocket(Socket* tempSocket)
