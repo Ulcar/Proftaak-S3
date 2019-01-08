@@ -60,10 +60,13 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
         switch(static_cast<CP_Code>(stoi(messageVector[0])))
         {
             case CP_CODE_CONSOLE:
+            {
                 client->Send(CP_CODE_CONSOLE, ConsoleHandler::HandleConsoleCommando(messageVector[1]));           
-                break;
+                break;\
+            }
 
             case CP_CODE_GETCLIENTS: 
+            {
                 for(Client* client : clients)
                 {
                     client->Send(CP_CODE_GETCLIENTS, clients.size() + "");
@@ -80,16 +83,22 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                     }
                 }
                 break;
+            }
 
             case CP_CODE_TOTALWATER:
+            {
                 client->Send(CP_CODE_TOTALWATER, std::to_string(database->AskCurrentWater()));
                 break;
+            }
 
             case CP_CODE_TOTALPOWER:
+            {
                 client->Send(CP_CODE_TOTALPOWER, std::to_string(database->AskCurrentPower()));
                 break;
+            }
 
             case CP_CODE_DISABLEALLCLIENTS:
+            {
                 for(Client* client : clients)
                 {
                     if(client->GetType() != Type::ControlPanel)
@@ -98,12 +107,19 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                     }
                 }
                 break;
+            }
 
             case CP_CODE_SETCLIENT:
-                //Maken van indefier om te weten enabled moet worden.
-                // we need a disable client protocol message lole
-                //client->SetEnable(true);
+            {
+                for(Client* client : clients)
+                {
+                    if((client->GetType() != Type::ControlPanel) && (client->GetMacAdress() == messageVector[1]))
+                    {
+                        client->SetEnable(stoi(messageVector[2]));
+                    }
+                }
                 break;
+            }
 
             default:
                 break;
@@ -120,6 +136,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
     switch(static_cast<M_Code>(stoi(messageVector[0])))
     {
         case M_CODE_REQUEST_HEATER:
+        {
             if(database->UpdatePower(stoi(messageVector[1])))
             {
                 machine->SetUsedPower(stoi(messageVector[1]));
@@ -128,11 +145,19 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             }
             machine->Send(M_CODE_REQUEST_HEATER, 0);
             break;
+        }  
 
         case M_CODE_STOP_HEATER:
+        {
+            int amount = machine->GetUsedPower();
+            database->ResetPower(amount);
+            machine->SetUsedPower(0);
+            machine->Send(M_CODE_STOP_HEATER, 1);
             break;
+        }
 
-        case M_CODE_REQUEST_WATER:  
+        case M_CODE_REQUEST_WATER: 
+        {
             if(database->UpdateWater(stoi(messageVector[1])))
             {
                 machine->SetUsedWater(stoi(messageVector[1]));
@@ -141,14 +166,23 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             }
             machine->Send(M_CODE_REQUEST_WATER, 0);
             break;
+        }
 
         case M_CODE_STOP_WATER:
+        {
+            int amount = machine->GetUsedWater();
+            database->ResetWater(amount);
+            machine->SetUsedWater(0);
+            machine->Send(M_CODE_STOP_WATER, 1);
             break;
+        }
 
         case M_CODE_DONE:
+        {
             Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
             machine->SetProgram(Program::PROGRAM_NONE); 
             break;
+        }
 
         default:
             break;
@@ -160,6 +194,7 @@ void ProtocolHandler::HandleStomer(Machine* machine, std::vector<std::string> me
     switch(static_cast<M_Code>(stoi(messageVector[0])))
     {
         case M_CODE_REQUEST_HEATER:
+        {
             if(database->UpdatePower(stoi(messageVector[1])))
             {
                 machine->SetUsedPower(stoi(messageVector[1]));
@@ -168,11 +203,19 @@ void ProtocolHandler::HandleStomer(Machine* machine, std::vector<std::string> me
             }
             machine->Send(M_CODE_REQUEST_HEATER, 0);
             break;
+        }
 
         case M_CODE_STOP_HEATER:
+        {
+            int amount = machine->GetUsedPower();
+            database->ResetPower(amount);
+            machine->SetUsedPower(0);
+            machine->Send(M_CODE_STOP_HEATER, 1);
             break;
+        }
 
         case M_CODE_REQUEST_WATER:
+        {
             if(database->UpdateWater(stoi(messageVector[1])))
             {
                 machine->SetUsedWater(stoi(messageVector[1]));
@@ -182,14 +225,23 @@ void ProtocolHandler::HandleStomer(Machine* machine, std::vector<std::string> me
             }
             machine->Send(M_CODE_REQUEST_WATER, 0);
             break;
+        }
 
         case M_CODE_STOP_WATER:
+        {
+            int amount = machine->GetUsedWater();
+            database->ResetWater(amount);
+            machine->SetUsedWater(0);
+            machine->Send(M_CODE_STOP_WATER, 1);
             break;
+        }
 
         case M_CODE_DONE:
+        {
             Logger::Record(false, "Stomer " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
             machine->SetProgram(Program::PROGRAM_NONE);   
             break;
+        }
 
         default:
             break;
