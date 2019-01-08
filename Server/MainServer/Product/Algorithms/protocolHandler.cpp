@@ -150,6 +150,22 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             machine->SetProgram(Program::PROGRAM_NONE); 
             break;
 
+        case M_CODE_SENDPROGRAM:
+            if(machine->IsRequestingInProgress())
+            {
+                if(stoi(messageVector[1]) == 0)
+                {
+                    machine->SetRequestingInProgress(false);
+                    machine->SetInProgress(true);
+                     Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is In progress on" + std::to_string(machine->GetProgram()), "Algorithm");
+                }
+            }
+            else
+            {
+                Logger::Record(true, "Machine" + machine->GetMacAdress() + "Is Responding a SendProgram when we're not requesting it?", "Algorithm");
+            }
+        break;
+
         default:
             break;
     }

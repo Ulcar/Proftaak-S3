@@ -122,7 +122,7 @@ void Database::HandleWashFinish(std::string macAdress)
 
             if(was.GetDone())
             {
-
+                //do something when the wash is done!!!!!
             }
         }
     }
@@ -151,7 +151,7 @@ void Database::HandleWash(std::vector<Was> washToHandle)
     {
         for(Wasbak bak : wasbakken)
         {
-            if(!bak.IsBusy() && bak.tasks[0] == was.tasksToDo[0])
+            if(!bak.IsBusy() && bak.tasks[0] == was.tasksToDo[0] && !bak.GetDone())
             {
                 bak.AddWasToWasbak(was);
                 found = true;
@@ -182,9 +182,31 @@ void Database::HandleLaundryBaskets()
                 {
                     if(Machine* machine = dynamic_cast<Machine*>(client))
                     {
+                        if(!machine->IsInProgress() && !machine->IsRequestingInProgress() && machine->GetSocket() != nullptr)
+                        {
+                          
+                            
+
+                            switch(bak.GetTemperature())
+                            {
+                                case Cold:
+                                break;
+
+                                case Medium:
+                                break;
+
+                                case Hot:
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_XX);
+                                machine->SetProgram(Program::PROGRAM_XX);
+                                break;
+                            }
+                              machine->SetRequestingInProgress(true);
+                              bak.SetBusy(true);
+
+                        }
                     }
                     //add checks to make sure machine isn't doing anything
-                    // Do StartProgram on machine, and             
+                    // Do StartProgram on machine, and set Inprogress if you get a response           
                 }
             }
         }

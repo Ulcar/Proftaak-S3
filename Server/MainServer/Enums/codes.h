@@ -1,6 +1,6 @@
 #ifndef CODES_H
 #define CODES_H
-
+//volgorde erg belangrijk!!!!!!!!!
 enum M_Code
 {
     M_CODE_CONNECT = 0,

@@ -19,12 +19,17 @@ class Machine : public Client
 
         bool IsInProgress();
         void SetInProgress(bool inProgress);
+        bool IsRequestingInProgress();
+        void SetRequestingInProgress(bool requestingInProgress);
 
     private:
         int usedWater;
         int usedPower;
         Program currentProgram;
         bool inProgress;
+        bool requestingInProgress;
+
+        Wasbak* bakUsing;
 };
 
 #endif

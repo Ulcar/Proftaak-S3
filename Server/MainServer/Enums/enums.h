@@ -10,6 +10,13 @@ enum Type
     Droogmachine
 };
 
+enum Temperature
+{
+    Cold,
+    Medium,
+    Hot
+};
+
 enum Program
 {
     PROGRAM_NONE = 0,

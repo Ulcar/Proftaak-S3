@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "was.h"
+#include "enums.h"
 
 #define MAX_WEIGHT 5000
 
@@ -17,6 +18,8 @@ class Wasbak
     int weightLimit;
     int currentWeight;
 
+    Temperature temperature;
+
 
 
    
@@ -30,6 +33,7 @@ class Wasbak
     
     
     bool IsBusy();
+    void SetBusy(bool busy);    
     bool GetDone();
 
     int GetCurrentWeight();
@@ -37,6 +41,9 @@ class Wasbak
 
     void OnWashFinish(std::vector<Was>& wasToRemove);
     bool AddWasToWasbak(Was was);
+
+    Temperature GetTemperature();
+    void SetTemperature(Temperature temperature);
   
 
 
@@ -45,5 +52,6 @@ class Wasbak
  
 
 };
+
 
 #endif
