@@ -70,10 +70,10 @@ void Algorithm_easy::HandleWasmachineHeater(Machine* machine, std::vector<std::s
     if(database->UpdatePower(stoi(messageVector[1])))
     {
         machine->SetUsedPower(stoi(messageVector[1]));
-        machine->Send(M_CODE_HEATER, 1);
+        machine->Send(M_CODE_REQUEST_HEATER, 1);
         return;
     }
-    machine->Send(M_CODE_HEATER, 0);
+    machine->Send(M_CODE_REQUEST_HEATER, 0);
 }
 
 void Algorithm_easy::HandleWasmachineWater(Machine* machine, std::vector<std::string> messageVector)
@@ -81,10 +81,10 @@ void Algorithm_easy::HandleWasmachineWater(Machine* machine, std::vector<std::st
     if(database->UpdateWater(stoi(messageVector[1])))
     {
         machine->SetUsedWater(stoi(messageVector[1]));
-        machine->Send(M_CODE_WATER, 1);
+        machine->Send(M_CODE_REQUEST_WATER, 1);
         return;
     }
-    machine->Send(M_CODE_WATER, 0);
+    machine->Send(M_CODE_REQUEST_WATER, 0);
 }
 
 void Algorithm_easy::HandleWasmachineDone(Machine* machine, std::vector<std::string> messageVector)
@@ -102,10 +102,10 @@ void Algorithm_easy::HandleStomerHeater(Machine* machine, std::vector<std::strin
     if(database->UpdatePower(stoi(messageVector[1])))
     {
         machine->SetUsedPower(stoi(messageVector[1]));
-        machine->Send(M_CODE_HEATER, 1);
+        machine->Send(M_CODE_REQUEST_HEATER, 1);
         return;
     }
-    machine->Send(M_CODE_HEATER, 0);
+    machine->Send(M_CODE_REQUEST_HEATER, 0);
 }
 
 void Algorithm_easy::HandleStomerWater(Machine* machine, std::vector<std::string> messageVector)
@@ -113,11 +113,11 @@ void Algorithm_easy::HandleStomerWater(Machine* machine, std::vector<std::string
     if(database->UpdateWater(stoi(messageVector[1])))
     {
         machine->SetUsedWater(stoi(messageVector[1]));
-        machine->Send(M_CODE_WATER, 1);
+        machine->Send(M_CODE_REQUEST_WATER, 1);
         database->HandleWashFinish(machine->GetMacAdress());
         return;
     }
-    machine->Send(M_CODE_WATER, 0);
+    machine->Send(M_CODE_REQUEST_WATER, 0);
 }
 
 void Algorithm_easy::HandleStomerDone(Machine* machine, std::vector<std::string> messageVector)

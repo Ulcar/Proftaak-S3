@@ -99,11 +99,19 @@ void Algorithm::HandleWasmachine(Machine* machine, std::vector<std::string> mess
 {
     switch(static_cast<M_Code>(stoi(messageVector[0])))
     {
-        case M_CODE_HEATER:
+        case M_CODE_REQUEST_HEATER:
             algorithm->HandleWasmachineHeater(machine, messageVector);
             break;
 
-        case M_CODE_WATER:
+        case M_CODE_STOP_HEATER:
+            algorithm->HandleWasmachineHeater(machine, messageVector);
+            break;
+
+        case M_CODE_REQUEST_WATER:
+            algorithm->HandleWasmachineWater(machine, messageVector);
+            break;
+
+        case M_CODE_STOP_WATER:
             algorithm->HandleWasmachineWater(machine, messageVector);
             break;
 
@@ -120,11 +128,19 @@ void Algorithm::HandleStomer(Machine* machine, std::vector<std::string> messageV
 {
     switch(static_cast<M_Code>(stoi(messageVector[0])))
     {
-        case M_CODE_HEATER:
+        case M_CODE_REQUEST_HEATER:
             algorithm->HandleStomerHeater(machine, messageVector);
             break;
 
-        case M_CODE_WATER:
+        case M_CODE_STOP_HEATER:
+            algorithm->HandleStomerHeater(machine, messageVector);
+            break;
+
+        case M_CODE_REQUEST_WATER:
+            algorithm->HandleStomerWater(machine, messageVector);
+            break;
+
+        case M_CODE_STOP_WATER:
             algorithm->HandleStomerWater(machine, messageVector);
             break;
 

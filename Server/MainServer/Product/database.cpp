@@ -176,7 +176,8 @@ void Database::HandleLaundryBaskets()
                 if(bak.tasks[0] == client->GetType())
                 {
                     //add checks to make sure machine isn't doing anything
-                    // Do StartProgram on machine, and                 }
+                    // Do StartProgram on machine, and                 
+                }
             }
         }
     }

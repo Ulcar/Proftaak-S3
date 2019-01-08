@@ -139,7 +139,7 @@ void Logger::SaveErrorAsFile()
     }
 
     errorFile.close();
-    std::cout << "File saved\n";
+    std::cout << "Saved Errorlog\n";
 }
 
 /// <summary>
@@ -173,5 +173,5 @@ void Logger::SaveDebugAsFile()
     }
 
     debugFile.close();
-    std::cout << "File saved\n";
+    std::cout << "Saved Debuglog\n";
 }
