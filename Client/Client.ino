@@ -6,6 +6,7 @@
 #include "includes/hardware/Water.h"
 
 #include "includes/client/SerialClient.h"
+#include "includes/client/WifiClient.h"
 #include "includes/client/Protocol.h"
 
 #include "includes/program/Actions.h"
@@ -15,7 +16,8 @@
 #include "includes/Enums.h"
 
 HardwareControl* hardwareControl;
-SerialClient* client;
+//SerialClient* client;
+WifiClient* client;
 Programs* programs;
 
 void onMessageReceived(std::vector<String> message)
@@ -39,6 +41,8 @@ void onMessageReceived(std::vector<String> message)
 
         int program = message[1].toInt();
 
+        Serial.println("Starting program: " + String(program));
+
         // If the program doesn't exist we send a "1" back, otherwise we start
         // the program and send a "0" back.
         client->SendMessage(M_PROGRAM_START, { programs->Start(program) ? "0" : "1" });
@@ -52,6 +56,8 @@ void onMessageReceived(std::vector<String> message)
 
 void onProgramDone()
 {
+    Serial.println("Program done!");
+
     client->SendMessage(M_PROGRAM_DONE, { "0" });
 }
 
@@ -62,8 +68,8 @@ void setup()
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    // client = new WifiClient("12connect", "192.168.200.73", Protocol::GetPort());
-    client = new SerialClient();
+    client = new WifiClient("12connect", "192.168.200.40", Protocol::GetPort());
+    //client = new SerialClient();
     client->SetOnMessageReceived(onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");
@@ -98,9 +104,10 @@ void setup()
         new FillWaterAction(WL_50),
         new SoapAction(STATE_ON, 1),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(60 * 1000L),
+        new DelayAction(10 * 1000L),
         new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(60 * 1000L),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
         new DrainWaterAction(),
         new SoapAction(STATE_OFF, 1),
 
@@ -115,7 +122,7 @@ void setup()
     });
 
     // Load program B.
-    programs->Add(1, {
+    /*programs->Add(1, {
         new MotorRotateAction(MD_LEFT, SPEED_MEDIUM),
         new DelayAction(5000L),
         new MotorRotateAction(MD_RIGHT, SPEED_MEDIUM),
@@ -128,7 +135,7 @@ void setup()
         new DelayAction(5000L),
         new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
         new DelayAction(5000L),
-    });
+    });*/
 
     Serial.println("Done loading programs.");
 }

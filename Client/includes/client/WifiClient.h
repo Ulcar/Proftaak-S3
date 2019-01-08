@@ -31,14 +31,12 @@ public:
         return _client.available() > 0;
     }
 
-    void Update()
-    {
-        // ...
-    }
+    void Update();
 
 private:
     WiFiClient _client;
 
+    String _message;
     String _ssid;
     String _ipAddress;
 

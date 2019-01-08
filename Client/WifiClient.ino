@@ -4,7 +4,7 @@ WifiClient::WifiClient(String ssid, String ipAddress, int port)
     : _ssid(ssid)
     , _ipAddress(ipAddress)
     , _port(port)
-    , _status(WL_IDLE_STATUS)
+    , _isConnectedToServer(false)
 {
     _status = WiFi.begin(_ssid.c_str());
 }
@@ -88,6 +88,32 @@ std::vector<String> WifiClient::ReadMessage(bool shouldBlock = false)
     }
 
     return Protocol::FromServer(message);
+}
+
+void WifiClient::Update()
+{
+    while (_client.available())
+    {
+        char character = _client.read();
+
+        if (character == RECEIVE_START_CHARACTER)
+        {
+            _message = "";
+        }
+        else if (character == RECEIVE_END_CHARACTER)
+        {
+            if (_onMessageReceived != NULL)
+            {
+                _onMessageReceived(Protocol::FromServer(_message));
+            }
+
+            return;
+        }
+        else
+        {
+            _message += character;
+        }
+    }
 }
 
 String WifiClient::GetMacAddress()
