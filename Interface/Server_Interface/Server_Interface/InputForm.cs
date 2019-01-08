@@ -15,17 +15,22 @@ namespace Server_Interface
     {
         public IPAddress ServerIPAdress { get; private set; }
         public int ServerPort { get; private set; }
+        private bool error;
 
-        public InputForm(bool error)
+        public void SetError(bool error)
         {
-            InitializeComponent();
-            
+            this.error = error;
             DialogResult = DialogResult.Cancel;
-
             if (error)
             {
                 Errorlabel.Text = "Connection refused";
             }
+        }
+
+        public InputForm()
+        {
+            InitializeComponent();
+            SetError(false);
         }
 
         private void Connect_btn_Click(object sender, EventArgs e)

@@ -14,7 +14,7 @@ namespace Server_Interface
     public partial class MainForm : Form
     {
         private WiFiHandler wiFiHandler;
-        private InputForm inputForm;
+        private InputForm inputForm = new InputForm();
         private List<Client> clients;
 
         public MainForm()
@@ -36,7 +36,7 @@ namespace Server_Interface
 
             while (!succes)
             {
-                inputForm = new InputForm(error);
+                inputForm.SetError(error);
                 this.Hide();
                 inputForm.ShowDialog();
                 this.Show();
