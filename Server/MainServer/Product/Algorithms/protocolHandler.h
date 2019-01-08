@@ -1,10 +1,10 @@
 #ifndef PROTOCOLHANDLER_H
 #define PROTOCOLHANDLER_H
 
-#include "database.h"
-#include "consoleHandler.h"
-#include "iAlgorithm.h"
 #include "client.h"
+#include "consoleHandler.h"
+#include "database.h"
+#include "iAlgorithm.h"
 #include "machine.h"
 
 class ProtocolHandler

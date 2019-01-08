@@ -1,9 +1,13 @@
 #ifndef LAUNDRY_BASKET_H
-    #define LAUNDRY_BASKET_H
+#define LAUNDRY_BASKET_H
+
+#include "enums.h"
+#include "was.h"
+
 #include <string>
 #include <vector>
-#include "was.h"
-#include "enums.h"
+
+
 
 #define MAX_WEIGHT 5000
 

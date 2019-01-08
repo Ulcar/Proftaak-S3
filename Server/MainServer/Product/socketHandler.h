@@ -1,12 +1,12 @@
 #ifndef SOCKETHANDLER_H
 #define SOCKETHANDLER_H
 
-#include "socket.h"
+#include "client.h"
+#include "database.h"
+#include "enums.h"
 #include "logger.h"
 #include "machine.h"
-#include "database.h"
-#include "client.h"
-#include "enums.h"
+#include "socket.h"
 
 #include <mutex>
 #include <vector>

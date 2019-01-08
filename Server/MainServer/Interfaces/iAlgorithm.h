@@ -1,9 +1,10 @@
 #ifndef IALGORITHM_H
 #define IALGORITHM_H
 
-#include <string>
-#include "machine.h"
 #include "client.h"
+#include "machine.h"
+
+#include <string>
 
 class iAlgorithm
 {

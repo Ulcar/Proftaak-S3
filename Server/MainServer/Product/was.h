@@ -1,7 +1,10 @@
 #ifndef WASH_H
 #define WASH_H
-#include <vector>
+
 #include "enums.h"
+
+#include <vector>
+
 enum Color
 {
     Red, Blue, White

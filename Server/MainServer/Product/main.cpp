@@ -1,15 +1,16 @@
-#include "protocolHandler.h"
-#include "logger.h"
 #include "client.h"
-#include "socketHandler.h"
 #include "consoleHandler.h"
 #include "database.h"
+#include "logger.h"
 #include "machine.h"
+#include "protocolHandler.h"
+#include "socketHandler.h"
 #include "translator.h"
 #include "wasbak.h"
 
+#include <thread>
 #include <vector>
-#include <thread> 
+ 
 
 bool quit = false;
 Database* database;

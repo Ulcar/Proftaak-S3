@@ -5,9 +5,9 @@
 #define MAXWATER 1000
 
 #include "client.h"
+#include "machine.h"
 #include "socket.h"
 #include "wasbak.h"
-#include "machine.h"
 
 #include <mutex>
 #include <unistd.h>
