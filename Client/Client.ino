@@ -70,8 +70,6 @@ void setup()
 
     while (!client->IsConnectedToServer())
     {
-        // client->Update();
-
         Serial.println("Connecting to the server...");
 
         if (!client->ConnectToServer(MT_WASMACHINE))
