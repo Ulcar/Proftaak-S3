@@ -2,6 +2,12 @@
 #define ACTIONS_H
 
 #include "../hardware/HardwareControl.h"
+#include "../hardware/Controls.h"
+#include "../hardware/Heater.h"
+#include "../hardware/Motor.h"
+#include "../hardware/Water.h"
+
+#include "../client/IClient.h"
 
 class IAction
 {

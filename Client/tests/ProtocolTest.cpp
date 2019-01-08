@@ -15,7 +15,7 @@ TEST(ProtocolTest, TestFromServerDecodesCorrectlyWithoutStartAndEndChars)
 {
     String message = String("6;0");
 
-    std::vector<String> expectedParameters = { String(M_PING), String("0") };
+    std::vector<String> expectedParameters = { String(M_PING), "0" };
     std::vector<String> parameters = Protocol::FromServer(message);
 
     EXPECT_EQ(expectedParameters, parameters);

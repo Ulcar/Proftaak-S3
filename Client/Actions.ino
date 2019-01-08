@@ -5,15 +5,15 @@
 //=============
 
 SoapAction::SoapAction(HardwareState state, int dispenser)
-    : _dispenser(dispenser)
-    , _state(state)
+    : _state(state)
+    , _dispenser(dispenser)
 {
     // ...
 }
 
 void SoapAction::Handle()
 {
-    Controls* controls = _control->GetControls();
+    Controls* controls = (Controls *) _control->GetControls();
 
     controls->SetSoap(_state, _dispenser);
 }
@@ -35,7 +35,7 @@ BuzzerAction::BuzzerAction(HardwareState state)
 
 void BuzzerAction::Handle()
 {
-    Controls* controls = _control->GetControls();
+    Controls* controls = (Controls *) _control->GetControls();
 
     controls->SetBuzzer(_state);
 }
@@ -56,7 +56,7 @@ DrainWaterAction::DrainWaterAction()
 
 void DrainWaterAction::Handle()
 {
-    Water* water = _control->GetWater();
+    Water* water = (Water *) _control->GetWater();
 
     if (water->GetSinkState() != STATE_ON)
     {
@@ -66,7 +66,7 @@ void DrainWaterAction::Handle()
 
 bool DrainWaterAction::IsDone()
 {
-    Water* water = _control->GetWater();
+    Water* water = (Water *) _control->GetWater();
 
     if (water->GetLevel() == WL_EMPTY)
     {
@@ -90,7 +90,7 @@ HeatAction::HeatAction(Temperature temp)
 
 void HeatAction::Handle()
 {
-    Heater* heater = _control->GetHeater();
+    Heater* heater = (Heater *) _control->GetHeater();
 
     if (heater->GetState() != STATE_ON)
     {
@@ -100,7 +100,7 @@ void HeatAction::Handle()
 
 bool HeatAction::IsDone()
 {
-    Heater* heater = _control->GetHeater();
+    Heater* heater = (Heater *) _control->GetHeater();
 
     if (heater->GetTemperature() == _temp)
     {
@@ -124,7 +124,7 @@ FillWaterAction::FillWaterAction(WaterLevel level)
 
 void FillWaterAction::Handle()
 {
-    Water* water = _control->GetWater();
+    Water* water = (Water *) _control->GetWater();
 
     if (water->GetDrainState() != STATE_ON)
     {
@@ -134,7 +134,7 @@ void FillWaterAction::Handle()
 
 bool FillWaterAction::IsDone()
 {
-    Water* water = _control->GetWater();
+    Water* water = (Water *) _control->GetWater();
 
     if (water->GetLevel() == _level)
     {
@@ -245,7 +245,7 @@ MotorRotateAction::MotorRotateAction(MotorDirection direction, MotorSpeed speed)
 
 void MotorRotateAction::Handle()
 {
-    Motor* motor = _control->GetMotor();
+    Motor* motor = (Motor *) _control->GetMotor();
 
     motor->SetDirection(_direction);
     motor->SetSpeed(_speed);

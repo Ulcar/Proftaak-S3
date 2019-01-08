@@ -1,8 +1,7 @@
 #ifndef ARDUINOWRAPPER_H
 #define ARDUINOWRAPPER_H
 
-//typedef std::string String;
-typedef bool boolean;
+#include <sys/timeb.h>
 
 #define OUTPUT (0x1)
 #define INPUT  (0x0)
@@ -11,6 +10,9 @@ typedef bool boolean;
 #define LOW    (0x0)
 
 #include "String.h"
-//#include <string>
+
+// Credit: https://stackoverflow.com/a/11437456
+unsigned long millis();
+void delay(unsigned long ms);
 
 #endif
