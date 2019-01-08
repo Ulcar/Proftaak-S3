@@ -1,11 +1,11 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "enums.h"
-#include "socket.h"
 #include "codes.h"
-#include "translator.h"
+#include "enums.h"
 #include "iClient.h"
+#include "socket.h"
+#include "translator.h"
 
 #include <cstring>
 

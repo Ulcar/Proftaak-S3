@@ -3,8 +3,8 @@
 
 #include "codes.h"
 #include "enums.h"
-#include "iSocketQueue.h"
 #include "iSocketIO.h"
+#include "iSocketQueue.h"
 #include "logger.h"
 
 #include <arpa/inet.h>
