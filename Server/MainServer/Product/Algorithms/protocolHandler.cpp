@@ -213,7 +213,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
                     {
                         if(machine->GetMacAdress() == was->GetMacAdress())
                         {
-                              Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()), "Algorithm");
+                              Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()), "Algorithm");
                             was->SetBusy(false);
                         }
                     }

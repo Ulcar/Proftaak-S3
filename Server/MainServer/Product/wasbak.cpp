@@ -1,19 +1,19 @@
 #include "wasbak.h"
 
-void Wasbak::OnWashFinish(std::vector<Was> &wasToRemove)
+void Wasbak::OnWashFinish(std::vector<Was*> &wasToRemove)
     {
        if(tasks.size() <= 0)
        {
            done = true;
            return;
        }
-       for(Was was : wasVector)
+       for(Was* was : wasVector)
        {
-           was.tasksToDo.erase(was.tasksToDo.begin());
+           was->tasksToDo.erase(was->tasksToDo.begin());
            //Check if clothing piece needs to do the next program, if not, return to database
 
            
-           if(was.tasksToDo[0] != tasks[0])
+           if(was->tasksToDo[0] != tasks[0])
            {
                wasToRemove.push_back(was);
            }
@@ -21,9 +21,9 @@ void Wasbak::OnWashFinish(std::vector<Was> &wasToRemove)
     }
 
 
-bool Wasbak::AddWasToWasbak(Was was)
+bool Wasbak::AddWasToWasbak(Was* was)
 {
-    if(currentWeight + was.GetWeight() > weightLimit)
+    if(currentWeight + was->GetWeight() > weightLimit)
     {
         return false;
     }

@@ -20,7 +20,7 @@ class Database
         ~Database();
         std::vector<Client*> GetClients();
         std::vector<Wasbak*> GetWasbakken();
-        void AddWash(Was was);
+        void AddWash(Was* was);
         void AddClient(Client* client);
         bool AskQuit();
         void SetQuit(bool quit);
@@ -33,7 +33,7 @@ class Database
         void ResetPower(int amountPower);
 
         void HandleWashFinish(std::string macAdress);
-        void HandleWash(std::vector<Was>& washToHandle);
+        void HandleWash(std::vector<Was*>& washToHandle);
         void HandleWash();
         void HandleLaundryBaskets();
         void Update();
@@ -42,7 +42,7 @@ class Database
         bool quit;
         std::vector<Client*> clients;
         std::vector<Wasbak*> wasbakken;
-        std::vector<Was> unhandledWash;
+        std::vector<Was*> unhandledWash;
 
         std::mutex mtxClient;
         std::mutex mtxQuit;

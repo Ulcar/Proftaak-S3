@@ -25,7 +25,7 @@ class Wasbak
    
 
     public:
-    std::vector<Was> wasVector;
+    std::vector<Was*> wasVector;
     std::vector<Type> tasks;
 
     std::string GetMacAdress();
@@ -39,8 +39,8 @@ class Wasbak
     int GetCurrentWeight();
     Wasbak(std::vector<Type> machines);
 
-    void OnWashFinish(std::vector<Was>& wasToRemove);
-    bool AddWasToWasbak(Was was);
+    void OnWashFinish(std::vector<Was*>& wasToRemove);
+    bool AddWasToWasbak(Was* was);
 
     Temperature GetTemperature();
     void SetTemperature(Temperature temperature);

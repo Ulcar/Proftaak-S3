@@ -35,7 +35,7 @@ void Database::AddClient(Client* client)
     clients.push_back(client);
 }
 
-void Database::AddWash(Was was)
+void Database::AddWash(Was* was)
 {
       std::unique_lock<std::mutex> lock (mtxWash);
       unhandledWash.push_back(was);
@@ -127,7 +127,7 @@ bool Database::UpdateWater(int amountWater)
 
 void Database::HandleWashFinish(std::string macAdress)
 {
-    std::vector<Was> wasToHandle;
+    std::vector<Was*> wasToHandle;
     for (Wasbak* was : wasbakken)
     {
         if(was->GetMacAdress() == macAdress)
@@ -141,34 +141,34 @@ void Database::HandleWashFinish(std::string macAdress)
         }
     }
 
-    for(Was was : wasToHandle)
+    for(Was* was : wasToHandle)
     {
         for(Wasbak* bak : wasbakken)
         {
-            if(!bak->IsBusy() && bak->tasks[0] == was.tasksToDo[0])
+            if(!bak->IsBusy() && bak->tasks[0] == was->tasksToDo[0])
             {
                 bak->AddWasToWasbak(was);
                 return;
             }
         }
 
-        Wasbak* newWasbak = new Wasbak(was.tasksToDo);
+        Wasbak* newWasbak = new Wasbak(was->tasksToDo);
         wasbakken.push_back(newWasbak);
         
     }
 }
 
-void Database::HandleWash(std::vector<Was>& washToHandle)
+void Database::HandleWash(std::vector<Was*>& washToHandle)
 {
      std::unique_lock<std::mutex> lock (mtxWash);
      
     
-    for(Was was : washToHandle)
+    for(Was* was : washToHandle)
     {
         bool found = false;
          for(Wasbak* bak : wasbakken)
         {
-            if(!bak->IsBusy() && (bak->tasks[0] == was.tasksToDo[0]) && !bak->GetDone())
+            if(!bak->IsBusy() && (bak->tasks[0] == was->tasksToDo[0]) && !bak->GetDone())
             {
                 bak->AddWasToWasbak(was);
                 found = true;
@@ -179,7 +179,7 @@ void Database::HandleWash(std::vector<Was>& washToHandle)
 
         if(!found)
         {
-        Wasbak* newWasbak = new Wasbak(was.tasksToDo);
+        Wasbak* newWasbak = new Wasbak(was->tasksToDo);
         wasbakken.push_back(newWasbak);
         newWasbak->AddWasToWasbak(was);
 
