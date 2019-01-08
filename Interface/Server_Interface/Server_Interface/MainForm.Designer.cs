@@ -28,110 +28,210 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.SendData_btn = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.RecievedData_listBox = new System.Windows.Forms.ListBox();
-            this.GetData_btn = new System.Windows.Forms.Button();
-            this.Disconnect_btn = new System.Windows.Forms.Button();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.ClientList = new System.Windows.Forms.ListBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.ErrorList = new System.Windows.Forms.ListBox();
+            this.TotalWaterLb = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.ConsoleInputTb = new System.Windows.Forms.TextBox();
+            this.TotalWattLb = new System.Windows.Forms.Label();
+            this.ElecUsageLb = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.WaterUsageLb = new System.Windows.Forms.Label();
+            this.CurrentProgramLb = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // groupBox2
+            // ClientList
             // 
-            this.groupBox2.Controls.Add(this.textBox3);
-            this.groupBox2.Controls.Add(this.SendData_btn);
-            this.groupBox2.Location = new System.Drawing.Point(12, 13);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(279, 425);
-            this.groupBox2.TabIndex = 3;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "groupBox2";
+            this.ClientList.FormattingEnabled = true;
+            this.ClientList.Location = new System.Drawing.Point(12, 119);
+            this.ClientList.Name = "ClientList";
+            this.ClientList.Size = new System.Drawing.Size(109, 329);
+            this.ClientList.TabIndex = 0;
             // 
-            // textBox3
+            // button1
             // 
-            this.textBox3.Location = new System.Drawing.Point(6, 21);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(267, 48);
-            this.textBox3.TabIndex = 1;
+            this.button1.Location = new System.Drawing.Point(353, 32);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Refresh";
+            this.button1.UseVisualStyleBackColor = true;
             // 
-            // SendData_btn
+            // label1
             // 
-            this.SendData_btn.Location = new System.Drawing.Point(92, 75);
-            this.SendData_btn.Name = "SendData_btn";
-            this.SendData_btn.Size = new System.Drawing.Size(75, 23);
-            this.SendData_btn.TabIndex = 0;
-            this.SendData_btn.Text = "send data";
-            this.SendData_btn.UseVisualStyleBackColor = true;
-            this.SendData_btn.Click += new System.EventHandler(this.SendData_btn_Click);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(174, 119);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(36, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Client:";
             // 
-            // groupBox3
+            // label2
             // 
-            this.groupBox3.Controls.Add(this.RecievedData_listBox);
-            this.groupBox3.Controls.Add(this.GetData_btn);
-            this.groupBox3.Location = new System.Drawing.Point(308, 5);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(293, 425);
-            this.groupBox3.TabIndex = 4;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "groupBox3";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(140, 191);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(70, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Water Usage";
             // 
-            // RecievedData_listBox
+            // label3
             // 
-            this.RecievedData_listBox.FormattingEnabled = true;
-            this.RecievedData_listBox.Location = new System.Drawing.Point(7, 20);
-            this.RecievedData_listBox.Name = "RecievedData_listBox";
-            this.RecievedData_listBox.Size = new System.Drawing.Size(280, 355);
-            this.RecievedData_listBox.TabIndex = 1;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(150, 155);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(60, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Elec usage";
             // 
-            // GetData_btn
+            // label4
             // 
-            this.GetData_btn.Location = new System.Drawing.Point(113, 379);
-            this.GetData_btn.Name = "GetData_btn";
-            this.GetData_btn.Size = new System.Drawing.Size(75, 23);
-            this.GetData_btn.TabIndex = 0;
-            this.GetData_btn.Text = "Get Data";
-            this.GetData_btn.UseVisualStyleBackColor = true;
-            this.GetData_btn.Click += new System.EventHandler(this.GetData_btn_Click);
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 19);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(66, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Total Water:";
             // 
-            // Disconnect_btn
+            // label5
             // 
-            this.Disconnect_btn.Location = new System.Drawing.Point(713, 5);
-            this.Disconnect_btn.Name = "Disconnect_btn";
-            this.Disconnect_btn.Size = new System.Drawing.Size(75, 23);
-            this.Disconnect_btn.TabIndex = 5;
-            this.Disconnect_btn.Text = "Disconnect";
-            this.Disconnect_btn.UseVisualStyleBackColor = true;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(177, 19);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(60, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Total Watt:";
+            // 
+            // ErrorList
+            // 
+            this.ErrorList.FormattingEnabled = true;
+            this.ErrorList.Location = new System.Drawing.Point(308, 171);
+            this.ErrorList.Name = "ErrorList";
+            this.ErrorList.Size = new System.Drawing.Size(120, 251);
+            this.ErrorList.TabIndex = 9;
+            // 
+            // TotalWaterLb
+            // 
+            this.TotalWaterLb.AutoSize = true;
+            this.TotalWaterLb.Location = new System.Drawing.Point(84, 19);
+            this.TotalWaterLb.Name = "TotalWaterLb";
+            this.TotalWaterLb.Size = new System.Drawing.Size(17, 13);
+            this.TotalWaterLb.TabIndex = 10;
+            this.TotalWaterLb.Text = "xx";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(287, 455);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(141, 23);
+            this.button2.TabIndex = 11;
+            this.button2.Text = "Send Console Command";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // ConsoleInputTb
+            // 
+            this.ConsoleInputTb.Location = new System.Drawing.Point(158, 458);
+            this.ConsoleInputTb.Name = "ConsoleInputTb";
+            this.ConsoleInputTb.Size = new System.Drawing.Size(100, 20);
+            this.ConsoleInputTb.TabIndex = 12;
+            // 
+            // TotalWattLb
+            // 
+            this.TotalWattLb.AutoSize = true;
+            this.TotalWattLb.Location = new System.Drawing.Point(246, 19);
+            this.TotalWattLb.Name = "TotalWattLb";
+            this.TotalWattLb.Size = new System.Drawing.Size(17, 13);
+            this.TotalWattLb.TabIndex = 13;
+            this.TotalWattLb.Text = "xx";
+            // 
+            // ElecUsageLb
+            // 
+            this.ElecUsageLb.AutoSize = true;
+            this.ElecUsageLb.Location = new System.Drawing.Point(220, 155);
+            this.ElecUsageLb.Name = "ElecUsageLb";
+            this.ElecUsageLb.Size = new System.Drawing.Size(17, 13);
+            this.ElecUsageLb.TabIndex = 14;
+            this.ElecUsageLb.Text = "xx";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(124, 231);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(86, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Current Program:";
+            // 
+            // WaterUsageLb
+            // 
+            this.WaterUsageLb.AutoSize = true;
+            this.WaterUsageLb.Location = new System.Drawing.Point(220, 191);
+            this.WaterUsageLb.Name = "WaterUsageLb";
+            this.WaterUsageLb.Size = new System.Drawing.Size(17, 13);
+            this.WaterUsageLb.TabIndex = 16;
+            this.WaterUsageLb.Text = "xx";
+            // 
+            // CurrentProgramLb
+            // 
+            this.CurrentProgramLb.AutoSize = true;
+            this.CurrentProgramLb.Location = new System.Drawing.Point(220, 231);
+            this.CurrentProgramLb.Name = "CurrentProgramLb";
+            this.CurrentProgramLb.Size = new System.Drawing.Size(17, 13);
+            this.CurrentProgramLb.TabIndex = 17;
+            this.CurrentProgramLb.Text = "xx";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.Disconnect_btn);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
+            this.ClientSize = new System.Drawing.Size(450, 487);
+            this.Controls.Add(this.CurrentProgramLb);
+            this.Controls.Add(this.WaterUsageLb);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.ElecUsageLb);
+            this.Controls.Add(this.TotalWattLb);
+            this.Controls.Add(this.ConsoleInputTb);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.TotalWaterLb);
+            this.Controls.Add(this.ErrorList);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.ClientList);
             this.Name = "MainForm";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
+            this.Text = "ControlPanel";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Button SendData_btn;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button GetData_btn;
-        private System.Windows.Forms.Button Disconnect_btn;
-        private System.Windows.Forms.ListBox RecievedData_listBox;
+        private System.Windows.Forms.ListBox ClientList;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ListBox ErrorList;
+        private System.Windows.Forms.Label TotalWaterLb;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox ConsoleInputTb;
+        private System.Windows.Forms.Label TotalWattLb;
+        private System.Windows.Forms.Label ElecUsageLb;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label WaterUsageLb;
+        private System.Windows.Forms.Label CurrentProgramLb;
+
     }
 }
 

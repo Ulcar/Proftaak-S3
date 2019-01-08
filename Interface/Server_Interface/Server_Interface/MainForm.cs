@@ -73,7 +73,7 @@ namespace Server_Interface
 
         private void SendData_btn_Click(object sender, EventArgs e)
         {
-            string message = textBox3.Text;
+            string message = "";////////textBox3.Text;
             // Translate the passed message into ASCII and store it as a Byte array.
             Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
 
@@ -89,7 +89,7 @@ namespace Server_Interface
         {
             List<Byte> buffer = new List<Byte>();
             NetworkStream stream = interfaceClient.GetStream();
-            GetData_btn.Text = "Reading...";
+            ////////GetData_btn.Text = "Reading...";
             while (stream.DataAvailable)
             {
                 Byte[] data = new Byte[256];
@@ -101,7 +101,7 @@ namespace Server_Interface
                 Int32 readedBytes = stream.Read(data, 0, data.Length);
                 recievedByte = System.Text.Encoding.ASCII.GetString(data, 0, readedBytes); //(**This converts it to string**)
 
-                RecievedData_listBox.Items.Add(recievedByte);
+                ////////RecievedData_listBox.Items.Add(recievedByte);
             }
         }
 
