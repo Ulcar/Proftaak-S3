@@ -5,7 +5,6 @@
 #include "includes/hardware/Motor.h"
 #include "includes/hardware/Water.h"
 
-#include "includes/client/SerialClient.h"
 #include "includes/client/WifiClient.h"
 #include "includes/client/Protocol.h"
 
@@ -16,7 +15,6 @@
 #include "includes/Enums.h"
 
 HardwareControl* hardwareControl;
-//SerialClient* client;
 WifiClient* client;
 Programs* programs;
 
@@ -69,7 +67,6 @@ void setup()
     Serial.println("Connecting to the Wi-Fi network...");
 
     client = new WifiClient("12connect", "192.168.200.40", Protocol::GetPort());
-    //client = new SerialClient();
     client->SetOnMessageReceived(onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");
