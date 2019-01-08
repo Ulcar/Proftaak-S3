@@ -5,6 +5,7 @@ Client::Client(std::string macAdress, Type type)
     , clientType(type)
 {
     enabled = true;
+    socket = nullptr;
 }
 
 Client::~Client()

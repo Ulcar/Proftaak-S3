@@ -37,7 +37,7 @@ void ProtocolHandler::HandleMessages()
         std::string message = tmpSock->ReadLastMessage();
         if(message.empty())
         {
-            return;
+            continue;
         }
 
         //handle message:
@@ -213,6 +213,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
                     {
                         if(machine->GetMacAdress() == was->GetMacAdress())
                         {
+                              Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()), "Algorithm");
                             was->SetBusy(false);
                         }
                     }

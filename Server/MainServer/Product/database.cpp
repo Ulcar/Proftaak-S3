@@ -243,9 +243,10 @@ void Database::HandleLaundryBaskets()
                                 machine->SetProgram(Program::PROGRAM_XX);
                                 break;
                             }
-                              // Do StartProgram on machine, and set Inprogress if you get a response  
-                              machine->SetRequestingInProgress(true);
-                              bak->SetBusy(true);
+                            // Do StartProgram on machine, and set Inprogress if you get a response  
+                            machine->SetRequestingInProgress(true);
+                            bak->SetBusy(true);
+                            break;
 
                         }
                     }
