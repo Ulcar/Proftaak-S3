@@ -13,53 +13,16 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "String.h"
 
-#if 0
-extern void itoa( int n, char s[] ) ;
-#else
 extern char* itoa( int value, char *string, int radix ) ;
 extern char* ltoa( long value, char *string, int radix ) ;
 extern char* utoa( unsigned long value, char *string, int radix ) ;
 extern char* ultoa( unsigned long value, char *string, int radix ) ;
-#endif /* 0 */
 
-#if 0
-/* reverse:  reverse string s in place */
-static void reverse( char s[] )
-{
-  int i, j ;
-  char c ;
-  for ( i = 0, j = strlen(s)-1 ; i < j ; i++, j-- )
-  {
-    c = s[i] ;
-    s[i] = s[j] ;
-    s[j] = c ;
-  }
-}
-/* itoa:  convert n to characters in s */
-extern void itoa( int n, char s[] )
-{
-  int i, sign ;
-  if ( (sign = n) < 0 )  /* record sign */
-  {
-    n = -n;          /* make n positive */
-  }
-  i = 0;
-  do
-  {       /* generate digits in reverse order */
-    s[i++] = n % 10 + '0';   /* get next digit */
-  } while ((n /= 10) > 0) ;     /* delete it */
-  if (sign < 0 )
-  {
-    s[i++] = '-';
-  }
-  s[i] = '\0';
-  reverse( s ) ;
-}
-#else
 extern char* itoa( int value, char *string, int radix )
 {
   return ltoa( value, string, radix ) ;
@@ -106,10 +69,12 @@ extern char* ltoa( long value, char *string, int radix )
   *sp = 0;
   return string;
 }
+
 extern char* utoa( unsigned long value, char *string, int radix )
 {
   return ultoa( value, string, radix ) ;
 }
+
 extern char* ultoa( unsigned long value, char *string, int radix )
 {
   char tmp[33];
@@ -142,7 +107,6 @@ extern char* ultoa( unsigned long value, char *string, int radix )
   *sp = 0;
   return string;
 }
-#endif /* 0 */
 
 String::String( const char *value )
 {
@@ -152,12 +116,14 @@ String::String( const char *value )
   if ( _buffer != NULL )
     strcpy( _buffer, value );
 }
+
 String::String( const String &value )
 {
   getBuffer( _length = value._length );
   if ( _buffer != NULL )
     strcpy( _buffer, value._buffer );
 }
+
 String::String( const char value )
 {
   _length = 1;
@@ -167,6 +133,7 @@ String::String( const char value )
     _buffer[1] = 0;
   }
 }
+
 String::String( const unsigned char value )
 {
   _length = 1;
@@ -176,6 +143,7 @@ String::String( const unsigned char value )
     _buffer[1] = 0;
   }
 }
+
 String::String( const int value, const int base )
 {
   char buf[33];   
@@ -184,6 +152,7 @@ String::String( const int value, const int base )
   if ( _buffer != NULL )
     strcpy( _buffer, buf );
 }
+
 String::String( const unsigned int value, const int base )
 {
   char buf[33];   
@@ -192,6 +161,7 @@ String::String( const unsigned int value, const int base )
   if ( _buffer != NULL )
     strcpy( _buffer, buf );
 }
+
 String::String( const long value, const int base )
 {
   char buf[33];   
@@ -200,6 +170,7 @@ String::String( const long value, const int base )
   if ( _buffer != NULL )
     strcpy( _buffer, buf );
 }
+
 String::String( const unsigned long value, const int base )
 {
   char buf[33];   
@@ -208,10 +179,12 @@ String::String( const unsigned long value, const int base )
   if ( _buffer != NULL )
     strcpy( _buffer, buf );
 }
+
 char String::charAt( unsigned int loc ) const
 {
   return operator[]( loc );
 }
+
 void String::setCharAt( unsigned int loc, const char aChar ) 
 {
   if(_buffer == NULL) return;
@@ -219,14 +192,17 @@ void String::setCharAt( unsigned int loc, const char aChar )
     _buffer[loc] = aChar;
   }
 }
+
 int String::compareTo( const String &s2 ) const
 {
   return strcmp( _buffer, s2._buffer );
 }
+
 const String & String::concat( const String &s2 )
 {
   return (*this) += s2;
 }
+
 const String & String::operator=( const String &rhs )
 {
   if ( this == &rhs )
@@ -243,15 +219,7 @@ const String & String::operator=( const String &rhs )
   }
   return *this;
 }
-//const String & String::operator+=( const char aChar )
-//{
-//  if ( _length == _capacity )
-//    doubleBuffer();
-//
-//  _buffer[ _length++ ] = aChar;
-//  _buffer[ _length ] = '\0';
-//  return *this;
-//}
+
 const String & String::operator+=( const String &other )
 {
   _length += other._length;
@@ -269,30 +237,37 @@ const String & String::operator+=( const String &other )
   strcat( _buffer, other._buffer );
   return *this;
 }
+
 int String::operator==( const String &rhs ) const
 {
   return ( _length == rhs._length && strcmp( _buffer, rhs._buffer ) == 0 );
 }
+
 int String::operator!=( const String &rhs ) const
 {
   return ( _length != rhs.length() || strcmp( _buffer, rhs._buffer ) != 0 );
 }
+
 int String::operator<( const String &rhs ) const
 {
   return strcmp( _buffer, rhs._buffer ) < 0;
 }
+
 int String::operator>( const String &rhs ) const
 {
   return strcmp( _buffer, rhs._buffer ) > 0;
 }
+
 int String::operator<=( const String &rhs ) const
 {
   return strcmp( _buffer, rhs._buffer ) <= 0;
 }
+
 int String::operator>=( const String & rhs ) const
 {
   return strcmp( _buffer, rhs._buffer ) >= 0;
 }
+
 char & String::operator[]( unsigned int index )
 {
   static char dummy_writable_char;
@@ -302,21 +277,25 @@ char & String::operator[]( unsigned int index )
   }
   return _buffer[ index ];
 }
+
 char String::operator[]( unsigned int index ) const
 {
   // need to check for valid index, to do later
   return _buffer[ index ];
 }
+
 unsigned char String::endsWith( const String &s2 ) const
 {
   if ( _length < s2._length )
     return 0;
   return strcmp( &_buffer[ _length - s2._length], s2._buffer ) == 0;
 }
+
 unsigned char String::equals( const String &s2 ) const
 {
   return ( _length == s2._length && strcmp( _buffer,s2._buffer ) == 0 );
 }
+
 unsigned char String::equalsIgnoreCase( const String &s2 ) const
 {
   if ( this == &s2 )
@@ -325,6 +304,7 @@ unsigned char String::equalsIgnoreCase( const String &s2 ) const
     return false; //0;
   return strcmp(toLowerCase()._buffer, s2.toLowerCase()._buffer) == 0;
 }
+
 String String::replace( char findChar, char replaceChar )
 {
   if ( _buffer == NULL ) return *this;
@@ -334,6 +314,7 @@ String String::replace( char findChar, char replaceChar )
     *temp = replaceChar;
   return theReturn;
 }
+
 String String::replace( const String& match, const String& replace )
 {
   if ( _buffer == NULL ) return *this;
@@ -348,10 +329,12 @@ String String::replace( const String& match, const String& replace )
   newString += temp;  
   return newString;
 }
+
 int String::indexOf( char temp ) const
 {
   return indexOf( temp, 0 );
 }
+
 int String::indexOf( char ch, unsigned int fromIndex ) const
 {
   if ( fromIndex >= _length )
@@ -361,10 +344,12 @@ int String::indexOf( char ch, unsigned int fromIndex ) const
     return -1;
   return temp - _buffer;
 }
+
 int String::indexOf( const String &s2 ) const
 {
   return indexOf( s2, 0 );
 }
+
 int String::indexOf( const String &s2, unsigned int fromIndex ) const
 {
   if ( fromIndex >= _length )
@@ -374,10 +359,12 @@ int String::indexOf( const String &s2, unsigned int fromIndex ) const
     return -1;
   return theFind - _buffer; // pointer subtraction
 }
+
 int String::lastIndexOf( char theChar ) const
 {
   return lastIndexOf( theChar, _length - 1 );
 }
+
 int String::lastIndexOf( char ch, unsigned int fromIndex ) const
 {
   if ( fromIndex >= _length )
@@ -390,10 +377,12 @@ int String::lastIndexOf( char ch, unsigned int fromIndex ) const
     return -1;
   return temp - _buffer;
 }
+
 int String::lastIndexOf( const String &s2 ) const
 {
   return lastIndexOf( s2, _length - s2._length );
 }
+
 int String::lastIndexOf( const String &s2, unsigned int fromIndex ) const
 {
   // check for empty strings
@@ -408,22 +397,26 @@ int String::lastIndexOf( const String &s2, unsigned int fromIndex ) const
   }
   return -1;
 }
+
 unsigned char String::startsWith( const String &s2 ) const
 {
   if ( _length < s2._length )
     return 0;
   return startsWith( s2, 0 );
 }
+
 unsigned char String::startsWith( const String &s2, unsigned int offset ) const
 {
   if ( offset > _length - s2._length )
     return 0;
   return strncmp( &_buffer[offset], s2._buffer, s2._length ) == 0;
 }
+
 String String::substring( unsigned int left ) const
 {
   return substring( left, _length );
 }
+
 String String::substring( unsigned int left, unsigned int right ) const
 {
   if ( left > right )
@@ -442,6 +435,7 @@ String String::substring( unsigned int left, unsigned int right ) const
   _buffer[ right ] = temp;  //restore character
   return outPut;
 }
+
 String String::toLowerCase() const
 {
   String temp = _buffer;
@@ -449,6 +443,7 @@ String String::toLowerCase() const
     temp._buffer[ i ] = (char)tolower( temp._buffer[ i ] );
   return temp;
 }
+
 String String::toUpperCase() const
 {
   String temp = _buffer;
@@ -456,6 +451,7 @@ String String::toUpperCase() const
     temp._buffer[ i ] = (char)toupper( temp._buffer[ i ] );
   return temp;
 }
+
 String String::trim() const
 {
   if ( _buffer == NULL ) return *this;
@@ -473,6 +469,7 @@ String String::trim() const
   }
   return temp.substring( i, j + 1);
 }
+
 void String::getBytes(unsigned char *buf, unsigned int bufsize)
 {
   if (!bufsize || !buf) return;
@@ -481,6 +478,7 @@ void String::getBytes(unsigned char *buf, unsigned int bufsize)
   strncpy((char *)buf, _buffer, len);
   buf[len] = 0;
 }
+
 void String::toCharArray(char *buf, unsigned int bufsize)
 {
   if (!bufsize || !buf) return;
@@ -489,6 +487,7 @@ void String::toCharArray(char *buf, unsigned int bufsize)
   strncpy(buf, _buffer, len);
   buf[len] = 0;
 }
+
 long String::toInt() {
   return atol(_buffer);
 }

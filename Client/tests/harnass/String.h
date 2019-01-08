@@ -13,12 +13,14 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef String_h
-#define String_h
-//#include "WProgram.h"
+
+#ifndef STRING_H
+#define STRING_H
+
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
 class String
 {
   public:
@@ -83,6 +85,7 @@ class String
     void getBuffer(unsigned int maxStrLen);
   private:
 };
+
 // allocate buffer space
 inline void String::getBuffer(unsigned int maxStrLen)
 {
@@ -90,8 +93,10 @@ inline void String::getBuffer(unsigned int maxStrLen)
   _buffer = (char *) malloc(_capacity + 1);
   if (_buffer == NULL) _length = _capacity = 0;
 }
+
 inline String operator+( String lhs, const String &rhs )
 {
   return lhs += rhs;
 }
+
 #endif
