@@ -7,6 +7,7 @@
 #include "client.h"
 #include "socket.h"
 #include "wasbak.h"
+#include "machine.h"
 
 #include <mutex>
 #include <unistd.h>

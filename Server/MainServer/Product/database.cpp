@@ -119,6 +119,11 @@ void Database::HandleWashFinish(std::string macAdress)
         if(was.GetMacAdress() == macAdress)
         {
             was.OnWashFinish(wasToHandle);
+
+            if(was.GetDone())
+            {
+
+            }
         }
     }
 
@@ -175,8 +180,11 @@ void Database::HandleLaundryBaskets()
             {
                 if(bak.tasks[0] == client->GetType())
                 {
+                    if(Machine* machine = dynamic_cast<Machine*>(client))
+                    {
+                    }
                     //add checks to make sure machine isn't doing anything
-                    // Do StartProgram on machine, and                 
+                    // Do StartProgram on machine, and             
                 }
             }
         }

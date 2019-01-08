@@ -2,11 +2,17 @@
 
 void Wasbak::OnWashFinish(std::vector<Was> &wasToRemove)
     {
-       wasVector.erase(wasVector.begin());
+       if(tasks.size() <= 0)
+       {
+           done = true;
+           return;
+       }
        for(Was was : wasVector)
        {
            was.tasksToDo.erase(was.tasksToDo.begin());
            //Check if clothing piece needs to do the next program, if not, return to database
+
+           
            if(was.tasksToDo[0] != tasks[0])
            {
                wasToRemove.push_back(was);
