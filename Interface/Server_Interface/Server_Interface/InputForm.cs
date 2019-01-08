@@ -30,7 +30,25 @@ namespace Server_Interface
 
         private void Connect_btn_Click(object sender, EventArgs e)
         {
-            if(IPAddress.TryParse(ipTbx.Text, out IPAddress tempIp) && int.TryParse(potrTbx.Text, out int tempPort))
+            Verificeer();
+        }
+
+        private void Cancel_btn_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void potrTbx_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                Verificeer();
+            }
+        }
+
+        private void Verificeer()
+        {
+            if (IPAddress.TryParse(ipTbx.Text, out IPAddress tempIp) && int.TryParse(potrTbx.Text, out int tempPort))
             {
                 ServerIPAdress = tempIp;
                 ServerPort = tempPort;
@@ -40,11 +58,6 @@ namespace Server_Interface
             }
 
             Errorlabel.Text = "Invalid IP/Port";
-        }
-
-        private void Cancel_btn_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }

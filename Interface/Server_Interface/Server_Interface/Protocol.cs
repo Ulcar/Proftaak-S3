@@ -6,19 +6,16 @@ using System.Threading.Tasks;
 
 namespace Server_Interface
 {
-    public class Protocol
+    public static class Protocol
     {
+        public static char startCharToServer = '$';
+        public static char seperatorChar = ';';
+        public static char endCharToServer = '#';
 
-        char seperatorChar = ';';
-        void SplitString()
-        {
-
-        }
-
-        string MakeString(int code, List<string> value, char startChar, char endChar)
+        public static string MakeString(CP_Code code, List<string> value)
         {
             string newString;
-            newString = startChar.ToString();
+            newString = startCharToServer.ToString();
             newString += code;
 
             foreach (string mess in value)
@@ -26,22 +23,21 @@ namespace Server_Interface
                 newString += seperatorChar;
                 newString += mess;
             }
-            newString += endChar;
+            newString += endCharToServer;
             return newString;
         }
 
-        List<string> SplitString(string text, char splitChar, char startChar, char endChar)
+        public static List<string> SplitString(string text)
         {
-            if ((text[0] == startChar) && (text[text.Length - 1] == endChar))
+            if ((text[0] == endCharToServer) && (text[text.Length - 1] == startCharToServer))
             {
                 text = text.Substring(1, text.Length - 2);
                 List<string> returnvalue = new List<string>();
-                returnvalue.AddRange(text.Split(splitChar));
+                returnvalue.AddRange(text.Split(seperatorChar));
                 return returnvalue;
             }
             List<string> fu = new List<string>();
             return fu;
         }
-
     }
 }

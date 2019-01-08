@@ -71,6 +71,7 @@
             this.ipTbx.Name = "ipTbx";
             this.ipTbx.Size = new System.Drawing.Size(141, 20);
             this.ipTbx.TabIndex = 0;
+            this.ipTbx.KeyDown += new System.Windows.Forms.KeyEventHandler(this.potrTbx_KeyDown);
             // 
             // potrTbx
             // 
@@ -78,6 +79,7 @@
             this.potrTbx.Name = "potrTbx";
             this.potrTbx.Size = new System.Drawing.Size(141, 20);
             this.potrTbx.TabIndex = 1;
+            this.potrTbx.KeyDown += new System.Windows.Forms.KeyEventHandler(this.potrTbx_KeyDown);
             // 
             // Cancel_btn
             // 

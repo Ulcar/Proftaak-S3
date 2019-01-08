@@ -13,13 +13,15 @@ namespace Server_Interface
 {
     public partial class MainForm : Form
     {
-        private TcpClient interfaceClient;
+        private WiFiHandler wiFiHandler;
         private InputForm inputForm;
-        private NetworkStream stream;
+        private List<Client> clients;
 
         public MainForm()
         {
             InitializeComponent();
+            clients = new List<Client>();
+            ClientList.DataSource = clients;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -39,6 +41,12 @@ namespace Server_Interface
                 inputForm.ShowDialog();
                 this.Show();
 
+                if(inputForm.ServerPort == 666)
+                {
+                    succes = true;
+                    return;
+                }
+
                 if (inputForm.DialogResult == DialogResult.Cancel)
                 {
                     this.Close();
@@ -46,70 +54,150 @@ namespace Server_Interface
                 }
 
                 succes = Connect();
+                error = true;
             }
         }
 
         private bool Connect()
         {
-            interfaceClient = new TcpClient();
             try
             {
-                interfaceClient.Connect(inputForm.ServerIPAdress, inputForm.ServerPort);
-                stream = interfaceClient.GetStream();
-                SendData("interface");
-            return interfaceClient.Connected;
+                wiFiHandler = new WiFiHandler(inputForm.ServerIPAdress, inputForm.ServerPort);
+                if (wiFiHandler == null)
+                    return false;
             }
             catch
             {
                 return false;
             }
+            return true;
         }
 
         private void Disconnect_btn_Click(object sender, EventArgs e)
         {
-            interfaceClient.Close();
+            Disconnect();
+        }
+
+        private void Disconnect()
+        {
+            wiFiHandler = null;
+            clients.Clear();
+            ConsoleList.Items.Clear();
+
+            DataGroupbox.Visible = false;
+
             AskUserForIP();
         }
 
-        private void SendData_btn_Click(object sender, EventArgs e)
+        private void SendCmdBtn_Click(object sender, EventArgs e)
         {
-            string message = "";////////textBox3.Text;
-            // Translate the passed message into ASCII and store it as a Byte array.
-            Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-
-            // Get a client stream for reading and writing. 
-            NetworkStream stream = interfaceClient.GetStream();
-
-            // Send the message to the connected TcpServer. 
-            stream.Write(data, 0, data.Length); //(**This is to send data using the byte method**)  
-
+            List<string> message = new List<string> { ConsoleInputTb.Text };
+            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_CONNECT, message));
         }
 
-        private void GetData_btn_Click(object sender, EventArgs e)
+        private void ClientList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            List<Byte> buffer = new List<Byte>();
-            NetworkStream stream = interfaceClient.GetStream();
-            ////////GetData_btn.Text = "Reading...";
-            while (stream.DataAvailable)
+            if ((ClientList.SelectedItem != null) && (ClientList.SelectedItem is Client))
             {
-                Byte[] data = new Byte[256];
+                Client temp = ClientList.SelectedItem as Client;
+                DataGroupbox.Visible = true;
+                CurrentClientLb.Text = temp.MacAdress;
+                ElecUsageLb.Text = temp.ElecUsage + " W";
+                WaterUsageLb.Text = temp.WaterUsage + " L";
+                CurrentProgramLb.Text = temp.CurrProgram;
 
-                // String to store the response ASCII representation.
-                string recievedByte = string.Empty;
-
-                // Read the first batch of the TcpServer response bytes.
-                Int32 readedBytes = stream.Read(data, 0, data.Length);
-                recievedByte = System.Text.Encoding.ASCII.GetString(data, 0, readedBytes); //(**This converts it to string**)
-
-                ////////RecievedData_listBox.Items.Add(recievedByte);
+                if(temp.Enabled)
+                {
+                    EnabledLb.Text = "true";
+                    ToggleEnabledBtn.Text = "Disable";
+                }
+                else
+                {
+                    EnabledLb.Text = "false";
+                    ToggleEnabledBtn.Text = "Enable";
+                }
+            }
+            else
+            {
+                DataGroupbox.Visible = false;
             }
         }
 
-        private void SendData(string text)
+        private void ToggleEnabledBtn_Click(object sender, EventArgs e)
         {
-            byte[] data = Encoding.ASCII.GetBytes(text);
-            Console.WriteLine("Sending message to the Server");
-            stream.Write(data, 0, data.Length);
+            if ((ClientList.SelectedItem != null) && (ClientList.SelectedItem is Client))
+            {
+                Client temp = ClientList.SelectedItem as Client;
+                EnabledLb.Text = "xx";
+                ToggleEnabledBtn.Text = "Refresh";
+                List<string> message = new List<string> { temp.Enabled + "" };
+                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_SETCLIENT, message));
+            }
+        }
+
+        private void AddClient(Client client)
+        {
+            for (int i = 0; i < clients.Count; i++)
+            {
+                if (clients[i].MacAdress == client.MacAdress)
+                {
+                    clients[i] = client;
+                    return;
+                }
+            }
+            clients.Add(client);
+            ClientList.SelectedIndex = 0;
+        }
+
+        private void RefreshBtn_Click(object sender, EventArgs e)
+        {
+            ClientList.Items.Clear();
+            List<string> messages = wiFiHandler.Receivedata();
+
+            foreach (string message in messages)
+            {
+                List<string> data = Protocol.SplitString(message);
+
+                if (data.Count <= 1)
+                    return;
+
+                switch((CP_Code) Int16.Parse(data[0]))
+                {
+                    case CP_Code.CP_CODE_CONNECT:
+                        if (data[1] == "1")
+                            Disconnect();
+                        break;
+
+                    case CP_Code.CP_CODE_CONSOLE:
+                        ConsoleList.Items.Add(data[1]);
+                        break;
+
+                    case CP_Code.CP_CODE_DISABLEALLCLIENTS:
+                        if (data[1] == "1")
+                            return;
+                        ConsoleList.Items.Add("All clients disabled, refreshing...");
+                        List<string> value = new List<string> { "1" };
+                        wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value));
+                        break;
+
+                    case CP_Code.CP_CODE_GETCLIENTS:
+                        if (data.Count == 6)
+                        AddClient(new Client(data[1], Int16.Parse(data[2]), Int16.Parse(data[3]), data[4], Boolean.Parse(data[5])));
+                        break;
+
+                    case CP_Code.CP_CODE_SETCLIENT:
+                        ConsoleList.Items.Add("Change accepted: " + data[1]);
+                        break;
+
+                    case CP_Code.CP_CODE_TOTALPOWER:
+                        TotalWattLb.Text = data[1] + " W";
+                        break;
+
+                    case CP_Code.CP_CODE_TOTALWATER:
+                        TotalWaterLb.Text = data[1] + " L";
+                        break;
+                }
+            }
         }
     }
 }
