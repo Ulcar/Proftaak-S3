@@ -19,7 +19,8 @@ class Database
         Database();
         ~Database();
         std::vector<Client*> GetClients();
-        std::vector<Wasbak> GetWasbakken();
+        std::vector<Wasbak*> GetWasbakken();
+        void AddWash(Was was);
         void AddClient(Client* client);
         bool AskQuit();
         void SetQuit(bool quit);
@@ -32,18 +33,22 @@ class Database
         void ResetPower(int amountPower);
 
         void HandleWashFinish(std::string macAdress);
-        void HandleWash(std::vector<Was> washToHandle);
+        void HandleWash(std::vector<Was>& washToHandle);
+        void HandleWash();
         void HandleLaundryBaskets();
+        void Update();
 
     private:
         bool quit;
         std::vector<Client*> clients;
-        std::vector<Wasbak> wasbakken;
+        std::vector<Wasbak*> wasbakken;
+        std::vector<Was> unhandledWash;
 
         std::mutex mtxClient;
         std::mutex mtxQuit;
         std::mutex mtxPower;
         std::mutex mtxWater;
+        std::mutex mtxWash;
 
         //Water is in Liters
         int currentWater;

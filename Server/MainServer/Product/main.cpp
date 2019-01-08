@@ -39,7 +39,7 @@ void Setup()
 
 void Loop()
 {
-    protocolHandler->HandleMessages();
+    protocolHandler->Update();
 }
 
 void ShutDown()

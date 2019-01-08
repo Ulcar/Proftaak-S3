@@ -22,7 +22,6 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
 {  
     std::string message;
     std::vector<std::string> commandos = Translator::SplitString(commando, ' ');
-
     try
     {
         if ((commandos.at(0) == "exit") || (commandos.at(0) == "quit") || (commandos.at(0) == "q"))
@@ -84,6 +83,20 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
         else if(commandos.at(0) == "ping")
         {
             message += "Pong\n";
+        }
+
+        else if(commandos.at(0) == "was")
+        {
+            Was was(stoi(commandos.at(1)));
+            was.colorType = static_cast<Color>(stoi(commandos.at(2)));
+            for(uint i = 3; i < commandos.size(); i++)
+            {
+                was.tasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
+
+            }
+            database->AddWash(was);
+
+
         }
         else
         {

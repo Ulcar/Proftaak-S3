@@ -20,6 +20,7 @@ void Wasbak::OnWashFinish(std::vector<Was> &wasToRemove)
        }
     }
 
+
 bool Wasbak::AddWasToWasbak(Was was)
 {
     if(currentWeight + was.GetWeight() > weightLimit)
@@ -38,13 +39,29 @@ bool Wasbak::IsBusy()
 
 Wasbak::Wasbak(std::vector<Type> machines)
 {
-    currentWeight = MAX_WEIGHT;
+    currentWeight = 0;
     weightLimit = MAX_WEIGHT;
 
     tasks = machines;
+    temperature = Temperature::Medium;
 }
 
 std::string Wasbak::GetMacAdress()
 {
     return usedClientId;
+}
+
+bool Wasbak::GetDone()
+{
+    return done;
+}
+
+void Wasbak::SetBusy(bool busy)
+{
+    this->busy = busy;
+}
+
+Temperature Wasbak::GetTemperature()
+{
+    return temperature;
 }

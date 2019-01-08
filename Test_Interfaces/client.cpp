@@ -206,6 +206,14 @@ int main(void)
                 sendMessageToServer(&socketFd, &connected, message);
                 break;
 
+             case '8' :
+                //message to server
+                std::cout << "Response: ";
+                std::getline(std::cin, input);
+                message = "&7;" + input + "#";
+                sendMessageToServer(&socketFd, &connected, message);
+                break;
+
             case 'q' :
                 quit = true;
                 break;

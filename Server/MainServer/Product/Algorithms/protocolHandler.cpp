@@ -1,14 +1,27 @@
 #include "protocolHandler.h"
+#include <chrono>
 
 ProtocolHandler::ProtocolHandler(Database* database)
     : database(database)
 {
-    
+   // startTime = std::chrono::system_clock::now();
 }
 
 ProtocolHandler::~ProtocolHandler()
 {
     
+}
+
+void ProtocolHandler::Update()
+{
+    HandleMessages();
+    database->HandleWash();
+    database->HandleLaundryBaskets();
+
+    
+    //currentTime = std::chrono::system_clock::now();
+ 
+  //std::chrono::duration<std::chrono::seconds> seconds =   std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime);
 }
 
 void ProtocolHandler::HandleMessages()
@@ -192,6 +205,17 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
                     machine->SetRequestingInProgress(false);
                     machine->SetInProgress(true);
                      Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is In progress on" + std::to_string(machine->GetProgram()), "Algorithm");
+                }
+
+                else
+                {
+                    for(Wasbak* was : database->GetWasbakken())
+                    {
+                        if(machine->GetMacAdress() == was->GetMacAdress())
+                        {
+                            was->SetBusy(false);
+                        }
+                    }
                 }
             }
             else

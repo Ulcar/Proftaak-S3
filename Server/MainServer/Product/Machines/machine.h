@@ -2,7 +2,7 @@
 #define MACHINE_H
 
 #include "client.h"
-#include "enums.h"
+#include "wasbak.h"
 
 class Machine : public Client
 {
