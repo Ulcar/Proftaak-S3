@@ -100,6 +100,7 @@ void setup()
 
     // Load program A.
     programs->Add(0, {
+        // Prewash
         new RequestWaterAction(50),
         new FillWaterAction(WL_50),
         new SoapAction(STATE_ON, 1),
@@ -110,6 +111,24 @@ void setup()
         new MotorRotateAction(MD_RIGHT, SPEED_OFF),
         new DrainWaterAction(),
         new SoapAction(STATE_OFF, 1),
+
+        // Main wash (1)
+        /*new RequestWaterAction(50),
+        new FillWaterAction(WL_50),
+        new RequestPowerAction(50),
+        new HeatAction(TEMP_MEDIUM),
+        new SoapAction(STATE_ON, 2),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_LEFT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
+        new DelayAction(10 * 1000L),
+        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
+        new DrainWaterAction(),
+        new SoapAction(STATE_OFF, 2),*/
 
         /*new MotorRotateAction(MD_LEFT, SPEED_LOW),
         new DelayAction(5000L),
