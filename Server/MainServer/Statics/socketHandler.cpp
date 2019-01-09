@@ -188,15 +188,15 @@ void SocketHandler::ConnectClient(int socketFd)
         return;
     }
     std::string encodedMessage = socket->ReadLastMessage();
-    std::vector<std::string> message = Translator::FromMachine(encodedMessage);
+    std::vector<std::vector<std::string>> message = Translator::FromMachine(encodedMessage);
     
-    if((message.size() == 3) && (message.at(0) == "0"))
+    if((message.size() == 3) && (message.at(0).at(0) == "0"))
     {
         Client* client;
         std::vector<std::string> temp = {std::to_string(0)};
 
         //client
-        client = CreateNewClient(message.at(1).at(0), message.at(2));
+        client = CreateNewClient(message.at(0).at(1).at(0), message.at(0).at(2));
         socket->NewSendMessage(Translator::ToMachine(M_CODE_CONNECT, 0));
 
         if(client == nullptr)
@@ -215,13 +215,13 @@ void SocketHandler::ConnectClient(int socketFd)
 
     message = Translator::FromControlPanel(encodedMessage);
 
-    if((message.size() == 2) && (message.at(0) == "0"))
+    if((message.size() == 2) && (message.at(0).at(0) == "0"))
     {
         Client* client;
         std::vector<std::string> temp = {std::to_string(0)};
 
         //ControlPanel
-        client = CreateNewClient('\0', message.at(1));
+        client = CreateNewClient('\0', message.at(0).at(1));
         socket->NewSendMessage(Translator::ToControlPanel(CP_CODE_CONNECT, temp));
 
         if(client == nullptr)
