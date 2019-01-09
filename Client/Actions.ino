@@ -104,6 +104,8 @@ bool HeatAction::IsDone()
 
     if (heater->GetTemperature() == _temp)
     {
+        heater->Set(STATE_OFF);
+
         _client->SendMessage(M_STOP_HEAT_UP, { "0" });
 
         return true;
@@ -203,6 +205,9 @@ RequestWaterAction::RequestWaterAction(int liters)
 
 void RequestWaterAction::Handle()
 {
+    StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+    statusIndicator->SetStatus(S_NO_WATER);
+
     while (!_mayTakeWater)
     {
         _client->SendMessage(M_MAY_TAKE_WATER, { String(_liters) });
@@ -226,6 +231,9 @@ bool RequestWaterAction::IsDone()
 
     if (result)
     {
+        StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+        statusIndicator->SetStatus(S_BUSY);
+
         _mayTakeWater = false;
     }
 

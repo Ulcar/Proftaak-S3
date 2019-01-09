@@ -76,7 +76,32 @@ void setup()
     );
 
     statusIndicator->SetStatus(S_DECOUPLED);
-    statusIndicator->Update();
+
+    // Connect to the remote server.
+    Serial.println("Connecting to the Wi-Fi network...");
+
+    client = new WifiClient("12connect", "192.168.200.26", Protocol::GetPort());
+    client->SetOnMessageReceived(onMessageReceived);
+
+    Serial.println("Connected to the Wi-Fi network.");
+
+    while (!client->IsConnectedToServer())
+    {
+        Serial.println("Connecting to the server...");
+
+        if (!client->ConnectToServer(MT_WASMACHINE))
+        {
+            Serial.println("Could not connect to the server.");
+
+            delay(5000);
+
+            Serial.println("Retrying connection...");
+        }
+    }
+
+    Serial.println("Connected to the server.");
+
+    statusIndicator->SetStatus(S_DONE);
 
     programs = new Programs(hardwareControl, client);
     programs->SetOnProgramDone(onProgramDone);
@@ -299,32 +324,6 @@ void setup()
     });
 
     Serial.println("Done loading programs.");
-
-    // Connect to the remote server.
-    Serial.println("Connecting to the Wi-Fi network...");
-
-    client = new WifiClient("12connect", "192.168.200.40", Protocol::GetPort());
-    client->SetOnMessageReceived(onMessageReceived);
-
-    Serial.println("Connected to the Wi-Fi network.");
-
-    while (!client->IsConnectedToServer())
-    {
-        Serial.println("Connecting to the server...");
-
-        if (!client->ConnectToServer(MT_WASMACHINE))
-        {
-            Serial.println("Could not connect to the server.");
-
-            delay(1000);
-
-            Serial.println("Retrying connection...");
-        }
-    }
-
-    Serial.println("Connected to the server.");
-
-    statusIndicator->SetStatus(S_DONE);
 }
 
 void loop()

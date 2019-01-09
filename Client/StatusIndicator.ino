@@ -12,6 +12,8 @@ void StatusIndicator::SetStatus(Status status)
     _lightState = STATE_ON;
     _startMs = millis();
     _status = status;
+
+    Update();
 }
 
 void StatusIndicator::Update()
