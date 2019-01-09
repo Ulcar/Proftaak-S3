@@ -27,7 +27,7 @@ static void showMenu()
     std::cout << ("(5) Request to heat\n");
     std::cout << ("(6) Stop heating\n");
     std::cout << ("(7) Program done\n");
-    std::cout << ("(8) program response")
+    std::cout << ("(8) program response");
     std::cout << ("-----------------------\n");
     std::cout << ("(q) QUIT\n\n");
     std::cout << ("Choice : ");
