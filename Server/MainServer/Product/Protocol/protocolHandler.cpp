@@ -22,7 +22,7 @@ void ProtocolHandler::Update()
   auto delta_time =   std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
   if(delta_time >= 2)
   {
-      Logger::Record(false, "two seconds passed!!!!!", "ProtocolHandler");
+    //  Logger::Record(false, "two seconds passed!!!!!", "ProtocolHandler");
       std::vector<Client*> clients = database->GetClients();
       for(Client* client : clients)
       {
