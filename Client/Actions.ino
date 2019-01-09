@@ -156,9 +156,8 @@ bool FillWaterAction::IsDone()
 
 RequestPowerAction::RequestPowerAction(int watt)
     : _watt(watt)
-    , _mayUsePower(false)
 {
-    // ...
+    _mayHeatUp = false;
 }
 
 void RequestPowerAction::Handle()
@@ -166,33 +165,27 @@ void RequestPowerAction::Handle()
     StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
     statusIndicator->SetStatus(S_NO_POWER);
 
-    while (!_mayUsePower)
+    unsigned long currentMs = millis();
+
+    if (_startMs == 0 || currentMs - _startMs > 2000)
     {
+        _startMs = currentMs;
+
         _client->SendMessage(M_MAY_HEAT_UP, { String(_watt) });
-
-        std::vector<String> response = _client->ReadMessage(true);
-
-        if (response[0] == String(M_MAY_HEAT_UP) && response[1] == "0")
-        {
-            _mayUsePower = true;
-        }
-        else
-        {
-            delay(500);
-        }
     }
 }
 
 bool RequestPowerAction::IsDone()
 {
-    bool result = _mayUsePower;
+    bool result = _mayHeatUp;
 
     if (result)
     {
         StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
         statusIndicator->SetStatus(S_BUSY);
 
-        _mayUsePower = false;
+        _mayHeatUp = false;
+        _startMs = 0;
     }
 
     return result;
@@ -203,10 +196,10 @@ bool RequestPowerAction::IsDone()
 //==================
 
 RequestWaterAction::RequestWaterAction(int liters)
-    : _liters(liters)
-    , _mayTakeWater(false)
+    : _startMs(0)
+    , _liters(liters)
 {
-    // ...
+    _mayTakeWater = false;
 }
 
 void RequestWaterAction::Handle()
@@ -214,20 +207,13 @@ void RequestWaterAction::Handle()
     StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
     statusIndicator->SetStatus(S_NO_WATER);
 
-    while (!_mayTakeWater)
+    unsigned long currentMs = millis();
+
+    if (_startMs == 0 || currentMs - _startMs > 2000)
     {
+        _startMs = currentMs;
+
         _client->SendMessage(M_MAY_TAKE_WATER, { String(_liters) });
-
-        std::vector<String> response = _client->ReadMessage(true);
-
-        if (response[0] == String(M_MAY_TAKE_WATER) && response[1] == "0")
-        {
-            _mayTakeWater = true;
-        }
-        else
-        {
-            delay(500);
-        }
     }
 }
 
@@ -241,6 +227,7 @@ bool RequestWaterAction::IsDone()
         statusIndicator->SetStatus(S_BUSY);
 
         _mayTakeWater = false;
+        _startMs = 0;
     }
 
     return result;

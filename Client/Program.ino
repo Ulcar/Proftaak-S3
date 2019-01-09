@@ -61,3 +61,19 @@ void Program::AddAction(IAction* action)
 
     _actions.push_back(action);
 }
+
+void Program::AllowTakeWater()
+{
+    if (_currentAction != NULL)
+    {
+        _currentAction->AllowTakeWater();
+    }
+}
+
+void Program::AllowHeatUp()
+{
+    if (_currentAction != NULL)
+    {
+        _currentAction->AllowHeatUp();
+    }
+}

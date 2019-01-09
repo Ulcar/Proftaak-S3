@@ -15,6 +15,9 @@ public:
     bool SetNextAction();
     void AddAction(IAction* action);
 
+    void AllowTakeWater();
+    void AllowHeatUp();
+
     void SetNumber(int number)
     {
         _number = number;

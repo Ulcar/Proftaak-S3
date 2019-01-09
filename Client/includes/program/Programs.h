@@ -18,6 +18,9 @@ public:
     void Add(int number, std::vector<IAction*> actions);
     bool Start(int number);
 
+    void AllowTakeWater();
+    void AllowHeatUp();
+
     void SetOnProgramDone(OnProgramDoneCallback callback)
     {
         _onProgramDone = callback;

@@ -33,6 +33,7 @@ void onMessageReceived(std::vector<String> message)
         break;
 
     case M_PROGRAM_START:
+    {
         // If we don't have two parameters, we know that the command is invalid.
         if (message.size() < 2)
         {
@@ -46,6 +47,33 @@ void onMessageReceived(std::vector<String> message)
         // If the program doesn't exist we send a "1" back, otherwise we start
         // the program and send a "0" back.
         client->SendMessage(M_PROGRAM_START, { programs->Start(program) ? "0" : "1" });
+        break;
+    }
+
+    case M_MAY_TAKE_WATER:
+        // If we don't have two parameters, we know that the command is invalid.
+        if (message.size() < 2)
+        {
+            return;
+        }
+
+        if (message[1] == "0")
+        {
+            programs->AllowTakeWater();
+        }
+        break;
+
+    case M_MAY_HEAT_UP:
+        // If we don't have two parameters, we know that the command is invalid.
+        if (message.size() < 2)
+        {
+            return;
+        }
+
+        if (message[1] == "0")
+        {
+            programs->AllowHeatUp();
+        }
         break;
 
     default:

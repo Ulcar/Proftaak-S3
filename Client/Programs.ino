@@ -52,3 +52,19 @@ bool Programs::Start(int number)
 
     return false;
 }
+
+void Programs::AllowTakeWater()
+{
+    if (_currentProgram != NULL)
+    {
+        _currentProgram->AllowTakeWater();
+    }
+}
+
+void Programs::AllowHeatUp()
+{
+    if (_currentProgram != NULL)
+    {
+        _currentProgram->AllowHeatUp();
+    }
+}
