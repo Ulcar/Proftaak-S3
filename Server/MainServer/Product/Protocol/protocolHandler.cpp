@@ -69,17 +69,23 @@ void ProtocolHandler::HandleMessages()
         {
             case Type::ControlPanel:
             {
-                std::vector<std::string> messageVector = Translator::FromControlPanel(message);
-
-                HandleControlPanel(client, messageVector, tempClients);
+                std::vector<std::vector<std::string>> messageVector = Translator::FromControlPanel(message);
+                
+                for(size_t i = 0; i < messageVector.size(); i++)
+                {
+                    HandleControlPanel(client, messageVector.at(i), tempClients);
+                }
                 break;
             }
             case Type::Wasmachine:
             {
                 Machine* machine = dynamic_cast<Machine*>(client);
-                std::vector<std::string> messageVector = Translator::FromMachine(message);
-
-                HandleWasmachine(machine, messageVector);
+                std::vector<std::vector<std::string>> messageVector = Translator::FromMachine(message);
+                
+                for(size_t i = 0; i < messageVector.size(); i++)
+                {
+                    HandleWasmachine(machine, messageVector.at(i));
+                }
                 break;
             }
             default:

@@ -229,18 +229,18 @@ void Database::HandleLaundryBaskets()
                             switch(bak->GetTemperature())
                             {
                                 case Cold:
-                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_XX);
-                                machine->SetProgram(Program::PROGRAM_XX);
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_COLD);
+                                machine->SetProgram(Program::PROGRAM_COLD);
                                 break;
 
                                 case Medium:
-                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_XX);
-                                machine->SetProgram(Program::PROGRAM_XX);
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_WARM);
+                                machine->SetProgram(Program::PROGRAM_WARM);
                                 break;
 
                                 case Hot:
-                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_XX);
-                                machine->SetProgram(Program::PROGRAM_XX);
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_HOT);
+                                machine->SetProgram(Program::PROGRAM_HOT);
                                 break;
                             }
                             // Do StartProgram on machine, and set Inprogress if you get a response  

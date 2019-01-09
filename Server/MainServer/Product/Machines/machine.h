@@ -33,8 +33,6 @@ class Machine : public Client
         bool inProgress;
         bool requestingInProgress;
         int ReplyCount;
-
-        LaundryBasket* bakUsing;
 };
 
 #endif
