@@ -163,6 +163,9 @@ RequestPowerAction::RequestPowerAction(int watt)
 
 void RequestPowerAction::Handle()
 {
+    StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+    statusIndicator->SetStatus(S_NO_POWER);
+
     while (!_mayUsePower)
     {
         _client->SendMessage(M_MAY_HEAT_UP, { String(_watt) });
@@ -186,6 +189,9 @@ bool RequestPowerAction::IsDone()
 
     if (result)
     {
+        StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+        statusIndicator->SetStatus(S_BUSY);
+
         _mayUsePower = false;
     }
 

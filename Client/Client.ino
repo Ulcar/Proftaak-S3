@@ -80,7 +80,7 @@ void setup()
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    client = new WifiClient("12connect", "192.168.200.26", Protocol::GetPort());
+    client = new WifiClient("TP-LINK_Proftaak", "wasserete", "192.168.137.208", Protocol::GetPort());
     client->SetOnMessageReceived(onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");

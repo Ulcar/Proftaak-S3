@@ -9,7 +9,7 @@
 class WifiClient : public IClient
 {
 public:
-    WifiClient(String ssid, String ipAddress, int port);
+    WifiClient(String ssid, String password, String ipAddress, int port);
     ~WifiClient();
 
     bool ConnectToServer(MachineType type);
@@ -37,7 +37,6 @@ private:
     WiFiClient _client;
 
     String _message;
-    String _ssid;
     String _ipAddress;
 
     bool _isConnectedToServer;

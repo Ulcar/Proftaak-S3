@@ -1,12 +1,11 @@
 #include "includes/client/WifiClient.h"
 
-WifiClient::WifiClient(String ssid, String ipAddress, int port)
-    : _ssid(ssid)
-    , _ipAddress(ipAddress)
+WifiClient::WifiClient(String ssid, String password, String ipAddress, int port)
+    : _ipAddress(ipAddress)
     , _port(port)
     , _isConnectedToServer(false)
 {
-    _status = WiFi.begin(_ssid.c_str());
+    _status = WiFi.begin(ssid.c_str(), password.c_str());
 }
 
 WifiClient::~WifiClient()
