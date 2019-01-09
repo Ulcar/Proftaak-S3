@@ -18,6 +18,9 @@ void Program::Start()
     Controls* controls = _control->GetControls();
     controls->SetLock(STATE_ON);
 
+    StatusIndicator* statusIndicator = _control->GetStatusIndicator();
+    statusIndicator->SetStatus(S_BUSY);
+
     SetNextAction();
 }
 

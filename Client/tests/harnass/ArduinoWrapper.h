@@ -16,5 +16,6 @@ unsigned long millis();
 void delay(unsigned long ms);
 
 void pinMode(int pin, int mode);
+void analogWrite(int pin, int value);
 
 #endif

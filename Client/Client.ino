@@ -40,8 +40,6 @@ void onMessageReceived(std::vector<String> message)
 
         int program = message[1].toInt();
 
-        Serial.println("Starting program: " + String(program));
-
         // If the program doesn't exist we send a "1" back, otherwise we start
         // the program and send a "0" back.
         client->SendMessage(M_PROGRAM_START, { programs->Start(program) ? "0" : "1" });
@@ -55,7 +53,8 @@ void onMessageReceived(std::vector<String> message)
 
 void onProgramDone()
 {
-    Serial.println("Program done!");
+    StatusIndicator* statusIndicator = hardwareControl->GetStatusIndicator();
+    statusIndicator->SetStatus(S_DONE);
 
     client->SendMessage(M_PROGRAM_DONE, { "0" });
 }
@@ -65,14 +64,19 @@ void setup()
     Serial.begin(9600);
 
     // Initialize the hardware control and program manager.
+    StatusIndicator* statusIndicator = new StatusIndicator();
+
     hardwareControl = new HardwareControl(
         new CentipedeShield(),
-        new StatusIndicator(),
+        statusIndicator,
         new Controls(),
         new Heater(),
         new Motor(),
         new Water()
     );
+
+    statusIndicator->SetStatus(S_DECOUPLED);
+    statusIndicator->Update();
 
     programs = new Programs(hardwareControl, client);
     programs->SetOnProgramDone(onProgramDone);
@@ -296,8 +300,6 @@ void setup()
 
     Serial.println("Done loading programs.");
 
-    analogWrite(46, HIGH);
-
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
@@ -321,10 +323,15 @@ void setup()
     }
 
     Serial.println("Connected to the server.");
+
+    statusIndicator->SetStatus(S_DONE);
 }
 
 void loop()
 {
     programs->Update();
     client->Update();
+
+    StatusIndicator* statusIndicator = hardwareControl->GetStatusIndicator();
+    statusIndicator->Update();
 }
