@@ -187,49 +187,57 @@ void SocketHandler::ConnectClient(int socketFd)
         delete socket;
         return;
     }
-
-    std::vector<std::string> message = Translator::FromMachine(socket->ReadLastMessage());
+    std::string encodedMessage = socket->ReadLastMessage();
+    std::vector<std::string> message = Translator::FromMachine(encodedMessage);
     
-    if((message.size() == 2) || (message.size() == 3))
+    if((message.size() == 3) && (message.at(0) == "0"))
     {
-        if(message.at(0) == "0")
+        Client* client;
+        std::vector<std::string> temp = {std::to_string(0)};
+
+        //client
+        client = CreateNewClient(message.at(1).at(0), message.at(2));
+        socket->NewSendMessage(Translator::ToMachine(M_CODE_CONNECT, 0));
+
+        if(client == nullptr)
         {
-            Client* client;
-            std::vector<std::string> temp = {std::to_string(0)};
-
-            if(message.size() == 2)
-            {
-                //ControlPanel
-                client = CreateNewClient('\0', message.at(1));
-                socket->NewSendMessage(Translator::ToControlPanel(CP_CODE_CONNECT, temp));
-            }
-            else
-            {
-                //client
-                client = CreateNewClient(message.at(1).at(0), message.at(2));
-                socket->NewSendMessage(Translator::ToMachine(M_CODE_CONNECT, 0));
-            }
-
-            if(client == nullptr)
-            {
-                delete socket;
-                return;
-            }
-
-        //    socket->TrySend();
-            client->SetSocket(socket);
-            database->AddClient(client);
-
-            Logger::Record(false, "Added Client with type: " + std::to_string(client->GetType()) + "with id: " + client->GetMacAdress(), "socketHandler");
+            delete socket;
             return;
         }
 
-       
-    }  
-     else
+    //    socket->TrySend();
+        client->SetSocket(socket);
+        database->AddClient(client);
+
+        Logger::Record(false, "Added Client with type: " + std::to_string(client->GetType()) + "with id: " + client->GetMacAdress(), "socketHandler");
+        return;
+    }        
+
+    message = Translator::FromControlPanel(encodedMessage);
+
+    if((message.size() == 2) && (message.at(0) == "0"))
+    {
+        Client* client;
+        std::vector<std::string> temp = {std::to_string(0)};
+
+        //ControlPanel
+        client = CreateNewClient('\0', message.at(1));
+        socket->NewSendMessage(Translator::ToControlPanel(CP_CODE_CONNECT, temp));
+
+        if(client == nullptr)
         {
-            std::cout << "THis is not a machine";
-        }  
+            delete socket;
+            return;
+        }
+
+    //    socket->TrySend();
+        client->SetSocket(socket);
+        database->AddClient(client);
+
+        Logger::Record(false, "Added ControlPanel with id: " + client->GetMacAdress(), "socketHandler");
+        return;
+    }
+    std::cout << "THis is not a machine";
 }
 
 bool SocketHandler::ReadClient(Socket* socket)
