@@ -34,18 +34,18 @@ static std::string readMessageFromClient(int *connectFd)
         return "";
     }
     return buffer;
-}
-
-
-
-
-void setupServer(int *socketFd)
-{
-    struct sockaddr_in sa;
-    memset(&sa, 0, sizeof sa);
-    sa.sin_family = AF_INET;
-    sa.sin_port = PortNumber;
-    sa.sin_addr.s_addr = htonl(INADDR_ANY);
+}  
+  
+  
+  
+  
+void setupServer  (int *socketFd)
+{  
+    struct socka  ddr_in sa;
+    memset(&sa,   0, sizeof sa);
+    sa.sin_famil  y = AF_INET;
+    sa.sin_port   = PortNumber;
+    sa.sin_addr.  s_addr = htonl(INADDR_ANY);
 
     //create socket
     *socketFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);

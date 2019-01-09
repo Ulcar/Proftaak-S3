@@ -17,6 +17,9 @@ class Machine : public Client
         void SetUsedPower(int setPower);
         Program GetProgram();
         void SetProgram(Program SetProgram);
+        int GetReplyCount();
+        void AddToReplyCount();
+        void ResetReplyCount();
 
         bool IsInProgress();
         void SetInProgress(bool inProgress);
@@ -29,8 +32,7 @@ class Machine : public Client
         Program currentProgram;
         bool inProgress;
         bool requestingInProgress;
-
-        LaundryBasket* bakUsing;
+        int ReplyCount;
 };
 
 #endif

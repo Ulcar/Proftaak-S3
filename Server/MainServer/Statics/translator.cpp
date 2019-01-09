@@ -20,7 +20,7 @@ std::string Translator::ToMachine(M_Code code, std::vector<int> values)
 }
 
 
-std::vector<std::string> Translator::FromMachine(std::string message)
+std::vector<std::vector<std::string>> Translator::FromMachine(std::string message)
 {
     return SplitString(message, seperatorChar, endCharToMachine, startCharToMachine);
 }
@@ -31,7 +31,7 @@ std::string Translator::ToControlPanel(CP_Code code, std::vector<std::string> va
     return messageToControlPanel;
 }
 
-std::vector<std::string> Translator::FromControlPanel(std::string message)
+std::vector<std::vector<std::string>> Translator::FromControlPanel(std::string message)
 {
     return SplitString(message, seperatorChar, endCharToControlPanel, startCharToControlPanel);
 }
@@ -49,18 +49,21 @@ std::string Translator::MakeString(int code, std::vector<std::string> value, cha
     return newString;
 }
 
-std::vector<std::string> Translator::SplitString(std::string text, char splitChar, char startChar, char endChar)
+std::vector<std::vector<std::string>> Translator::SplitString(std::string text, char splitChar, char startChar, char endChar)
 {
-    if(text.size() > 0)
+    std::vector<std::vector<std::string>> buffer;
+    while(text.size() > 0)
     {
-        if ((text.substr(0,1).at(0) == startChar) && (text.substr(text.length()-1 , 1).at(0) == endChar))
-        {
-            text = text.substr(1, text.length() -2 );
-            return SplitString(text, splitChar);
-        }
+        int indexStart = text.find_first_of(startChar);
+        int indexEind = text.find_first_of(endChar);
+
+        if((indexStart == -1) || (indexEind == -1))
+            return buffer;
+
+        std::string message = text.substr(startChar, endChar - startChar );
+        buffer.push_back(SplitString(message, splitChar));
     }
-    std::vector<std::string> fu;
-    return fu;
+    return buffer;
 }
 
 std::vector<std::string> Translator::SplitString(std::string text, char splitChar)

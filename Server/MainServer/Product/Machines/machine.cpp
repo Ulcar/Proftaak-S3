@@ -3,7 +3,7 @@
 Machine::Machine(std::string macAdress, Type type)
     : Client(macAdress, type)
 {
-    
+    ReplyCount = 0;
 }
 
 Machine::~Machine()
@@ -69,4 +69,18 @@ bool Machine::IsRequestingInProgress()
 void Machine::SetRequestingInProgress(bool requestingInProgress)
 {
     this->requestingInProgress = requestingInProgress;
+}
+void Machine::AddToReplyCount()
+{
+    ReplyCount += 1;
+}
+
+int Machine::GetReplyCount()
+{
+    return ReplyCount;
+}
+
+void Machine::ResetReplyCount()
+{
+    ReplyCount = 0;
 }

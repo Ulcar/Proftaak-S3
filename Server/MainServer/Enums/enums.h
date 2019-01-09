@@ -27,8 +27,9 @@ enum Color
 enum Program
 {
     PROGRAM_NONE = 0,
-    PROGRAM_XX,
-    PROGRAM_YY
+    PROGRAM_COLD,
+    PROGRAM_WARM,
+    PROGRAM_HOT
 };
 //No enums
 

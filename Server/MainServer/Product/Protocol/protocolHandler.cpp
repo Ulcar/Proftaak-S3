@@ -5,6 +5,7 @@ ProtocolHandler::ProtocolHandler(Database* database)
     : database(database)
 {
    // startTime = std::chrono::system_clock::now();
+   start_time = std::chrono::steady_clock::now();
 }
 
 ProtocolHandler::~ProtocolHandler()
@@ -17,6 +18,29 @@ void ProtocolHandler::Update()
     HandleMessages();
     database->HandleLaundry();
     database->HandleLaundryBaskets();
+    current_time = std::chrono::steady_clock::now();
+  auto delta_time =   std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
+  if(delta_time >= 2)
+  {
+    //  Logger::Record(false, "two seconds passed!!!!!", "ProtocolHandler");
+      std::vector<Client*> clients = database->GetClients();
+      for(Client* client : clients)
+      {
+          if(client->GetType() != Type::ControlPanel && client->IsEnabled())
+          {
+              Machine* machine = (Machine*)client;
+              machine->Send(M_CODE_HEARTBEAT, 0);
+              machine->AddToReplyCount();
+              if(machine->GetReplyCount() > 5)
+              {
+                  Logger::Record(false, "Machine timed out: " + machine->GetMacAdress(), "ProtocolHandler");
+                  machine->SetEnable(false);
+              }
+
+          }
+      }
+      start_time = std::chrono::steady_clock::now();
+  }
 
     
     //currentTime = std::chrono::system_clock::now();
@@ -45,17 +69,23 @@ void ProtocolHandler::HandleMessages()
         {
             case Type::ControlPanel:
             {
-                std::vector<std::string> messageVector = Translator::FromControlPanel(message);
-
-                HandleControlPanel(client, messageVector, tempClients);
+                std::vector<std::vector<std::string>> messageVector = Translator::FromControlPanel(message);
+                
+                for(size_t i = 0; i < messageVector.size(); i++)
+                {
+                    HandleControlPanel(client, messageVector.at(i), tempClients);
+                }
                 break;
             }
             case Type::Wasmachine:
             {
                 Machine* machine = dynamic_cast<Machine*>(client);
-                std::vector<std::string> messageVector = Translator::FromMachine(message);
-
-                HandleWasmachine(machine, messageVector);
+                std::vector<std::vector<std::string>> messageVector = Translator::FromMachine(message);
+                
+                for(size_t i = 0; i < messageVector.size(); i++)
+                {
+                    HandleWasmachine(machine, messageVector.at(i));
+                }
                 break;
             }
             default:
@@ -206,6 +236,11 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             machine->SetProgram(Program::PROGRAM_NONE); 
             break;
         }
+
+        case M_CODE_HEARTBEAT:
+            machine->ResetReplyCount();
+            break;
+            
 
         case M_CODE_SENDPROGRAM:
             if(machine->IsRequestingInProgress())
