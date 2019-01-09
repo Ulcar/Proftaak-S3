@@ -7,7 +7,7 @@
 #include "iAlgorithm.h"
 #include "machine.h"
 #include <chrono>
-
+typedef std::chrono::duration<double, std::ratio<60>> MyMinuteTick;
 class ProtocolHandler
 {
     public:
@@ -23,6 +23,8 @@ class ProtocolHandler
         void HandleWasmachine(Machine* machine, std::vector<std::string> messageVector);
         void HandleStomer(Machine* machine, std::vector<std::string> messageVector);
         void HandleMessages();
+           std::chrono::time_point<std::chrono::steady_clock, std::chrono::steady_clock::duration> start_time;
+           std::chrono::time_point<std::chrono::steady_clock, std::chrono::steady_clock::duration> current_time;
         
      //   std::chrono::time_point startTime;
       //  std::chrono::time_point currentTime;
