@@ -25,6 +25,7 @@ class ProtocolHandler
         void HandleMessages();
            std::chrono::time_point<std::chrono::steady_clock, std::chrono::steady_clock::duration> start_time;
            std::chrono::time_point<std::chrono::steady_clock, std::chrono::steady_clock::duration> current_time;
+        void HeartbeatClient(Client* client);
         
      //   std::chrono::time_point startTime;
       //  std::chrono::time_point currentTime;

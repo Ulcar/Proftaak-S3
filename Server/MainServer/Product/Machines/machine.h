@@ -17,6 +17,7 @@ class Machine : public Client
         void SetUsedPower(int setPower);
         Program GetProgram();
         void SetProgram(Program SetProgram);
+        void SetSocket(Socket* socket);
         int GetReplyCount();
         void AddToReplyCount();
         void ResetReplyCount();

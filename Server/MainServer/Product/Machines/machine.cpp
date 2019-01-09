@@ -84,3 +84,13 @@ void Machine::ResetReplyCount()
 {
     ReplyCount = 0;
 }
+
+void Machine::SetSocket(Socket* tempSocket)
+{
+    if(socket != nullptr)
+    {
+        delete socket;
+    }
+    socket = tempSocket;
+    ResetReplyCount();
+}

@@ -190,7 +190,7 @@ void SocketHandler::ConnectClient(int socketFd)
     std::string encodedMessage = socket->ReadLastMessage();
     std::vector<std::vector<std::string>> message = Translator::FromMachine(encodedMessage);
     
-    if((message.size() == 3) && (message.at(0).at(0) == "0"))
+    if((message.at(0).size() == 3) && (message.at(0).at(0) == "0"))
     {
         Client* client;
         std::vector<std::string> temp = {std::to_string(0)};
@@ -215,7 +215,7 @@ void SocketHandler::ConnectClient(int socketFd)
 
     message = Translator::FromControlPanel(encodedMessage);
 
-    if((message.size() == 2) && (message.at(0).at(0) == "0"))
+    if((message.at(0).size() == 2) && (message.at(0).at(0) == "0"))
     {
         Client* client;
         std::vector<std::string> temp = {std::to_string(0)};

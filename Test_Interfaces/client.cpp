@@ -81,7 +81,7 @@ static void connectToServer(int *socketFd, bool *connected)
     sa.sin_family = AF_INET;
     sa.sin_port = PortNumber;
     
-    int result = inet_pton(AF_INET, "192.168.137.208", &sa.sin_addr);
+    int result = inet_pton(AF_INET, "127.0.0.1", &sa.sin_addr);
     if (result != 1)
     {
         perror("could not convert ip address to network address structure");

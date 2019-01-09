@@ -16,7 +16,7 @@ class Client : public iClient
         virtual ~Client();
         void Send(CP_Code code, std::vector<std::string> value);
         void Send(CP_Code code, std::string value);
-        void SetSocket(Socket* socket);
+        virtual void SetSocket(Socket* socket);
 
         bool IsEnabled();
         void SetEnable(bool enabled);

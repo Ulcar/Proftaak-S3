@@ -52,15 +52,16 @@ std::string Translator::MakeString(int code, std::vector<std::string> value, cha
 std::vector<std::vector<std::string>> Translator::SplitString(std::string text, char splitChar, char startChar, char endChar)
 {
     std::vector<std::vector<std::string>> buffer;
-    while(text.size() > 0)
+    while(true)
     {
         int indexStart = text.find_first_of(startChar);
-        int indexEind = text.find_first_of(endChar);
+        int indexEnd = text.find_first_of(endChar);
 
-        if((indexStart == -1) || (indexEind == -1))
+        if((indexStart == -1) || (indexEnd == -1))
             return buffer;
 
-        std::string message = text.substr(startChar, endChar - startChar );
+        std::string message = text.substr(indexStart + 1, indexEnd - indexStart - 1 );
+        text = text.substr(indexEnd + 1, text.size());
         buffer.push_back(SplitString(message, splitChar));
     }
     return buffer;

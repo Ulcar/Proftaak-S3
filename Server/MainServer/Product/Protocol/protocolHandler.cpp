@@ -18,15 +18,18 @@ void ProtocolHandler::Update()
     HandleMessages();
     database->HandleLaundry();
     database->HandleLaundryBaskets();
-    current_time = std::chrono::steady_clock::now();
-  auto delta_time =   std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
-  if(delta_time >= 2)
-  {
+  
+            current_time = std::chrono::steady_clock::now();
+        auto delta_time =   std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
+        if(delta_time >= 2)
+            {
+            
     //  Logger::Record(false, "two seconds passed!!!!!", "ProtocolHandler");
       std::vector<Client*> clients = database->GetClients();
+      
       for(Client* client : clients)
       {
-          if(client->GetType() != Type::ControlPanel && client->IsEnabled())
+          if(client->GetType() != Type::ControlPanel && client->IsEnabled() && client->GetSocket() != nullptr)
           {
               Machine* machine = (Machine*)client;
               machine->Send(M_CODE_HEARTBEAT, 0);
@@ -34,18 +37,34 @@ void ProtocolHandler::Update()
               if(machine->GetReplyCount() > 5)
               {
                   Logger::Record(false, "Machine timed out: " + machine->GetMacAdress(), "ProtocolHandler");
-                  machine->SetEnable(false);
+                  machine->SetSocket(nullptr);
               }
 
           }
       }
       start_time = std::chrono::steady_clock::now();
   }
+}
 
     
     //currentTime = std::chrono::system_clock::now();
  
   //std::chrono::duration<std::chrono::seconds> seconds =   std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime);
+
+void ProtocolHandler::HeartbeatClient(Client* client)
+{
+    if(client->GetType() != Type::ControlPanel && client->IsEnabled() && client->GetSocket() != nullptr)
+    {
+        Machine* machine = (Machine*)client;
+        machine->Send(M_CODE_HEARTBEAT, 0);
+        machine->AddToReplyCount();
+        if(machine->GetReplyCount() > 5)
+        {
+            Logger::Record(false, "Machine timed out: " + machine->GetMacAdress(), "ProtocolHandler");
+            machine->SetSocket(nullptr);
+        }
+
+    } 
 }
 
 void ProtocolHandler::HandleMessages()
