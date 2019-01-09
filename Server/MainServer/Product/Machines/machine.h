@@ -29,8 +29,6 @@ class Machine : public Client
         Program currentProgram;
         bool inProgress;
         bool requestingInProgress;
-
-        LaundryBasket* bakUsing;
 };
 
 #endif
