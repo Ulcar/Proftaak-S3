@@ -43,11 +43,15 @@ namespace Server_Interface
             this.Close();
         }
 
-        private void potrTbx_KeyDown(object sender, KeyEventArgs e)
+        private void Tbx_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
                 Verificeer();
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
             }
         }
 
