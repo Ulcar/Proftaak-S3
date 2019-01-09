@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <thread> 
 
+#define HARDBEAT "#6;$"
+
 std::thread socketThread;
 int socketFd = 0;
 bool connected = false;
@@ -25,6 +27,7 @@ static void showMenu()
     std::cout << ("(5) Request to heat\n");
     std::cout << ("(6) Stop heating\n");
     std::cout << ("(7) Program done\n");
+    std::cout << ("(8) program response");
     std::cout << ("-----------------------\n");
     std::cout << ("(q) QUIT\n\n");
     std::cout << ("Choice : ");
@@ -137,6 +140,11 @@ static void SocketReader()
         {
             std::string reply = readMessage(&socketFd);
             std::cout << reply;
+
+            if (reply == HARDBEAT)
+            {
+                sendMessageToServer(&socketFd, &connected, "$6#");
+            }
         }
     }
 }
