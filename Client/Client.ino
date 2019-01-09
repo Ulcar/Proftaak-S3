@@ -15,6 +15,9 @@
 
 #include "includes/Enums.h"
 
+#define WATER_TANK_SIZE (20)
+#define HEATER_WATT     (500)
+
 HardwareControl* hardwareControl;
 WifiClient* client;
 Programs* programs;
@@ -111,7 +114,7 @@ void setup()
     // Load program A.
     programs->Add(0, {
         // Prewash
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),
         new HeatAction(TEMP_OFF),
         new SoapAction(STATE_ON, 1),
@@ -124,9 +127,9 @@ void setup()
         new SoapAction(STATE_OFF, 1),
 
         // Main wash (1)
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),
-        new RequestPowerAction(50),
+        new RequestPowerAction(HEATER_WATT),
         new HeatAction(TEMP_MEDIUM),
         new SoapAction(STATE_ON, 2),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
@@ -142,7 +145,7 @@ void setup()
         new SoapAction(STATE_OFF, 2),
 
         // Main wash (2)
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),
         new HeatAction(TEMP_OFF),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
@@ -176,8 +179,9 @@ void setup()
     // Load program B.
     programs->Add(1, {
         // Prewash
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),
+        new RequestPowerAction(HEATER_WATT),
         new HeatAction(TEMP_MEDIUM),
         new SoapAction(STATE_ON, 1),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
@@ -189,9 +193,9 @@ void setup()
         new SoapAction(STATE_OFF, 1),
 
         // Main wash (1)
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),
-        new RequestPowerAction(50),
+        new RequestPowerAction(HEATER_WATT),
         new HeatAction(TEMP_MEDIUM),
         new SoapAction(STATE_ON, 2),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
@@ -207,7 +211,7 @@ void setup()
         new SoapAction(STATE_OFF, 2),
 
         // Main wash (2)
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),
         new HeatAction(TEMP_OFF),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
@@ -241,8 +245,9 @@ void setup()
     // Load program C.
     programs->Add(0, {
         // Prewash
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),
+        new RequestPowerAction(HEATER_WATT),
         new HeatAction(TEMP_MEDIUM),
         new SoapAction(STATE_ON, 1),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
@@ -254,9 +259,9 @@ void setup()
         new SoapAction(STATE_OFF, 1),
 
         // Main wash (1)
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE),
         new FillWaterAction(WL_FULL),
-        new RequestPowerAction(100),
+        new RequestPowerAction(HEATER_WATT),
         new HeatAction(TEMP_HOT),
         new SoapAction(STATE_ON, 2),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
@@ -280,7 +285,7 @@ void setup()
         new SoapAction(STATE_OFF, 2),
 
         // Main wash (2)
-        new RequestWaterAction(50),
+        new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),
         new HeatAction(TEMP_OFF),
         new MotorRotateAction(MD_LEFT, SPEED_LOW),
