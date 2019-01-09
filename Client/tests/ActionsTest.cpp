@@ -6,6 +6,7 @@
 
 #include "HardwareControl.ino"
 #include "Actions.ino"
+#include "StatusIndicator.ino"
 #include "Controls.ino"
 #include "Heater.ino"
 #include "Motor.ino"
@@ -31,10 +32,13 @@ protected:
         // These are all of the Initialize calls on the hardware components.
         EXPECT_CALL(centipede, DigitalWrite(_, _)).Times(7 + 3 + 1 + 3 + 2);
 
-        control = new HardwareControl(&centipede, new Controls(), new Heater(), new Motor(), new Water());
+        control = new HardwareControl(&centipede, new StatusIndicator(), new Controls(), new Heater(), new Motor(), new Water());
     }
 
-    virtual ~ActionTest() { };
+    virtual ~ActionTest()
+    {
+        delete action;
+    }
 
     void SetAction(IAction* action)
     {
@@ -69,8 +73,34 @@ TEST(DelayActionTest, TestDelayTakesTheCorrectTimeToBeDone)
 TEST_F(ActionTest, TestBuzzerCorrectlyGetsSet)
 {
     EXPECT_CALL(centipede, DigitalWrite(OUTPUT_BUZZER, HIGH)).Times(1);
+    EXPECT_CALL(centipede, DigitalWrite(OUTPUT_BUZZER, LOW)).Times(1);
 
     SetAction(new BuzzerAction(STATE_ON));
+    action->Handle();
 
+    SetAction(new BuzzerAction(STATE_OFF));
+    action->Handle();
+}
+
+TEST_F(ActionTest, TestSoap1CorrectlyGetsSet)
+{
+    EXPECT_CALL(centipede, DigitalWrite(OUTPUT_SOAP_1, HIGH)).Times(1);
+    EXPECT_CALL(centipede, DigitalWrite(OUTPUT_SOAP_1, LOW)).Times(1);
+
+    SetAction(new SoapAction(STATE_ON, 1));
+    action->Handle();
+
+    SetAction(new SoapAction(STATE_OFF, 1));
+    action->Handle();
+}
+
+TEST_F(ActionTest, TestSoap2CorrectlyGetsSet)
+{
+    EXPECT_CALL(centipede, DigitalWrite(_, _)).Times((2 + 3 + 3) * 2);
+
+    SetAction(new SoapAction(STATE_ON, 2));
+    action->Handle();
+
+    SetAction(new SoapAction(STATE_OFF, 2));
     action->Handle();
 }

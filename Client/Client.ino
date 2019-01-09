@@ -1,5 +1,6 @@
 #include "includes/hardware/HardwareControl.h"
 #include "includes/hardware/CentipedeShield.h"
+#include "includes/hardware/StatusIndicator.h"
 #include "includes/hardware/Controls.h"
 #include "includes/hardware/Heater.h"
 #include "includes/hardware/Motor.h"
@@ -63,34 +64,17 @@ void setup()
 {
     Serial.begin(9600);
 
-    // Connect to the remote server.
-    Serial.println("Connecting to the Wi-Fi network...");
-
-    client = new WifiClient("12connect", "192.168.200.40", Protocol::GetPort());
-    client->SetOnMessageReceived(onMessageReceived);
-
-    Serial.println("Connected to the Wi-Fi network.");
-
-    while (!client->IsConnectedToServer())
-    {
-        Serial.println("Connecting to the server...");
-
-        if (!client->ConnectToServer(MT_WASMACHINE))
-        {
-            Serial.println("Could not connect to the server.");
-
-            delay(1000);
-
-            Serial.println("Retrying connection...");
-        }
-    }
-
-    Serial.println("Connected to the server.");
-
     // Initialize the hardware control and program manager.
-    hardwareControl = new HardwareControl(new CentipedeShield(), new Controls(), new Heater(), new Motor(), new Water());
-    programs = new Programs(hardwareControl, client);
+    hardwareControl = new HardwareControl(
+        new CentipedeShield(),
+        new StatusIndicator(),
+        new Controls(),
+        new Heater(),
+        new Motor(),
+        new Water()
+    );
 
+    programs = new Programs(hardwareControl, client);
     programs->SetOnProgramDone(onProgramDone);
 
     Serial.println("Loading programs...");
@@ -311,6 +295,32 @@ void setup()
     });
 
     Serial.println("Done loading programs.");
+
+    analogWrite(46, HIGH);
+
+    // Connect to the remote server.
+    Serial.println("Connecting to the Wi-Fi network...");
+
+    client = new WifiClient("12connect", "192.168.200.40", Protocol::GetPort());
+    client->SetOnMessageReceived(onMessageReceived);
+
+    Serial.println("Connected to the Wi-Fi network.");
+
+    while (!client->IsConnectedToServer())
+    {
+        Serial.println("Connecting to the server...");
+
+        if (!client->ConnectToServer(MT_WASMACHINE))
+        {
+            Serial.println("Could not connect to the server.");
+
+            delay(1000);
+
+            Serial.println("Retrying connection...");
+        }
+    }
+
+    Serial.println("Connected to the server.");
 }
 
 void loop()

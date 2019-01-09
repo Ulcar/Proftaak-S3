@@ -1,7 +1,15 @@
 #include "includes/hardware/HardwareControl.h"
 
-HardwareControl::HardwareControl(ICentipedeShield* centipede, IControls* controls, IHeater* heater, IMotor* motor, IWater* water)
+HardwareControl::HardwareControl(
+    ICentipedeShield* centipede,
+    IStatusIndicator* statusIndicator,
+    IControls* controls,
+    IHeater* heater,
+    IMotor* motor,
+    IWater* water
+)
     : _centipede(centipede)
+    , _statusIndicator(statusIndicator)
     , _controls(controls)
     , _heater(heater)
     , _motor(motor)
@@ -22,6 +30,7 @@ HardwareControl::HardwareControl(ICentipedeShield* centipede, IControls* control
     _centipede->DigitalWrite(OUTPUT_DATA_B, LOW);
     _centipede->DigitalWrite(OUTPUT_DATA_A, LOW);
 
+    _statusIndicator->Initialize();
     _controls->Initialize(_centipede);
     _heater->Initialize(_centipede);
     _motor->Initialize(_centipede);
@@ -31,6 +40,7 @@ HardwareControl::HardwareControl(ICentipedeShield* centipede, IControls* control
 HardwareControl::~HardwareControl()
 {
     delete _centipede;
+    delete _statusIndicator;
     delete _controls;
     delete _heater;
     delete _motor;

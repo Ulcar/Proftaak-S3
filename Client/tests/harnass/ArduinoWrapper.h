@@ -15,4 +15,6 @@
 unsigned long millis();
 void delay(unsigned long ms);
 
+void pinMode(int pin, int mode);
+
 #endif
