@@ -53,6 +53,8 @@ void WifiClient::SendMessage(MessageCode code, std::vector<String> parameters)
         return;
     }
 
+    Serial.println("Sending: " + Protocol::ToServer(code, parameters));
+
     _client.write(Protocol::ToServer(code, parameters).c_str());
 }
 
@@ -86,6 +88,8 @@ std::vector<String> WifiClient::ReadMessage(bool shouldBlock = false)
         }
     }
 
+    Serial.println("Received (blocking): " + Protocol::FromServer(message));
+
     return Protocol::FromServer(message);
 }
 
@@ -103,6 +107,8 @@ void WifiClient::Update()
         {
             if (_onMessageReceived != NULL)
             {
+                Serial.println("Received (non-blocking): " + Protocol::FromServer(_message));
+
                 _onMessageReceived(Protocol::FromServer(_message));
             }
 
