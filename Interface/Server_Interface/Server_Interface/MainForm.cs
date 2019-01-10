@@ -156,6 +156,8 @@ namespace Server_Interface
             wiFiHandler = null;
             clients.Clear();
             ConsoleList.Items.Clear();
+            liters = 0;
+            power = 0;
 
             DataGroupbox.Visible = false;
 
