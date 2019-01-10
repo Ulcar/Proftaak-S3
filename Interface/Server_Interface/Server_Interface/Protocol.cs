@@ -16,7 +16,7 @@ namespace Server_Interface
         {
             string newString;
             newString = startCharToServer.ToString();
-            newString += code;
+            newString += (int)code;
 
             foreach (string mess in value)
             {

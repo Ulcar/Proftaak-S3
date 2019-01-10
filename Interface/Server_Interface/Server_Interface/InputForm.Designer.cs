@@ -71,6 +71,7 @@
             this.ipTbx.Name = "ipTbx";
             this.ipTbx.Size = new System.Drawing.Size(141, 20);
             this.ipTbx.TabIndex = 0;
+            this.ipTbx.Text = "192.168.137.208";
             this.ipTbx.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Tbx_KeyDown);
             // 
             // potrTbx
@@ -79,6 +80,7 @@
             this.potrTbx.Name = "potrTbx";
             this.potrTbx.Size = new System.Drawing.Size(141, 20);
             this.potrTbx.TabIndex = 1;
+            this.potrTbx.Text = "57863";
             this.potrTbx.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Tbx_KeyDown);
             // 
             // Cancel_btn

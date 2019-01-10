@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.ClientList = new System.Windows.Forms.ListBox();
-            this.RefreshBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -45,16 +44,18 @@
             this.WaterUsageLb = new System.Windows.Forms.Label();
             this.CurrentProgramLb = new System.Windows.Forms.Label();
             this.ClientGroupbox = new System.Windows.Forms.GroupBox();
+            this.DataGroupbox = new System.Windows.Forms.GroupBox();
             this.ToggleEnabledBtn = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.EnabledLb = new System.Windows.Forms.Label();
             this.CurrentClientLb = new System.Windows.Forms.Label();
             this.ConsoleGroupbox = new System.Windows.Forms.GroupBox();
-            this.DataGroupbox = new System.Windows.Forms.GroupBox();
             this.DisconnectBtn = new System.Windows.Forms.Button();
+            this.ToolbarGroupbox = new System.Windows.Forms.GroupBox();
             this.ClientGroupbox.SuspendLayout();
-            this.ConsoleGroupbox.SuspendLayout();
             this.DataGroupbox.SuspendLayout();
+            this.ConsoleGroupbox.SuspendLayout();
+            this.ToolbarGroupbox.SuspendLayout();
             this.SuspendLayout();
             // 
             // ClientList
@@ -65,16 +66,6 @@
             this.ClientList.Size = new System.Drawing.Size(316, 264);
             this.ClientList.TabIndex = 0;
             this.ClientList.SelectedIndexChanged += new System.EventHandler(this.ClientList_SelectedIndexChanged);
-            // 
-            // RefreshBtn
-            // 
-            this.RefreshBtn.Location = new System.Drawing.Point(300, 62);
-            this.RefreshBtn.Name = "RefreshBtn";
-            this.RefreshBtn.Size = new System.Drawing.Size(75, 23);
-            this.RefreshBtn.TabIndex = 1;
-            this.RefreshBtn.Text = "Refresh";
-            this.RefreshBtn.UseVisualStyleBackColor = true;
-            this.RefreshBtn.Click += new System.EventHandler(this.RefreshBtn_Click);
             // 
             // label1
             // 
@@ -106,7 +97,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(58, 67);
+            this.label4.Location = new System.Drawing.Point(6, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(66, 13);
             this.label4.TabIndex = 7;
@@ -115,7 +106,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(183, 67);
+            this.label5.Location = new System.Drawing.Point(162, 16);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(60, 13);
             this.label5.TabIndex = 8;
@@ -134,11 +125,11 @@
             // TotalWaterLb
             // 
             this.TotalWaterLb.AutoSize = true;
-            this.TotalWaterLb.Location = new System.Drawing.Point(130, 67);
+            this.TotalWaterLb.Location = new System.Drawing.Point(78, 16);
             this.TotalWaterLb.Name = "TotalWaterLb";
-            this.TotalWaterLb.Size = new System.Drawing.Size(17, 13);
+            this.TotalWaterLb.Size = new System.Drawing.Size(22, 13);
             this.TotalWaterLb.TabIndex = 10;
-            this.TotalWaterLb.Text = "xx";
+            this.TotalWaterLb.Text = "0 L";
             // 
             // SendCmdBtn
             // 
@@ -149,6 +140,7 @@
             this.SendCmdBtn.Text = "Send";
             this.SendCmdBtn.UseVisualStyleBackColor = true;
             this.SendCmdBtn.Click += new System.EventHandler(this.SendCmdBtn_Click);
+            this.SendCmdBtn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SendCmdBtn_KeyDown);
             // 
             // ConsoleInputTb
             // 
@@ -156,15 +148,16 @@
             this.ConsoleInputTb.Name = "ConsoleInputTb";
             this.ConsoleInputTb.Size = new System.Drawing.Size(262, 20);
             this.ConsoleInputTb.TabIndex = 12;
+            this.ConsoleInputTb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SendCmdBtn_KeyDown);
             // 
             // TotalWattLb
             // 
             this.TotalWattLb.AutoSize = true;
-            this.TotalWattLb.Location = new System.Drawing.Point(252, 67);
+            this.TotalWattLb.Location = new System.Drawing.Point(234, 16);
             this.TotalWattLb.Name = "TotalWattLb";
-            this.TotalWattLb.Size = new System.Drawing.Size(17, 13);
+            this.TotalWattLb.Size = new System.Drawing.Size(27, 13);
             this.TotalWattLb.TabIndex = 13;
-            this.TotalWattLb.Text = "xx";
+            this.TotalWattLb.Text = "0 W";
             // 
             // ElecUsageLb
             // 
@@ -206,12 +199,32 @@
             // 
             this.ClientGroupbox.Controls.Add(this.DataGroupbox);
             this.ClientGroupbox.Controls.Add(this.ClientList);
-            this.ClientGroupbox.Location = new System.Drawing.Point(21, 120);
+            this.ClientGroupbox.Location = new System.Drawing.Point(12, 59);
             this.ClientGroupbox.Name = "ClientGroupbox";
-            this.ClientGroupbox.Size = new System.Drawing.Size(566, 402);
+            this.ClientGroupbox.Size = new System.Drawing.Size(566, 339);
             this.ClientGroupbox.TabIndex = 18;
             this.ClientGroupbox.TabStop = false;
             this.ClientGroupbox.Text = "Clients";
+            // 
+            // DataGroupbox
+            // 
+            this.DataGroupbox.Controls.Add(this.label1);
+            this.DataGroupbox.Controls.Add(this.ToggleEnabledBtn);
+            this.DataGroupbox.Controls.Add(this.ElecUsageLb);
+            this.DataGroupbox.Controls.Add(this.label6);
+            this.DataGroupbox.Controls.Add(this.label7);
+            this.DataGroupbox.Controls.Add(this.EnabledLb);
+            this.DataGroupbox.Controls.Add(this.label3);
+            this.DataGroupbox.Controls.Add(this.CurrentClientLb);
+            this.DataGroupbox.Controls.Add(this.WaterUsageLb);
+            this.DataGroupbox.Controls.Add(this.label2);
+            this.DataGroupbox.Controls.Add(this.CurrentProgramLb);
+            this.DataGroupbox.Location = new System.Drawing.Point(348, 42);
+            this.DataGroupbox.Name = "DataGroupbox";
+            this.DataGroupbox.Size = new System.Drawing.Size(200, 216);
+            this.DataGroupbox.TabIndex = 21;
+            this.DataGroupbox.TabStop = false;
+            this.DataGroupbox.Text = "Data";
             // 
             // ToggleEnabledBtn
             // 
@@ -255,36 +268,16 @@
             this.ConsoleGroupbox.Controls.Add(this.ConsoleList);
             this.ConsoleGroupbox.Controls.Add(this.ConsoleInputTb);
             this.ConsoleGroupbox.Controls.Add(this.SendCmdBtn);
-            this.ConsoleGroupbox.Location = new System.Drawing.Point(593, 120);
+            this.ConsoleGroupbox.Location = new System.Drawing.Point(584, 59);
             this.ConsoleGroupbox.Name = "ConsoleGroupbox";
             this.ConsoleGroupbox.Size = new System.Drawing.Size(348, 339);
             this.ConsoleGroupbox.TabIndex = 19;
             this.ConsoleGroupbox.TabStop = false;
             this.ConsoleGroupbox.Text = "Console";
             // 
-            // DataGroupbox
-            // 
-            this.DataGroupbox.Controls.Add(this.label1);
-            this.DataGroupbox.Controls.Add(this.ToggleEnabledBtn);
-            this.DataGroupbox.Controls.Add(this.ElecUsageLb);
-            this.DataGroupbox.Controls.Add(this.label6);
-            this.DataGroupbox.Controls.Add(this.label7);
-            this.DataGroupbox.Controls.Add(this.EnabledLb);
-            this.DataGroupbox.Controls.Add(this.label3);
-            this.DataGroupbox.Controls.Add(this.CurrentClientLb);
-            this.DataGroupbox.Controls.Add(this.WaterUsageLb);
-            this.DataGroupbox.Controls.Add(this.label2);
-            this.DataGroupbox.Controls.Add(this.CurrentProgramLb);
-            this.DataGroupbox.Location = new System.Drawing.Point(348, 42);
-            this.DataGroupbox.Name = "DataGroupbox";
-            this.DataGroupbox.Size = new System.Drawing.Size(200, 216);
-            this.DataGroupbox.TabIndex = 21;
-            this.DataGroupbox.TabStop = false;
-            this.DataGroupbox.Text = "Data";
-            // 
             // DisconnectBtn
             // 
-            this.DisconnectBtn.Location = new System.Drawing.Point(409, 62);
+            this.DisconnectBtn.Location = new System.Drawing.Point(837, 11);
             this.DisconnectBtn.Name = "DisconnectBtn";
             this.DisconnectBtn.Size = new System.Drawing.Size(75, 23);
             this.DisconnectBtn.TabIndex = 20;
@@ -292,35 +285,44 @@
             this.DisconnectBtn.UseVisualStyleBackColor = true;
             this.DisconnectBtn.Click += new System.EventHandler(this.Disconnect_btn_Click);
             // 
+            // ToolbarGroupbox
+            // 
+            this.ToolbarGroupbox.Controls.Add(this.DisconnectBtn);
+            this.ToolbarGroupbox.Controls.Add(this.label4);
+            this.ToolbarGroupbox.Controls.Add(this.label5);
+            this.ToolbarGroupbox.Controls.Add(this.TotalWattLb);
+            this.ToolbarGroupbox.Controls.Add(this.TotalWaterLb);
+            this.ToolbarGroupbox.Location = new System.Drawing.Point(12, 12);
+            this.ToolbarGroupbox.Name = "ToolbarGroupbox";
+            this.ToolbarGroupbox.Size = new System.Drawing.Size(920, 41);
+            this.ToolbarGroupbox.TabIndex = 21;
+            this.ToolbarGroupbox.TabStop = false;
+            this.ToolbarGroupbox.Text = "Toolbar";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(966, 702);
-            this.Controls.Add(this.DisconnectBtn);
+            this.ClientSize = new System.Drawing.Size(948, 408);
+            this.Controls.Add(this.ToolbarGroupbox);
             this.Controls.Add(this.ConsoleGroupbox);
             this.Controls.Add(this.ClientGroupbox);
-            this.Controls.Add(this.TotalWattLb);
-            this.Controls.Add(this.TotalWaterLb);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.RefreshBtn);
             this.Name = "MainForm";
             this.Text = "ControlPanel";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ClientGroupbox.ResumeLayout(false);
-            this.ConsoleGroupbox.ResumeLayout(false);
-            this.ConsoleGroupbox.PerformLayout();
             this.DataGroupbox.ResumeLayout(false);
             this.DataGroupbox.PerformLayout();
+            this.ConsoleGroupbox.ResumeLayout(false);
+            this.ConsoleGroupbox.PerformLayout();
+            this.ToolbarGroupbox.ResumeLayout(false);
+            this.ToolbarGroupbox.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
         private System.Windows.Forms.ListBox ClientList;
-        private System.Windows.Forms.Button RefreshBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -343,6 +345,7 @@
         private System.Windows.Forms.Button ToggleEnabledBtn;
         private System.Windows.Forms.GroupBox DataGroupbox;
         private System.Windows.Forms.Button DisconnectBtn;
+        private System.Windows.Forms.GroupBox ToolbarGroupbox;
     }
 }
 

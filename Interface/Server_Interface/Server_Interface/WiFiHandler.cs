@@ -61,13 +61,17 @@ namespace Server_Interface
             while(true)
             {
                 int indexStart = buffer.IndexOf(Protocol.endCharToServer);
-                int indexEind = buffer.IndexOf(Protocol.startCharToServer);
 
-                if((indexStart == -1) || (indexEind == -1))
+                if(indexStart == -1)
+                    return messages;
+                int indexEnd = buffer.IndexOf(Protocol.startCharToServer, indexStart);
+
+                if (indexEnd == -1)
                     return messages;
 
-                messages.Add(buffer.Substring(indexStart, indexEind - indexStart));
-                buffer = buffer.Substring(indexEind, buffer.Length - indexEind);
+
+                messages.Add(buffer.Substring(indexStart, indexEnd - indexStart + 1));
+                buffer = buffer.Substring(indexEnd + 1, buffer.Length - indexEnd - 1);
             }
 
         }
@@ -78,6 +82,7 @@ namespace Server_Interface
 
             stream.Read(bytesFrom, 0, bytesFrom.Length);
             buffer += Encoding.ASCII.GetString(bytesFrom);
+            buffer = buffer.Replace("\0", string.Empty);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Server_Interface
 {
@@ -15,13 +16,20 @@ namespace Server_Interface
     {
         private WiFiHandler wiFiHandler;
         private InputForm inputForm = new InputForm();
-        private List<Client> clients;
+        private BindingList<Client> clients;
+        private Thread communicationThread;
+        private int liters;
+        private int power;
 
         public MainForm()
         {
             InitializeComponent();
-            clients = new List<Client>();
+            clients = new BindingList<Client>();
+            liters = 0;
+            power = 0;
             ClientList.DataSource = clients;
+
+            AddClient(new Client("123", 5, 4, "cold", 1));
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -29,70 +37,9 @@ namespace Server_Interface
             AskUserForIP();
         }
 
-        private void AskUserForIP()
-        {
-            bool error = false;
-            bool succes = false;
-
-            while (!succes)
-            {
-                inputForm.SetError(error);
-                this.Hide();
-                inputForm.ShowDialog();
-                this.Show();
-
-                if(inputForm.ServerPort == 666)
-                {
-                    succes = true;
-                    return;
-                }
-
-                if (inputForm.DialogResult == DialogResult.Cancel)
-                {
-                    this.Close();
-                    return;
-                }
-
-                succes = Connect();
-                error = true;
-            }
-        }
-
-        private bool Connect()
-        {
-            try
-            {
-                wiFiHandler = new WiFiHandler(inputForm.ServerIPAdress, inputForm.ServerPort);
-                if (wiFiHandler == null)
-                    return false;
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
-        }
-
         private void Disconnect_btn_Click(object sender, EventArgs e)
         {
             Disconnect();
-        }
-
-        private void Disconnect()
-        {
-            wiFiHandler = null;
-            clients.Clear();
-            ConsoleList.Items.Clear();
-
-            DataGroupbox.Visible = false;
-
-            AskUserForIP();
-        }
-
-        private void SendCmdBtn_Click(object sender, EventArgs e)
-        {
-            List<string> message = new List<string> { ConsoleInputTb.Text };
-            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_CONNECT, message));
         }
 
         private void ClientList_SelectedIndexChanged(object sender, EventArgs e)
@@ -106,7 +53,7 @@ namespace Server_Interface
                 WaterUsageLb.Text = temp.WaterUsage + " L";
                 CurrentProgramLb.Text = temp.CurrProgram;
 
-                if(temp.Enabled)
+                if(temp.Enabled == 1)
                 {
                     EnabledLb.Text = "true";
                     ToggleEnabledBtn.Text = "Disable";
@@ -129,10 +76,90 @@ namespace Server_Interface
             {
                 Client temp = ClientList.SelectedItem as Client;
                 EnabledLb.Text = "xx";
-                ToggleEnabledBtn.Text = "Refresh";
                 List<string> message = new List<string> { temp.Enabled + "" };
                 wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_SETCLIENT, message));
             }
+        }
+
+        private void SendCmdBtn_Click(object sender, EventArgs e)
+        {
+            SendCmd();
+        }
+
+        private void SendCmdBtn_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SendCmd();
+            }
+        }
+
+
+
+
+
+
+        private void AskUserForIP()
+        {
+            bool error = false;
+            bool succes = false;
+
+            while (!succes)
+            {
+                communicationThread = null;
+
+                inputForm.SetError(error);
+                this.Hide();
+                inputForm.ShowDialog();
+                this.Show();
+
+                if (inputForm.ServerPort == 666)
+                {
+                    succes = true;
+                    return;
+                }
+
+                if (inputForm.DialogResult == DialogResult.Cancel)
+                {
+                    this.Close();
+                    return;
+                }
+
+                succes = Connect();
+                error = true;
+            }
+
+            List<string> value = new List<string> { "1" };
+            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value));
+
+            communicationThread = new Thread(Reload);
+            communicationThread.Start();
+        }
+
+        private bool Connect()
+        {
+            try
+            {
+                wiFiHandler = new WiFiHandler(inputForm.ServerIPAdress, inputForm.ServerPort);
+                if (wiFiHandler == null)
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void Disconnect()
+        {
+            wiFiHandler = null;
+            clients.Clear();
+            ConsoleList.Items.Clear();
+
+            DataGroupbox.Visible = false;
+
+            AskUserForIP();
         }
 
         private void AddClient(Client client)
@@ -141,63 +168,97 @@ namespace Server_Interface
             {
                 if (clients[i].MacAdress == client.MacAdress)
                 {
+                    power -= clients[i].ElecUsage;
+                    liters -= clients[i].WaterUsage;
                     clients[i] = client;
                     return;
                 }
             }
+            power += client.ElecUsage;
+            liters += client.WaterUsage;
+
             clients.Add(client);
-            ClientList.SelectedIndex = 0;
         }
 
-        private void RefreshBtn_Click(object sender, EventArgs e)
+        private void Reload()
         {
-            ClientList.Items.Clear();
-            List<string> messages = wiFiHandler.Receivedata();
-
-            foreach (string message in messages)
+            while (true)
             {
-                List<string> data = Protocol.SplitString(message);
+                List<string> messages = wiFiHandler.Receivedata();
 
-                if (data.Count <= 1)
-                    return;
-
-                switch((CP_Code) Int16.Parse(data[0]))
+                foreach (string message in messages)
                 {
-                    case CP_Code.CP_CODE_CONNECT:
-                        if (data[1] == "1")
-                            Disconnect();
-                        break;
+                    List<string> data = Protocol.SplitString(message);
 
-                    case CP_Code.CP_CODE_CONSOLE:
-                        ConsoleList.Items.Add(data[1]);
-                        break;
+                    if (data.Count <= 1)
+                        return;
 
-                    case CP_Code.CP_CODE_DISABLEALLCLIENTS:
-                        if (data[1] == "1")
-                            return;
-                        ConsoleList.Items.Add("All clients disabled, refreshing...");
-                        List<string> value = new List<string> { "1" };
-                        wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value));
-                        break;
+                    try
+                    {
+                        switch ((CP_Code)Int16.Parse(data[0]))
+                        {
+                            case CP_Code.CP_CODE_CONNECT:
+                                if (data[1] == "1")
+                                    Disconnect();
+                                break;
 
-                    case CP_Code.CP_CODE_GETCLIENTS:
-                        if (data.Count == 6)
-                        AddClient(new Client(data[1], Int16.Parse(data[2]), Int16.Parse(data[3]), data[4], Boolean.Parse(data[5])));
-                        break;
+                            case CP_Code.CP_CODE_CONSOLE:
+                                ConsoleList.Items.Add(data[1]);
+                                break;
 
-                    case CP_Code.CP_CODE_SETCLIENT:
-                        ConsoleList.Items.Add("Change accepted: " + data[1]);
-                        break;
+                            case CP_Code.CP_CODE_DISABLEALLCLIENTS:
+                                if (data[1] == "1")
+                                    return;
+                                ConsoleList.Items.Add("All clients disabled, refreshing...");
+                                List<string> value = new List<string> { "1" };
+                                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value));
+                                break;
 
-                    case CP_Code.CP_CODE_TOTALPOWER:
-                        TotalWattLb.Text = data[1] + " W";
-                        break;
+                            case CP_Code.CP_CODE_GETCLIENTS:
+                                if (data.Count == 6)
+                                {
+                                    AddClient(new Client(data[1], Int16.Parse(data[2]), Int16.Parse(data[3]), data[4], Int16.Parse(data[5])));
+                                }
 
-                    case CP_Code.CP_CODE_TOTALWATER:
-                        TotalWaterLb.Text = data[1] + " L";
-                        break;
+                                break;
+
+                            case CP_Code.CP_CODE_SETCLIENT:
+                                ConsoleList.Items.Add("Change accepted: " + data[1]);
+                                break;
+
+                            case CP_Code.CP_CODE_TOTALPOWER:
+                                TotalWattLb.Text = data[1] + " W";
+                                break;
+
+                            case CP_Code.CP_CODE_TOTALWATER:
+                                TotalWaterLb.Text = data[1] + " L";
+                                break;
+                        }
+                        TotalWaterLb.Text = liters + " L";
+                        TotalWattLb.Text = power + " W";
+                    }
+                    catch
+                    {
+                        ConsoleList.Items.Add("~Received invalid message: " + message);
+                    }
                 }
             }
+        }
+
+        private void SendCmd()
+        {
+            if(ConsoleInputTb.Text == "reload")
+            {
+
+                List<string> value = new List<string> { "1" };
+                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value));
+            }
+            else
+            {
+                List<string> message = new List<string> { ConsoleInputTb.Text };
+                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_CONSOLE, message));
+            }
+            ConsoleInputTb.Clear();
         }
     }
 }
