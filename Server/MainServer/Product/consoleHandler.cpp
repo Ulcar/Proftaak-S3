@@ -38,17 +38,17 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
             }
             else
             {
-                if(commandos.at(1) == "save")
+                if((commandos.at(1) == "save") || (commandos.at(1) == "s"))
                 {
                     Logger::SaveErrorAsFile();
                 }
-                else if(commandos.at(1) == "live")
+                else if((commandos.at(1) == "live") || (commandos.at(1) == "l"))
                 {
                     Logger::LiveErrorLogging = !Logger::LiveErrorLogging;
                     message += "Live Errorlogging: " + Logger::LiveErrorLogging;
                     message += "\n";
                 }
-                else if(commandos.at(1) == "display")
+                else if((commandos.at(1) == "display") || (commandos.at(1) == "d"))
                 {
                     message += Logger::DisplayErrorLog();
                 }
@@ -64,39 +64,40 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
             }
             else
             {
-                if(commandos.at(1) == "save")
+                if((commandos.at(1) == "save") || (commandos.at(1) == "s"))
                 {
                     Logger::SaveDebugAsFile();
                 }
-                else if(commandos.at(1) == "live")
+                else if((commandos.at(1) == "live") || (commandos.at(1) == "l"))
                 {
                     Logger::LiveDebugLogging = !Logger::LiveDebugLogging;
                     message += "Live Debuglogging: " + Logger::LiveDebugLogging;
                     message += "\n";
                 }
-                else if(commandos.at(1) == "display")
+                else if((commandos.at(1) == "display") || (commandos.at(1) == "d"))
                 {
                     message += Logger::DisplayDebugLog();
                 }
             }
         }
-        else if(commandos.at(0) == "ping")
+        else if((commandos.at(0) == "ping") || (commandos.at(0) == "p"))
         {
             message += "Pong\n";
         }
-
-        else if(commandos.at(0) == "laundry")
+        else if((commandos.at(0) == "laundry") || (commandos.at(0) == "l"))
         {
             Laundry* laundry = new Laundry(stoi(commandos.at(1)));
             laundry->ColorType = static_cast<Color>(stoi(commandos.at(2)));
             for(uint i = 3; i < commandos.size(); i++)
             {
                 laundry->TasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
-
             }
             database->AddLaundry(laundry);
-
-
+        }
+        else if((commandos.at(0) == "clear") || (commandos.at(0) == "c") || (commandos.at(0) == "clr"))
+        {
+            message += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+            Logger::Record(false, "Cleared terminalscreen", "ConsoleHandler");
         }
         else
         {
