@@ -13,10 +13,10 @@
 
 bool quit = false;
 Database* database;
-ProtocolHandler* protocolHandler;
 std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
+std::thread protocolThread;
 
 
 void Setup()
@@ -28,24 +28,23 @@ void Setup()
     Logger::Record(false, "System startup", "main");
 
     database = new Database();
-    protocolHandler = new ProtocolHandler(database);
     socketThread = std::thread(SocketHandler::RunSocketHandler, database);
     consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
+    protocolThread = std::thread(ProtocolHandler::RunProtocolHandler, database);
 }
 
 void Loop()
 {
-    protocolHandler->Update();
+
 }
 
 void Shutdown()
 {    
-    consoleThread.detach();
     socketThread.detach();
+    consoleThread.detach();
+    protocolThread.detach();
 
     delete database;
-    delete protocolHandler;
-    //delete iAlgorithm;
 
     Logger::Record(true, "System shutdown", "main");
     Logger::Record(false, "System shutdown", "main");

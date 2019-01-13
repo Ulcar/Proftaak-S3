@@ -1,21 +1,25 @@
 #include "protocolHandler.h"
-#include <chrono>
 
-ProtocolHandler::ProtocolHandler(Database* database)
-    : database(database)
-{
-   // startTime = std::chrono::system_clock::now();
-   start_time = std::chrono::steady_clock::now();
-}
+Database* ProtocolHandler::database;
+std::chrono::time_point<std::chrono::steady_clock, std::chrono::steady_clock::duration> ProtocolHandler::start_time;
+std::chrono::time_point<std::chrono::steady_clock, std::chrono::steady_clock::duration> ProtocolHandler::current_time;
 
-ProtocolHandler::~ProtocolHandler()
+void ProtocolHandler::RunProtocolHandler(Database* tempDatabase)
 {
-    
+    // startTime = std::chrono::system_clock::now();
+    database = tempDatabase;
+    start_time = std::chrono::steady_clock::now();
+    Logger::Record(false, "Protocol started", "protocolHandler");
+
+    while(true)
+    {
+        Update();
+    }
 }
 
 void ProtocolHandler::Update()
 {
-    HandleMessages();
+    ProtocolHandler::HandleMessages();
     database->HandleLaundry();
     database->HandleLaundryBaskets();
   
