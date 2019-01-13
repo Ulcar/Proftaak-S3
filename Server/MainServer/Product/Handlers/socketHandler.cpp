@@ -150,19 +150,21 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
     {
         if(client->GetMacAdress() == macAdress)
         {
+            Logger::Record(false, "Found already a Client: " + type, "socketHandler");
             return client;
         }
     }
-    Logger::Record(false, "Created new Client: " + type, "socketHandler");
             
     if(type == Type::ControlPanel)
     {
         Client* client = new Client(macAdress, type);
+        Logger::Record(false, "Created new ControlPanel: " + type, "socketHandler");
         return client;
     }
     else
     {
         Client* client = new Machine(macAdress, type);
+        Logger::Record(false, "Created new Machine: " + type, "socketHandler");
         return client;
     }
 }
