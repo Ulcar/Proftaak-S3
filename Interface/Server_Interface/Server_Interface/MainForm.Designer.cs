@@ -52,6 +52,7 @@
             this.ConsoleGroupbox = new System.Windows.Forms.GroupBox();
             this.DisconnectBtn = new System.Windows.Forms.Button();
             this.ToolbarGroupbox = new System.Windows.Forms.GroupBox();
+            this.ReloadBtn = new System.Windows.Forms.Button();
             this.ClientGroupbox.SuspendLayout();
             this.DataGroupbox.SuspendLayout();
             this.ConsoleGroupbox.SuspendLayout();
@@ -287,6 +288,7 @@
             // 
             // ToolbarGroupbox
             // 
+            this.ToolbarGroupbox.Controls.Add(this.ReloadBtn);
             this.ToolbarGroupbox.Controls.Add(this.DisconnectBtn);
             this.ToolbarGroupbox.Controls.Add(this.label4);
             this.ToolbarGroupbox.Controls.Add(this.label5);
@@ -298,6 +300,16 @@
             this.ToolbarGroupbox.TabIndex = 21;
             this.ToolbarGroupbox.TabStop = false;
             this.ToolbarGroupbox.Text = "Toolbar";
+            // 
+            // ReloadBtn
+            // 
+            this.ReloadBtn.Location = new System.Drawing.Point(306, 11);
+            this.ReloadBtn.Name = "ReloadBtn";
+            this.ReloadBtn.Size = new System.Drawing.Size(75, 23);
+            this.ReloadBtn.TabIndex = 21;
+            this.ReloadBtn.Text = "Reload";
+            this.ReloadBtn.UseVisualStyleBackColor = true;
+            this.ReloadBtn.Click += new System.EventHandler(this.ReloadBtn_Click);
             // 
             // MainForm
             // 
@@ -346,6 +358,7 @@
         private System.Windows.Forms.GroupBox DataGroupbox;
         private System.Windows.Forms.Button DisconnectBtn;
         private System.Windows.Forms.GroupBox ToolbarGroupbox;
+        private System.Windows.Forms.Button ReloadBtn;
     }
 }
 

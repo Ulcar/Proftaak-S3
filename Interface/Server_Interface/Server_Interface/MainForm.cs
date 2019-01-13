@@ -17,6 +17,7 @@ namespace Server_Interface
         private WiFiHandler wiFiHandler;
         private InputForm inputForm = new InputForm();
         private BindingList<Client> clients;
+        private BindingList<string> consoleOutput;
         private Thread communicationThread;
         private int liters;
         private int power;
@@ -25,11 +26,11 @@ namespace Server_Interface
         {
             InitializeComponent();
             clients = new BindingList<Client>();
+            consoleOutput = new BindingList<string>();
+            ClientList.DataSource = clients;
+            ConsoleList.DataSource = consoleOutput;
             liters = 0;
             power = 0;
-            ClientList.DataSource = clients;
-
-            AddClient(new Client("123", 5, 4, "cold", 1));
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -155,7 +156,7 @@ namespace Server_Interface
         {
             wiFiHandler = null;
             clients.Clear();
-            ConsoleList.Items.Clear();
+            consoleOutput.Clear();
             liters = 0;
             power = 0;
 
@@ -184,7 +185,7 @@ namespace Server_Interface
 
         private void Reload()
         {
-            while (true)
+            while (wiFiHandler != null)
             {
                 List<string> messages = wiFiHandler.Receivedata();
 
@@ -205,13 +206,13 @@ namespace Server_Interface
                                 break;
 
                             case CP_Code.CP_CODE_CONSOLE:
-                                ConsoleList.Items.Add(data[1]);
+                                consoleOutput.Add(data[1]);
                                 break;
 
                             case CP_Code.CP_CODE_DISABLEALLCLIENTS:
                                 if (data[1] == "1")
                                     return;
-                                ConsoleList.Items.Add("All clients disabled, refreshing...");
+                                consoleOutput.Add("All clients disabled, refreshing...");
                                 List<string> value = new List<string> { "1" };
                                 wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value));
                                 break;
@@ -225,7 +226,7 @@ namespace Server_Interface
                                 break;
 
                             case CP_Code.CP_CODE_SETCLIENT:
-                                ConsoleList.Items.Add("Change accepted: " + data[1]);
+                                consoleOutput.Add("Change accepted: " + data[1]);
                                 break;
 
                             case CP_Code.CP_CODE_TOTALPOWER:
@@ -236,12 +237,10 @@ namespace Server_Interface
                                 TotalWaterLb.Text = data[1] + " L";
                                 break;
                         }
-                        TotalWaterLb.Text = liters + " L";
-                        TotalWattLb.Text = power + " W";
                     }
                     catch
                     {
-                        ConsoleList.Items.Add("~Received invalid message: " + message);
+                        consoleOutput.Add("~Received invalid message: " + message);
                     }
                 }
             }
@@ -261,6 +260,16 @@ namespace Server_Interface
                 wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_CONSOLE, message));
             }
             ConsoleInputTb.Clear();
+        }
+
+        private void ReloadBtn_Click(object sender, EventArgs e)
+        {
+            TotalWaterLb.Text = liters + " L";
+            TotalWattLb.Text = power + " W";
+            ClientList.DataSource = null;
+            ConsoleList.DataSource = null;
+            ClientList.DataSource = clients;
+            ConsoleList.DataSource = consoleOutput;
         }
     }
 }
