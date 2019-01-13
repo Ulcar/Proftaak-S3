@@ -10,7 +10,10 @@ Client::Client(std::string macAdress, Type type)
 
 Client::~Client()
 {
-    delete socket;
+    if(socket != nullptr)
+    {
+        delete socket;
+    }
 }
 
 void Client::Send(CP_Code code, std::string value)
