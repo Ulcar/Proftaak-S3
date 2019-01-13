@@ -6,3 +6,9 @@ Server/MainServer/socket.o
 /Interface/Server_Interface/.vs/Server_Interface/v15/.suo
 /Interface/Server_Interface/.vs/Server_Interface/DesignTimeBuild
 /Interface/Server_Interface/.vs/Server_Interface/obj/Debug
+
+
+/Interface/Server_Interface/Server_Interface/bin/Debug
+/Interface/Server_Interface/Server_Interface/obj/Debug
+
+
