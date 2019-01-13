@@ -52,28 +52,33 @@ namespace Server_Interface
         public List<string> Receivedata()
         {
             List<string> messages = new List<string>();
-
-            if (!stream.DataAvailable)
-                return messages;
-
-            UpdateBuffer();
-
-            while(true)
+            try
             {
-                int indexStart = buffer.IndexOf(Protocol.endCharToServer);
-
-                if(indexStart == -1)
-                    return messages;
-                int indexEnd = buffer.IndexOf(Protocol.startCharToServer, indexStart);
-
-                if (indexEnd == -1)
+                if (!stream.DataAvailable)
                     return messages;
 
+                UpdateBuffer();
 
-                messages.Add(buffer.Substring(indexStart, indexEnd - indexStart + 1));
-                buffer = buffer.Substring(indexEnd + 1, buffer.Length - indexEnd - 1);
+                while (true)
+                {
+                    int indexStart = buffer.IndexOf(Protocol.endCharToServer);
+
+                    if (indexStart == -1)
+                        return messages;
+                    int indexEnd = buffer.IndexOf(Protocol.startCharToServer, indexStart);
+
+                    if (indexEnd == -1)
+                        return messages;
+
+
+                    messages.Add(buffer.Substring(indexStart, indexEnd - indexStart + 1));
+                    buffer = buffer.Substring(indexEnd + 1, buffer.Length - indexEnd - 1);
+                }
             }
-
+            catch
+            {
+                return messages;
+            }
         }
 
         private void UpdateBuffer()
