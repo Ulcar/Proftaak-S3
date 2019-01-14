@@ -9,4 +9,15 @@ int Laundry::GetWeight()
 Laundry::Laundry(int weight)
 {
     this->weight = weight;
+    done = false;
+}
+
+bool Laundry::GetDone()
+{
+    return done;
+}
+
+void Laundry::SetDone(bool done)
+{
+    this->done = done;
 }

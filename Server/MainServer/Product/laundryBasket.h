@@ -42,6 +42,7 @@ class LaundryBasket
         //weight in grams
         int weightLimit;
         int currentWeight;
+        int ID;
 
         Temperature temperature;
 };

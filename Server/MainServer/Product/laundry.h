@@ -15,9 +15,13 @@ class Laundry
 
         //weight in grams
         int GetWeight();
+        void SetDone(bool done);
+        bool GetDone();
 
     private:
         int weight;
+        int id;
+        bool done;
 };
 
 #endif
