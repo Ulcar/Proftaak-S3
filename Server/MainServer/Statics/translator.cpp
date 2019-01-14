@@ -31,6 +31,28 @@ std::string Translator::ToControlPanel(CP_Code code, std::vector<std::string> va
     return messageToControlPanel;
 }
 
+std::string Translator::RemoveChars(std::string message)
+{
+    size_t pos;
+    char* unknownChar = new char('?');
+	while ((pos = message.find(startCharToControlPanel)) != std::string::npos) {
+		message.replace(pos, 1, unknownChar);
+	}
+	while ((pos = message.find(startCharToMachine)) != std::string::npos) {
+		message.replace(pos, 1, unknownChar);
+	}
+	while ((pos = message.find(seperatorChar)) != std::string::npos) {
+		message.replace(pos, 1, unknownChar);
+	}
+	while ((pos = message.find(endCharToControlPanel)) != std::string::npos) {
+		message.replace(pos, 1, unknownChar);
+	}
+	while ((pos = message.find(endCharToMachine)) != std::string::npos) {
+		message.replace(pos, 1, unknownChar);
+	}
+    return message;
+} 
+
 std::vector<std::vector<std::string>> Translator::FromControlPanel(std::string message)
 {
     return SplitString(message, seperatorChar, endCharToControlPanel, startCharToControlPanel);

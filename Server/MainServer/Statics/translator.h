@@ -24,6 +24,7 @@ class Translator
         static std::vector<std::vector<std::string>> FromControlPanel(std::string);
         static std::vector<std::string> SplitString(std::string text, char splitChar);
         static std::string ToMachine(M_Code code, std::vector<int> values);
+        static std::string RemoveChars(std::string message);
 
     private:
         static const char startCharToMachine = '#';
