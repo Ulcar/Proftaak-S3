@@ -54,6 +54,7 @@ class Database
         int currentWater;
         //power is in Watt
         int currentPower;
+        int laundryID;
 };
 
 #endif

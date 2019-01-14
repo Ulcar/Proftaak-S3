@@ -6,10 +6,9 @@ int Laundry::GetWeight()
     return weight;
 }
 
-Laundry::Laundry(int weight, int id)
+Laundry::Laundry(int weight)
 {
     this->weight = weight;
-    this->id = id;
     done = false;
 }
 
@@ -21,4 +20,14 @@ bool Laundry::GetDone()
 void Laundry::SetDone(bool done)
 {
     this->done = done;
+}
+
+int Laundry::GetID()
+{
+    return id;
+}
+
+void Laundry::setID(int id)
+{
+this->id = id;
 }

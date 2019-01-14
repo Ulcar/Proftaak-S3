@@ -97,12 +97,13 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
         {
             if(commandos.size() == 1)
             {
-                message += "add <kg> <id> <color> <list machines>\n";
+                message += "add <kg> <id> <temperature> <color> <list machines>\n";
                 message += "display\n";
             }
             if(commandos.at(1) == "add")
             {
-                Laundry* laundry = new Laundry(stoi(commandos.at(2)), stoi(commandos.at(3)));
+                Laundry* laundry = new Laundry(stoi(commandos.at(2)));
+                laundry->temperature= static_cast<Temperature>(stoi(commandos.at(3)));
                 laundry->ColorType = static_cast<Color>(stoi(commandos.at(4)));
                 for(uint i = 5; i < commandos.size(); i++)
                 {
@@ -113,7 +114,13 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
             }
             else if((commandos.at(1) == "display") || (commandos.at(1) == "d"))
             {
-                
+                for(LaundryBasket* basket : database->GetLaundryBaskets())
+                {
+                    for(Laundry* laundry : basket->LaundryVector)
+                    {
+                       message += std::to_string(laundry->GetID()) + std::to_string(laundry->temperature) + std::to_string(laundry->ColorType) +  basket->GetMacAdress();
+                    }
+                }
             }
         }
         else if((commandos.at(0) == "clear") || (commandos.at(0) == "c") || (commandos.at(0) == "clr"))

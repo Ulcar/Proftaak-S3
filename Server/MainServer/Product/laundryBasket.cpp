@@ -42,13 +42,13 @@ bool LaundryBasket::IsBusy()
     return busy;
 }
 
-LaundryBasket::LaundryBasket(std::vector<Type> machines)
+LaundryBasket::LaundryBasket(std::vector<Type> machines, Color color, Temperature temperature)
 {
     currentWeight = 0;
     weightLimit = MAX_WEIGHT;
-
+    this->color = color;
     Tasks = machines;
-    temperature = Temperature::Medium;
+    this->temperature = temperature;
 }
 
 LaundryBasket::~LaundryBasket()
@@ -82,4 +82,9 @@ void LaundryBasket::SetMacAdress(std::string macAdress)
 Temperature LaundryBasket::GetTemperature()
 {
     return temperature;
+}
+
+Color LaundryBasket::GetColor()
+{
+    return color;
 }

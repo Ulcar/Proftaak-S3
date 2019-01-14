@@ -12,7 +12,7 @@
 class LaundryBasket
 {
     public:
-        LaundryBasket(std::vector<Type> machines);
+        LaundryBasket(std::vector<Type> machines, Color color, Temperature temperature);
         ~LaundryBasket();
 
         void OnLaundryFinish(std::vector<Laundry*>& laundryToRemove);
@@ -32,6 +32,8 @@ class LaundryBasket
         int GetCurrentWeight();
 
         Temperature GetTemperature();
+
+        Color GetColor();
     
 
     private:
@@ -45,6 +47,7 @@ class LaundryBasket
         int ID;
 
         Temperature temperature;
+        Color color;
 };
 
 

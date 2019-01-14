@@ -26,7 +26,7 @@ enum Color
 
 enum Program
 {
-    PROGRAM_NONE = 0,
+    PROGRAM_NONE = -1,
     PROGRAM_COLD,
     PROGRAM_WARM,
     PROGRAM_HOT
