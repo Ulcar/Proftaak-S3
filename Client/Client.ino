@@ -9,7 +9,6 @@
 #include "includes/hardware/Motor.h"
 #include "includes/hardware/Water.h"
 
-#include "includes/client/SerialTransport.h"
 #include "includes/client/WifiTransport.h"
 #include "includes/client/MainClient.h"
 
@@ -148,8 +147,7 @@ void setup()
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    //client = new MainClient(new WifiTransport("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863), onMessageReceived);
-    client = new MainClient(new SerialTransport(), onMessageReceived);
+    client = new MainClient(new WifiTransport("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863), onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");
 
