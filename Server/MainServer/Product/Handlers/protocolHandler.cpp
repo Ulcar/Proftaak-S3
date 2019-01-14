@@ -259,6 +259,8 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
         {
             Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()),"ProtocolHandler");
             machine->SetProgram(Program::PROGRAM_NONE); 
+            machine->SetInProgress(false);
+            database->HandleLaundryFinish(machine->GetMacAdress());
             break;
         }
 
@@ -285,6 +287,8 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
                         {
                             Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()),"ProtocolHandler");
                             laundry->SetBusy(false);
+                            machine->SetRequestingInProgress(false);
+                            break;
                         }
                     }
                 }
@@ -331,7 +335,7 @@ void ProtocolHandler::HandleStomer(Machine* machine, std::vector<std::string> me
             {
                 machine->SetUsedWater(stoi(messageVector[1]));
                 machine->Send(M_CODE_REQUEST_WATER, 1);
-                database->HandleLaundryFinish(machine->GetMacAdress());
+                
                 return;
             }
             machine->Send(M_CODE_REQUEST_WATER, 0);

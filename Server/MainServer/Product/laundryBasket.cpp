@@ -2,10 +2,15 @@
 
 void LaundryBasket::OnLaundryFinish(std::vector<Laundry*> &laundryToRemove)
 {
+    Tasks.erase(Tasks.begin());
     if(Tasks.size() <= 0)
     {
         done = true;
-        return;
+           for(Laundry* laundry : LaundryVector)
+    {
+        laundryToRemove.push_back(laundry);
+
+    }
     }
 
     for(Laundry* laundry : LaundryVector)

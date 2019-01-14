@@ -127,33 +127,40 @@ bool Database::UpdateWater(int amountWater)
 
 void Database::HandleLaundryFinish(std::string macAdress)
 {
+    std::unique_lock<std::mutex> lock (mtxLaundry);
     std::vector<Laundry*> laundryToHandle;
-    for (LaundryBasket* laundry : laundryBaskets)
+    std::vector<LaundryBasket*> tmplaundry = laundryBaskets;
+    for (uint i = 0; i < tmplaundry.size(); i++)
     {
+        LaundryBasket* laundry = tmplaundry[i];
         if(laundry->GetMacAdress() == macAdress)
         {
             laundry->OnLaundryFinish(laundryToHandle);
 
             if(laundry->GetDone())
             {
-                //do something when the Laundry is done!!!!!
+                Logger::Record(false, "Laundry Basket done: ", "database");
+                laundryBaskets.erase(laundryBaskets.begin() + i);
+                delete laundry;
+            }
+
+            else
+            {
+                laundry->SetBusy(false);
             }
         }
     }
 
     for(Laundry* laundry : laundryToHandle)
     {
-        for(LaundryBasket* bak : laundryBaskets)
+        if(laundry->TasksToDo.size() <= 0)
         {
-            if(!bak->IsBusy() && bak->Tasks[0] == laundry->TasksToDo[0])
-            {
-                bak->AddLaundryToLaundryBasket(laundry);
-                return;
-            }
+            laundry->SetDone(true);
+            Logger::Record(false, "Laundry done: ", "database");
+            continue;
         }
 
-        LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo);
-        laundryBaskets.push_back(newLaundryBasket);
+        unhandledLaundry.push_back(laundry);
         
     }
 }
@@ -161,10 +168,20 @@ void Database::HandleLaundryFinish(std::string macAdress)
 void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
 {
      std::unique_lock<std::mutex> lock (mtxLaundry);
+     std::vector<Laundry*> tmpLaundryVector = laundryToHandle;
      
-    
-    for(Laundry* laundry : laundryToHandle)
+    int i = 0;
+    for(Laundry* laundry : tmpLaundryVector)
     {
+        if(laundry->GetDone())
+        {
+            Logger::Record(false, "Erasing Finished Laundry", "Database");
+            laundryToHandle.erase(laundryToHandle.begin(), laundryToHandle.begin() + i);
+            i++;
+            delete laundry;
+        }
+        
+        
         bool found = false;
          for(LaundryBasket* bak : laundryBaskets)
         {
@@ -185,7 +202,7 @@ void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
 
         Logger::Record(false, "Created new Laundry Basket", "Database");
         }
-
+    i++;
     }
 
     laundryToHandle.clear();
