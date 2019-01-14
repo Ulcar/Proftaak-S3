@@ -8,7 +8,7 @@
 class Program
 {
 public:
-    Program(HardwareControl* control, IClient* client);
+    Program(int number, HardwareControl* control, IClient* client);
 
     void Start();
     bool Update();
@@ -18,15 +18,7 @@ public:
     void AllowTakeWater();
     void AllowHeatUp();
 
-    void SetNumber(int number)
-    {
-        _number = number;
-    }
-
-    int Program::GetNumber()
-    {
-        return _number;
-    }
+    int Program::GetNumber();
 
 private:
     std::vector<IAction*> _actions;
@@ -37,7 +29,7 @@ private:
 
     bool _started;
     int _number;
-    int _currentActionIndex;
+    int _nextActionIndex;
 };
 
 #endif

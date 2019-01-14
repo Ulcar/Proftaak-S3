@@ -8,6 +8,14 @@ Programs::Programs(HardwareControl* control, IClient* client)
     // ...
 }
 
+Programs::~Programs()
+{
+    for (int i = 0; i < _programs.size(); ++i)
+    {
+        delete _programs[i];
+    }
+}
+
 void Programs::Update()
 {
     if (_currentProgram != NULL)
@@ -26,8 +34,7 @@ void Programs::Update()
 
 void Programs::Add(int number, std::vector<IAction*> actions)
 {
-    Program* program = new Program(_control, _client);
-    program->SetNumber(number);
+    Program* program = new Program(number, _control, _client);
 
     for (int i = 0; i < actions.size(); ++i)
     {

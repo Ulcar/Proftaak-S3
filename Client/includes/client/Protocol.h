@@ -18,16 +18,8 @@
 class Protocol
 {
 public:
-    static int GetPort()
-    {
-        return port;
-    }
-
     static String ToServer(MessageCode code, std::vector<String> parameters);
     static std::vector<String> FromServer(String message);
-
-private:
-    static const int port = 57863;
 };
 
 #endif

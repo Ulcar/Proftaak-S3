@@ -18,12 +18,35 @@
 #define WATER_TANK_SIZE (20)
 #define HEATER_WATT     (500)
 
+// Because we need to be able to access these variables in both the 'setup' and
+// 'loop' methods we made these variables global. While we could have created a
+// 'Arduino' class which manage these variables, we would still need one global
+// variable.
 HardwareControl* hardwareControl;
 WifiClient* client;
 Programs* programs;
 
 void onMessageReceived(std::vector<String> message)
 {
+    bool isValid = true;
+
+    // Verify that the first part of the message (the message code) is an
+    // integer.
+    for (int i = 0; i < message[0].length(); ++i)
+    {
+        if (!isDigit(message[0][i]))
+        {
+            isValid = false;
+        }
+    }
+
+    if (!isValid)
+    {
+        Serial.println("Invalid message code received (" + message[0] + ")");
+
+        return;
+    }
+
     int command = message[0].toInt();
 
     switch (command)
@@ -43,6 +66,8 @@ void onMessageReceived(std::vector<String> message)
         }
 
         int program = message[1].toInt();
+
+        Serial.println("Starting program #" + String(program));
 
         // If the program doesn't exist we send a "1" back, otherwise we start
         // the program and send a "0" back.
@@ -77,7 +102,7 @@ void onMessageReceived(std::vector<String> message)
         break;
 
     default:
-        Serial.println("Unrecognized command.");
+        Serial.println("Unrecognized command (" + message[0] + ").");
         break;
     }
 }
@@ -111,8 +136,7 @@ void setup()
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    client = new WifiClient("TP-LINK_Proftaak", "wasserete", "192.168.137.208", Protocol::GetPort());
-    client->SetOnMessageReceived(onMessageReceived);
+    client = new WifiClient("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863, onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");
 
@@ -271,7 +295,7 @@ void setup()
     });
 
     // Load program C.
-    programs->Add(0, {
+    programs->Add(2, {
         // Prewash
         new RequestWaterAction(WATER_TANK_SIZE / 2),
         new FillWaterAction(WL_50),

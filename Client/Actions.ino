@@ -8,7 +8,8 @@ SoapAction::SoapAction(HardwareState state, int dispenser)
     : _state(state)
     , _dispenser(dispenser)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void SoapAction::Handle()
@@ -30,7 +31,8 @@ bool SoapAction::IsDone()
 BuzzerAction::BuzzerAction(HardwareState state)
     : _state(state)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void BuzzerAction::Handle()
@@ -51,7 +53,8 @@ bool BuzzerAction::IsDone()
 
 DrainWaterAction::DrainWaterAction()
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void DrainWaterAction::Handle()
@@ -85,7 +88,8 @@ bool DrainWaterAction::IsDone()
 HeatAction::HeatAction(Temperature temp)
     : _temp(temp)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void HeatAction::Handle()
@@ -121,7 +125,8 @@ bool HeatAction::IsDone()
 FillWaterAction::FillWaterAction(WaterLevel level)
     : _level(level)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void FillWaterAction::Handle()
@@ -158,6 +163,8 @@ RequestPowerAction::RequestPowerAction(int watt)
     : _watt(watt)
 {
     _mayHeatUp = false;
+    _control = NULL;
+    _client = NULL;
 }
 
 void RequestPowerAction::Handle()
@@ -167,7 +174,7 @@ void RequestPowerAction::Handle()
 
     unsigned long currentMs = millis();
 
-    if (_startMs == 0 || currentMs - _startMs > 2000)
+    if (_startMs == 0 || currentMs - _startMs > DELAY_TIME_POWER)
     {
         _startMs = currentMs;
 
@@ -200,6 +207,8 @@ RequestWaterAction::RequestWaterAction(int liters)
     , _liters(liters)
 {
     _mayTakeWater = false;
+    _control = NULL;
+    _client = NULL;
 }
 
 void RequestWaterAction::Handle()
@@ -209,7 +218,7 @@ void RequestWaterAction::Handle()
 
     unsigned long currentMs = millis();
 
-    if (_startMs == 0 || currentMs - _startMs > 2000)
+    if (_startMs == 0 || currentMs - _startMs > DELAY_TIME_WATER)
     {
         _startMs = currentMs;
 
@@ -241,7 +250,8 @@ MotorRotateAction::MotorRotateAction(MotorDirection direction, MotorSpeed speed)
     : _direction(direction)
     , _speed(speed)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void MotorRotateAction::Handle()
@@ -265,7 +275,8 @@ DelayAction::DelayAction(unsigned long ms)
     : _ms(ms)
     , _startMs(0)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void DelayAction::Handle()

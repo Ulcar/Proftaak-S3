@@ -39,10 +39,37 @@ HardwareControl::HardwareControl(
 
 HardwareControl::~HardwareControl()
 {
-    delete _centipede;
     delete _statusIndicator;
+
     delete _controls;
     delete _heater;
     delete _motor;
     delete _water;
+
+    delete _centipede;
+}
+
+IStatusIndicator* HardwareControl::GetStatusIndicator()
+{
+    return _statusIndicator;
+}
+
+IControls* HardwareControl::GetControls()
+{
+    return _controls;
+}
+
+IHeater* HardwareControl::GetHeater()
+{
+    return _heater;
+}
+
+IMotor* HardwareControl::GetMotor()
+{
+    return _motor;
+}
+
+IWater* HardwareControl::GetWater()
+{
+    return _water;
 }

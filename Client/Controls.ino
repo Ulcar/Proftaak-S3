@@ -46,12 +46,12 @@ void Controls::SetSoap(HardwareState state, int dispenser)
             mask |= 0x4;
         }
 
-        _centipede->DigitalWrite(1, 0x2 & 0x01);
-        _centipede->DigitalWrite(0, (0x2 >> 1) & 0x01);
+        _centipede->DigitalWrite(1, 0x2 & 0x1);
+        _centipede->DigitalWrite(0, (0x2 >> 1) & 0x1);
 
-        _centipede->DigitalWrite(10, mask & 0x01);
-        _centipede->DigitalWrite(9, (mask >> 1) & 0x01);
-        _centipede->DigitalWrite(8, (mask >> 2) & 0x01);
+        _centipede->DigitalWrite(10, mask & 0x1);
+        _centipede->DigitalWrite(9, (mask >> 1) & 0x1);
+        _centipede->DigitalWrite(8, (mask >> 2) & 0x1);
 
         _centipede->DigitalWrite(2, LOW);
         delay(80);

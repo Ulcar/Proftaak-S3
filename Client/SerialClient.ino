@@ -1,9 +1,9 @@
 #include "includes/client/SerialClient.h"
 
-SerialClient::SerialClient()
+SerialClient::SerialClient(OnMessageReceivedCallback callback)
     : _isConnectedToServer(false)
 {
-    // ...
+    _onMessageReceived = callback;
 }
 
 SerialClient::~SerialClient()
@@ -13,7 +13,7 @@ SerialClient::~SerialClient()
 
 bool SerialClient::ConnectToServer(MachineType type)
 {
-    // Identify ourselves to the remote server as a washing machine.
+    // Identify ourselves as a machine.
     client->SendMessage(M_CONNECT, { String(type), this->GetMacAddress() });
 
     // Wait for the 'accept' response of the previous message.
@@ -43,7 +43,7 @@ std::vector<String> SerialClient::ReadMessage(bool shouldBlock = false)
 {
     String message = "";
 
-    while (shouldBlock ? true : Serial.available())
+    while (shouldBlock || Serial.available())
     {
         if (Serial.available())
         {
@@ -96,4 +96,9 @@ void SerialClient::Update()
 String SerialClient::GetMacAddress()
 {
     return "AABBCCDDEEFF";
+}
+
+bool SerialClient::IsConnectedToServer()
+{
+    return _isConnectedToServer;
 }

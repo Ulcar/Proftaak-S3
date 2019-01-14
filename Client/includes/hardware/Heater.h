@@ -15,18 +15,16 @@ public:
     ~Heater();
 
     void Initialize(ICentipedeShield* centipede);
-
     void Set(HardwareState state);
+
+    HardwareState GetState();
     Temperature GetTemperature();
-
-    HardwareState GetState()
-    {
-        return _state;
-    }
-
 
 private:
     HardwareState _state;
+
+    Heater(const Heater& other);
+    Heater& operator=(const Heater& other);
 };
 
 #endif

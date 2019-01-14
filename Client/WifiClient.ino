@@ -1,10 +1,11 @@
 #include "includes/client/WifiClient.h"
 
-WifiClient::WifiClient(String ssid, String password, String ipAddress, int port)
+WifiClient::WifiClient(String ssid, String password, String ipAddress, int port, OnMessageReceivedCallback callback)
     : _ipAddress(ipAddress)
     , _port(port)
     , _isConnectedToServer(false)
 {
+    _onMessageReceived = callback;
     _status = WiFi.begin(ssid.c_str(), password.c_str());
 }
 
@@ -53,7 +54,12 @@ void WifiClient::SendMessage(MessageCode code, std::vector<String> parameters)
         return;
     }
 
-    Serial.println("Sending: " + Protocol::ToServer(code, parameters));
+    // Filter out the PING messages, because these are annoying due to their
+    // frequency.
+    if (code != M_PING)
+    {
+        Serial.println("Sending: " + Protocol::ToServer(code, parameters));
+    }
 
     _client.write(Protocol::ToServer(code, parameters).c_str());
 }
@@ -67,7 +73,7 @@ std::vector<String> WifiClient::ReadMessage(bool shouldBlock = false)
 
     String message = "";
 
-    while (shouldBlock ? true : _client.available())
+    while (shouldBlock || _client.available())
     {
         if (_client.available())
         {
@@ -88,9 +94,16 @@ std::vector<String> WifiClient::ReadMessage(bool shouldBlock = false)
         }
     }
 
-    Serial.println("Received (blocking): " + message);
+    std::vector<String> result = Protocol::FromServer(message);
 
-    return Protocol::FromServer(message);
+    // Filter out the PING messages, because these are annoying due to their
+    // frequency.
+    if (result[0] != String(M_PING))
+    {
+        Serial.println("Received (blocking): " + message);
+    }
+
+    return result;
 }
 
 void WifiClient::Update()
@@ -107,9 +120,14 @@ void WifiClient::Update()
         {
             if (_onMessageReceived != NULL)
             {
-                Serial.println("Received (non-blocking): " + _message);
+                std::vector<String> result = Protocol::FromServer(_message);
 
-                _onMessageReceived(Protocol::FromServer(_message));
+                if (result[0] != String(M_PING))
+                {
+                    Serial.println("Received (non-blocking): " + _message);
+                }
+
+                _onMessageReceived(result);
             }
 
             return;
@@ -144,4 +162,9 @@ String WifiClient::GetMacAddress()
 bool WifiClient::IsConnectedToNetwork()
 {
     return _status == WL_CONNECTED;
+}
+
+bool WifiClient::IsConnectedToServer()
+{
+    return _isConnectedToServer;
 }

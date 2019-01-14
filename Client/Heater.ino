@@ -22,7 +22,9 @@ void Heater::Initialize(ICentipedeShield* centipede)
 
 void Heater::Set(HardwareState state)
 {
-    _centipede->DigitalWrite(OUTPUT_HEATER, (_state = state) != STATE_ON);
+    _state = state;
+
+    _centipede->DigitalWrite(OUTPUT_HEATER, state != STATE_ON);
 }
 
 Temperature Heater::GetTemperature()
@@ -31,4 +33,9 @@ Temperature Heater::GetTemperature()
     int temperature1 = _centipede->DigitalRead(INPUT_TEMPERATURE_1);
 
     return (Temperature) ((temperature2 << 1) | temperature1);
+}
+
+HardwareState Heater::GetState()
+{
+    return _state;
 }

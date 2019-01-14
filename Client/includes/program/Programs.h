@@ -12,6 +12,7 @@ class Programs
 {
 public:
     Programs(HardwareControl* control, IClient* client);
+    ~Programs();
 
     void Update();
 
@@ -33,6 +34,9 @@ private:
     HardwareControl* _control;
     Program* _currentProgram;
     IClient* _client;
+
+    Programs(const Programs& other);
+    Programs& operator=(const Programs& other);
 };
 
 #endif

@@ -10,6 +10,9 @@
 
 #include "../client/IClient.h"
 
+#define DELAY_TIME_POWER (2000)
+#define DELAY_TIME_WATER (2000)
+
 class IAction
 {
 public:

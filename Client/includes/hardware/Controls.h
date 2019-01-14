@@ -18,6 +18,10 @@ public:
     void SetLock(HardwareState state);
     void SetSoap(HardwareState state, int dispenser);
     void SetBuzzer(HardwareState state);
+
+private:
+    Controls(const Controls& other);
+    Controls& operator=(const Controls& other);
 };
 
 #endif
