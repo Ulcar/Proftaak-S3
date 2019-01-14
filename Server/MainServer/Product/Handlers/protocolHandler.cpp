@@ -216,10 +216,10 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             if(database->UpdatePower(stoi(messageVector[1])))
             {
                 machine->SetUsedPower(stoi(messageVector[1]));
-                machine->Send(M_CODE_REQUEST_HEATER, 1);
+                machine->Send(M_CODE_REQUEST_HEATER, 0);
                 return;
             }
-            machine->Send(M_CODE_REQUEST_HEATER, 0);
+            machine->Send(M_CODE_REQUEST_HEATER, 1);
             break;
         }  
 
@@ -228,7 +228,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             int amount = machine->GetUsedPower();
             database->ResetPower(amount);
             machine->SetUsedPower(0);
-            machine->Send(M_CODE_STOP_HEATER, 1);
+            machine->Send(M_CODE_STOP_HEATER, 0);
             break;
         }
 
@@ -237,10 +237,10 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             if(database->UpdateWater(stoi(messageVector[1])))
             {
                 machine->SetUsedWater(stoi(messageVector[1]));
-                machine->Send(M_CODE_REQUEST_WATER, 1);
+                machine->Send(M_CODE_REQUEST_WATER, 0);
                 return;
             }
-            machine->Send(M_CODE_REQUEST_WATER, 0);
+            machine->Send(M_CODE_REQUEST_WATER, 1);
             break;
         }
 
@@ -249,7 +249,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             int amount = machine->GetUsedWater();
             database->ResetWater(amount);
             machine->SetUsedWater(0);
-            machine->Send(M_CODE_STOP_WATER, 1);
+            machine->Send(M_CODE_STOP_WATER, 0);
             break;
         }
 
