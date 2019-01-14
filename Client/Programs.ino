@@ -24,15 +24,11 @@ void Programs::Update()
     }
 }
 
-void Programs::Add(int number, std::vector<IAction*> actions)
+bool Programs::Add(String json)
 {
     Program* program = new Program(_control, _client);
-    program->SetNumber(number);
 
-    for (int i = 0; i < actions.size(); ++i)
-    {
-        program->AddAction(actions[i]);
-    }
+    program->Load(json);
 
     _programs.push_back(program);
 }

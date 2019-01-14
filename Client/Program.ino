@@ -9,6 +9,149 @@ Program::Program(HardwareControl* control, IClient* client)
     // ...
 }
 
+IAction* Program::CreateAction(int number, JsonObject& args)
+{
+    IAction* action = NULL;
+
+    switch (number)
+    {
+    case A_SOAP:
+    {
+        int state = args["state"];
+        int dispenser = args["dispenser"];
+
+        action = new SoapAction(
+            static_cast<HardwareState>(state),
+            dispenser
+        );
+
+        break;
+    }
+
+    case A_BUZZER:
+    {
+        int state = args["state"];
+
+        action = new BuzzerAction(
+            static_cast<HardwareState>(state)
+        );
+
+        break;
+    }
+
+    case A_DRAIN_WATER:
+    {
+        action = new DrainWaterAction();
+
+        break;
+    }
+
+    case A_HEAT:
+    {
+        int temp = args["temp"];
+
+        action = new HeatAction(
+            static_cast<Temperature>(temp)
+        );
+
+        break;
+    }
+
+    case A_FILL_WATER:
+    {
+        int level = args["level"];
+
+        action = new FillWaterAction(
+            static_cast<WaterLevel>(level)
+        );
+
+        break;
+    }
+
+    case A_REQUEST_POWER:
+    {
+        int power = args["power"];
+
+        action = new RequestPowerAction(power);
+
+        break;
+    }
+
+    case A_REQUEST_WATER:
+    {
+        int liters = args["liters"];
+
+        action = new RequestPowerAction(liters);
+
+        break;
+    }
+
+    case A_MOTOR_ROTATE:
+    {
+        int direction = args["direction"];
+        int speed = args["speed"];
+
+        action = new MotorRotateAction(
+            static_cast<MotorDirection>(direction),
+            static_cast<MotorSpeed>(speed)
+        );
+
+        break;
+    }
+
+    case A_DELAY:
+    {
+        unsigned long ms = args["ms"];
+
+        action = new DelayAction(ms);
+
+        break;
+    }
+
+    default:
+        // ...
+        break;
+    }
+
+    return action;
+}
+
+
+bool Program::Load(String json)
+{
+    DynamicJsonBuffer buffer(512);
+    JsonObject& root = buffer.parseObject(json);
+
+    if (!root.success())
+    {
+        Serial.println("Couldn't load the program.");
+        return false;
+    }
+
+    int program = root["program"];
+
+    SetNumber(program);
+
+    for (JsonObject& elem : root["actions"].as<JsonArray>())
+    {
+        int nr = elem["action"];
+        JsonObject& args = elem["args"];
+
+        Serial.println("Loading action " + String(nr));
+
+        IAction* action = CreateAction(nr, args);
+
+        if (action != NULL)
+        {
+            AddAction(action);
+        }
+    }
+
+    Serial.println("Loaded " + String(_actions.size()) + " programs.");
+
+    return true;
+}
+
 void Program::Start()
 {
     _currentActionIndex = 0;

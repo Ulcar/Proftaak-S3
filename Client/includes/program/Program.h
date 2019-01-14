@@ -1,6 +1,7 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
+#include <ArduinoJson.h>
 #include <ArduinoSTL.h>
 
 #include "Actions.h"
@@ -10,9 +11,9 @@ class Program
 public:
     Program(HardwareControl* control, IClient* client);
 
+    bool Load(String json);
     void Start();
     bool Update();
-    bool SetNextAction();
     void AddAction(IAction* action);
 
     void SetNumber(int number)
@@ -35,6 +36,9 @@ private:
     bool _started;
     int _number;
     int _currentActionIndex;
+
+    IAction* CreateAction(int nr, JsonObject& args);
+    bool SetNextAction();
 };
 
 #endif

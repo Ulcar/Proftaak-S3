@@ -15,7 +15,7 @@ public:
 
     void Update();
 
-    void Add(int number, std::vector<IAction*> actions);
+    bool Add(String json);
     bool Start(int number);
 
     void SetOnProgramDone(OnProgramDoneCallback callback)

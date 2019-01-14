@@ -249,6 +249,8 @@ void MotorRotateAction::Handle()
 
     motor->SetDirection(_direction);
     motor->SetSpeed(_speed);
+
+    Serial.println("MotorRotateAction(" + String(_direction) + ", " + String(_speed) + ")");
 }
 
 bool MotorRotateAction::IsDone()
@@ -271,6 +273,7 @@ void DelayAction::Handle()
 {
     if (_startMs == 0)
     {
+        Serial.println("DelayAction()");
         _startMs = millis();
     }
 }

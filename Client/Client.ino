@@ -6,6 +6,7 @@
 #include "includes/hardware/Motor.h"
 #include "includes/hardware/Water.h"
 
+#include "includes/client/SerialClient.h"
 #include "includes/client/WifiClient.h"
 #include "includes/client/Protocol.h"
 
@@ -16,7 +17,7 @@
 #include "includes/Enums.h"
 
 HardwareControl* hardwareControl;
-WifiClient* client;
+IClient* client;
 Programs* programs;
 
 void onMessageReceived(std::vector<String> message)
@@ -64,6 +65,8 @@ void setup()
 {
     Serial.begin(9600);
 
+    Serial.println("helloworld");
+
     // Initialize the hardware control and program manager.
     hardwareControl = new HardwareControl(
         new CentipedeShield(),
@@ -79,220 +82,12 @@ void setup()
 
     Serial.println("Loading programs...");
 
-    // Load program A.
-    programs->Add(0, {
-        // Prewash
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_50),
-        new HeatAction(TEMP_OFF),
-        new SoapAction(STATE_ON, 1),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-        new SoapAction(STATE_OFF, 1),
+    String json = "{\"program\":0,\"actions\":[{\"action\":7,\"args\":{\"direction\":0,\"speed\":1}},{\"action\":8,\"args\":{\"ms\":5000}},{\"action\":7,\"args\":{\"direction\":0,\"speed\":1}},{\"action\":8,\"args\":{\"ms\":5000}}]}";
 
-        // Main wash (1)
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_50),
-        new RequestPowerAction(50),
-        new HeatAction(TEMP_MEDIUM),
-        new SoapAction(STATE_ON, 2),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-        new SoapAction(STATE_OFF, 2),
+    programs->Add(json);
+    programs->Start(0);
 
-        // Main wash (2)
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_50),
-        new HeatAction(TEMP_OFF),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-
-        // Centrifugation
-        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-
-        // Beep!
-        new BuzzerAction(STATE_ON),
-        new DelayAction(1000L),
-        new BuzzerAction(STATE_OFF),
-    });
-
-    // Load program B.
-    programs->Add(1, {
-        // Prewash
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_50),
-        new HeatAction(TEMP_MEDIUM),
-        new SoapAction(STATE_ON, 1),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-        new SoapAction(STATE_OFF, 1),
-
-        // Main wash (1)
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_50),
-        new RequestPowerAction(50),
-        new HeatAction(TEMP_MEDIUM),
-        new SoapAction(STATE_ON, 2),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-        new SoapAction(STATE_OFF, 2),
-
-        // Main wash (2)
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_50),
-        new HeatAction(TEMP_OFF),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-
-        // Centrifugation
-        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-
-        // Beep!
-        new BuzzerAction(STATE_ON),
-        new DelayAction(1000L),
-        new BuzzerAction(STATE_OFF),
-    });
-
-    // Load program C.
-    programs->Add(0, {
-        // Prewash
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_50),
-        new HeatAction(TEMP_MEDIUM),
-        new SoapAction(STATE_ON, 1),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-        new SoapAction(STATE_OFF, 1),
-
-        // Main wash (1)
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_FULL),
-        new RequestPowerAction(100),
-        new HeatAction(TEMP_HOT),
-        new SoapAction(STATE_ON, 2),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-        new SoapAction(STATE_OFF, 2),
-
-        // Main wash (2)
-        new RequestWaterAction(50),
-        new FillWaterAction(WL_50),
-        new HeatAction(TEMP_OFF),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_LEFT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_LOW),
-        new DelayAction(10 * 1000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-        new DrainWaterAction(),
-
-        // Centrifugation
-        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_LEFT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_HIGH),
-        new DelayAction(5000L),
-        new MotorRotateAction(MD_RIGHT, SPEED_OFF),
-
-        // Beep!
-        new BuzzerAction(STATE_ON),
-        new DelayAction(1000L),
-        new BuzzerAction(STATE_OFF),
-    });
+    Serial.println("Done!");
 
     Serial.println("Done loading programs.");
 
@@ -301,7 +96,8 @@ void setup()
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    client = new WifiClient("12connect", "192.168.200.40", Protocol::GetPort());
+    //client = new WifiClient("12connect", "192.168.200.40", Protocol::GetPort());
+    client = new SerialClient();
     client->SetOnMessageReceived(onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");
