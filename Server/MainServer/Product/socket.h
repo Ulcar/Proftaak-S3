@@ -3,8 +3,6 @@
 
 #include "codes.h"
 #include "enums.h"
-#include "iSocketIO.h"
-#include "iSocketQueue.h"
 #include "logger.h"
 
 #include <arpa/inet.h>
@@ -13,7 +11,7 @@
 #include <unistd.h>
 #include <vector>
 
-class Socket : public iSocketQueue , public iSocketIO
+class Socket
 {
     public:
         Socket(int socketFd);

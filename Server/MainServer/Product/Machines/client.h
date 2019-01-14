@@ -3,13 +3,12 @@
 
 #include "codes.h"
 #include "enums.h"
-#include "iClient.h"
 #include "socket.h"
 #include "translator.h"
 
 #include <cstring>
 
-class Client : public iClient
+class Client
 {
     public:
         Client(std::string macAdress, Type type);

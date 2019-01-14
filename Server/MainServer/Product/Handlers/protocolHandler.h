@@ -4,7 +4,6 @@
 #include "client.h"
 #include "consoleHandler.h"
 #include "database.h"
-#include "iAlgorithm.h"
 #include "machine.h"
 #include <chrono>
 
