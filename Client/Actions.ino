@@ -110,7 +110,7 @@ bool HeatAction::IsDone()
     {
         heater->Set(STATE_OFF);
 
-        _client->SendMessage(M_STOP_HEAT_UP, { "0" });
+        _client->Send(M_STOP_HEAT_UP, { "0" });
 
         return true;
     }
@@ -145,7 +145,7 @@ bool FillWaterAction::IsDone()
 
     if (water->GetLevel() == _level)
     {
-        _client->SendMessage(M_STOP_TAKE_WATER, { "0" });
+        _client->Send(M_STOP_TAKE_WATER, { "0" });
 
         water->SetDrain(STATE_OFF);
 
@@ -178,7 +178,7 @@ void RequestPowerAction::Handle()
     {
         _startMs = currentMs;
 
-        _client->SendMessage(M_MAY_HEAT_UP, { String(_watt) });
+        _client->Send(M_MAY_HEAT_UP, { String(_watt) });
     }
 }
 
@@ -222,7 +222,7 @@ void RequestWaterAction::Handle()
     {
         _startMs = currentMs;
 
-        _client->SendMessage(M_MAY_TAKE_WATER, { String(_liters) });
+        _client->Send(M_MAY_TAKE_WATER, { String(_liters) });
     }
 }
 
@@ -260,8 +260,6 @@ void MotorRotateAction::Handle()
 
     motor->SetDirection(_direction);
     motor->SetSpeed(_speed);
-
-    Serial.println("MotorRotateAction(" + String(_direction) + ", " + String(_speed) + ")");
 }
 
 bool MotorRotateAction::IsDone()
@@ -285,7 +283,6 @@ void DelayAction::Handle()
 {
     if (_startMs == 0)
     {
-        Serial.println("DelayAction()");
         _startMs = millis();
     }
 }

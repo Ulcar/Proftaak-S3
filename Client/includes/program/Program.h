@@ -4,12 +4,14 @@
 #include <ArduinoJson.h>
 #include <ArduinoSTL.h>
 
+#include "../client/MainClient.h"
+
 #include "Actions.h"
 
 class Program
 {
 public:
-    Program(HardwareControl* control, IClient* client);
+    Program(HardwareControl* control, MainClient* client);
 
     bool Load(String json);
     void Start();
@@ -26,7 +28,7 @@ private:
 
     HardwareControl* _control;
     IAction* _currentAction;
-    IClient* _client;
+    MainClient* _client;
 
     bool _started;
     int _number;

@@ -1,6 +1,6 @@
 #include "includes/program/Programs.h"
 
-Programs::Programs(HardwareControl* control, IClient* client, OnProgramDoneCallback callback)
+Programs::Programs(HardwareControl* control, MainClient* client, OnProgramDoneCallback callback)
     : _onProgramDone(callback)
     , _currentProgram(NULL)
     , _control(control)

@@ -35,6 +35,8 @@ HardwareControl::HardwareControl(
     _heater->Initialize(_centipede);
     _motor->Initialize(_centipede);
     _water->Initialize(_centipede);
+
+    _statusIndicator->SetStatus(S_DECOUPLED);
 }
 
 HardwareControl::~HardwareControl()

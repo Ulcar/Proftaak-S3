@@ -3,6 +3,7 @@
 
 #include <ArduinoSTL.h>
 
+#include "../client/MainClient.h"
 #include "Actions.h"
 #include "Program.h"
 
@@ -11,7 +12,7 @@ typedef void (*OnProgramDoneCallback)();
 class Programs
 {
 public:
-    Programs(HardwareControl* control, IClient* client, OnProgramDoneCallback callback);
+    Programs(HardwareControl* control, MainClient* client, OnProgramDoneCallback callback);
     ~Programs();
 
     void Update();
@@ -28,7 +29,7 @@ private:
     OnProgramDoneCallback _onProgramDone;
     HardwareControl* _control;
     Program* _currentProgram;
-    IClient* _client;
+    MainClient* _client;
 
     Programs(const Programs& other);
     Programs& operator=(const Programs& other);

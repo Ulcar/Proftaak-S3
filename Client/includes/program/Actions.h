@@ -8,7 +8,7 @@
 #include "../hardware/Motor.h"
 #include "../hardware/Water.h"
 
-#include "../client/IClient.h"
+#include "../client/MainClient.h"
 
 #define DELAY_TIME_POWER (2000)
 #define DELAY_TIME_WATER (2000)
@@ -36,14 +36,14 @@ public:
         _control = control;
     }
 
-    void SetClient(IClient* client)
+    void SetClient(MainClient* client)
     {
         _client = client;
     }
 
 protected:
     HardwareControl* _control;
-    IClient* _client;
+    MainClient* _client;
 
     bool _mayTakeWater;
     bool _mayHeatUp;

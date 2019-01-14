@@ -6,9 +6,8 @@
 #include "includes/hardware/Motor.h"
 #include "includes/hardware/Water.h"
 
-#include "includes/client/SerialClient.h"
-#include "includes/client/WifiClient.h"
-#include "includes/client/Protocol.h"
+#include "includes/client/WifiTransport.h"
+#include "includes/client/MainClient.h"
 
 #include "includes/program/Actions.h"
 #include "includes/program/Program.h"
@@ -24,7 +23,7 @@
 // 'Arduino' class which manage these variables, we would still need one global
 // variable.
 HardwareControl* hardwareControl;
-IClient* client;
+MainClient* client;
 Programs* programs;
 
 void onMessageReceived(std::vector<String> message)
@@ -53,7 +52,7 @@ void onMessageReceived(std::vector<String> message)
     switch (command)
     {
     case M_PING:
-        client->SendMessage(M_PING, { "0" });
+        client->Send(M_PING, { "0" });
         break;
 
     case M_PROGRAM_START:
@@ -61,18 +60,25 @@ void onMessageReceived(std::vector<String> message)
         // If we don't have two parameters, we know that the command is invalid.
         if (message.size() < 2)
         {
-            client->SendMessage(M_PROGRAM_START, { "1" });
+            client->Send(M_PROGRAM_START, { "1" });
 
             return;
         }
 
         int program = message[1].toInt();
 
-        Serial.println("Starting program #" + String(program));
+        if (programs->Start(program))
+        {
+            Serial.println("Starting program #" + String(program));
 
-        // If the program doesn't exist we send a "1" back, otherwise we start
-        // the program and send a "0" back.
-        client->SendMessage(M_PROGRAM_START, { programs->Start(program) ? "0" : "1" });
+            client->Send(M_PROGRAM_START, { "0" });
+        }
+        else
+        {
+            Serial.println("Unknown program (" + String(program) + ")");
+
+            client->Send(M_PROGRAM_START, { "1" });
+        }
         break;
     }
 
@@ -113,7 +119,7 @@ void onProgramDone()
     StatusIndicator* statusIndicator = hardwareControl->GetStatusIndicator();
     statusIndicator->SetStatus(S_DONE);
 
-    client->SendMessage(M_PROGRAM_DONE, { "0" });
+    client->Send(M_PROGRAM_DONE, { "0" });
 }
 
 void setup()
@@ -125,23 +131,19 @@ void setup()
     //  interfaces (ICentipedeShield, etc.). If we don't do this we get an error:
     //  'Cannot declare parameter to be of abstract type'. We also delegate the
     //  removal of these pointers to the HardwareControl.
-    StatusIndicator* statusIndicator = new StatusIndicator();
-
     hardwareControl = new HardwareControl(
         new CentipedeShield(),
-        statusIndicator,
+        new StatusIndicator(),
         new Controls(),
         new Heater(),
         new Motor(),
         new Water()
     );
 
-    statusIndicator->SetStatus(S_DECOUPLED);
-
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    client = new WifiClient("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863, onMessageReceived);
+    client = new MainClient(new WifiTransport("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863), onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");
 
@@ -161,6 +163,7 @@ void setup()
 
     Serial.println("Connected to the server.");
 
+    StatusIndicator* statusIndicator = hardwareControl->GetStatusIndicator();
     statusIndicator->SetStatus(S_DONE);
 
     // Initialize the program manager.

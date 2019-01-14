@@ -1,6 +1,6 @@
 #include "includes/program/Program.h"
 
-Program::Program(HardwareControl* control, IClient* client)
+Program::Program(HardwareControl* control, MainClient* client)
     : _currentAction(NULL)
     , _control(control)
     , _client(client)
@@ -24,7 +24,6 @@ IAction* Program::CreateAction(int number, JsonObject& args)
             static_cast<HardwareState>(state),
             dispenser
         );
-
         break;
     }
 
@@ -35,14 +34,12 @@ IAction* Program::CreateAction(int number, JsonObject& args)
         action = new BuzzerAction(
             static_cast<HardwareState>(state)
         );
-
         break;
     }
 
     case A_DRAIN_WATER:
     {
         action = new DrainWaterAction();
-
         break;
     }
 
@@ -53,7 +50,6 @@ IAction* Program::CreateAction(int number, JsonObject& args)
         action = new HeatAction(
             static_cast<Temperature>(temp)
         );
-
         break;
     }
 
@@ -64,7 +60,6 @@ IAction* Program::CreateAction(int number, JsonObject& args)
         action = new FillWaterAction(
             static_cast<WaterLevel>(level)
         );
-
         break;
     }
 
@@ -73,7 +68,6 @@ IAction* Program::CreateAction(int number, JsonObject& args)
         int power = args["power"];
 
         action = new RequestPowerAction(power);
-
         break;
     }
 
@@ -82,7 +76,6 @@ IAction* Program::CreateAction(int number, JsonObject& args)
         int liters = args["liters"];
 
         action = new RequestPowerAction(liters);
-
         break;
     }
 
@@ -95,7 +88,6 @@ IAction* Program::CreateAction(int number, JsonObject& args)
             static_cast<MotorDirection>(direction),
             static_cast<MotorSpeed>(speed)
         );
-
         break;
     }
 
@@ -104,7 +96,6 @@ IAction* Program::CreateAction(int number, JsonObject& args)
         unsigned long ms = args["ms"];
 
         action = new DelayAction(ms);
-
         break;
     }
 
@@ -125,6 +116,7 @@ bool Program::Load(String json)
     if (!root.success())
     {
         Serial.println("Couldn't load the program.");
+
         return false;
     }
 
@@ -137,8 +129,6 @@ bool Program::Load(String json)
         int nr = elem["action"];
         JsonObject& args = elem["args"];
 
-        Serial.println("Loading action " + String(nr));
-
         IAction* action = CreateAction(nr, args);
 
         if (action != NULL)
@@ -146,8 +136,6 @@ bool Program::Load(String json)
             AddAction(action);
         }
     }
-
-    Serial.println("Loaded " + String(_actions.size()) + " programs.");
 
     return true;
 }
