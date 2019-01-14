@@ -11,7 +11,7 @@ typedef void (*OnProgramDoneCallback)();
 class Programs
 {
 public:
-    Programs(HardwareControl* control, IClient* client);
+    Programs(HardwareControl* control, IClient* client, OnProgramDoneCallback callback);
     ~Programs();
 
     void Update();
@@ -21,11 +21,6 @@ public:
 
     void AllowTakeWater();
     void AllowHeatUp();
-
-    void SetOnProgramDone(OnProgramDoneCallback callback)
-    {
-        _onProgramDone = callback;
-    }
 
 private:
     std::vector<Program*> _programs;

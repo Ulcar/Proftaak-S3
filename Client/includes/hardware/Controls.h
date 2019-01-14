@@ -3,7 +3,16 @@
 
 #include "interface/IControls.h"
 
-#define OUTPUT_BUZZER ( 4)
+#define PIN_STROBE    (2)
+
+#define PIN_DATA_A    (10)
+#define PIN_DATA_B    (9)
+#define PIN_DATA_C    (8)
+
+#define PIN_GROUP_1   (1)
+#define PIN_GROUP_2   (0)
+
+#define OUTPUT_BUZZER (4)
 #define OUTPUT_SOAP_1 (12)
 #define OUTPUT_LOCK   (15)
 

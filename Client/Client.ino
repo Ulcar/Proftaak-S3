@@ -120,6 +120,10 @@ void setup()
     Serial.begin(9600);
 
     // Initialize the hardware control and program manager.
+    //  We pass these objects as pointers to the HardwareControl because we use
+    //  interfaces (ICentipedeShield, etc.). If we don't do this we get an error:
+    //  'Cannot declare parameter to be of abstract type'. We also delegate the
+    //  removal of these pointers to the HardwareControl.
     StatusIndicator* statusIndicator = new StatusIndicator();
 
     hardwareControl = new HardwareControl(
@@ -158,8 +162,8 @@ void setup()
 
     statusIndicator->SetStatus(S_DONE);
 
-    programs = new Programs(hardwareControl, client);
-    programs->SetOnProgramDone(onProgramDone);
+    // Initialize the program manager.
+    programs = new Programs(hardwareControl, client, onProgramDone);
 
     Serial.println("Loading programs...");
 

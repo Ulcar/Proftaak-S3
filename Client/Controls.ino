@@ -37,27 +37,28 @@ void Controls::SetSoap(HardwareState state, int dispenser)
         _centipede->DigitalWrite(OUTPUT_SOAP_1, state == STATE_ON);
         break;
 
-    // TODO: Fix this mess
     case 2:
-        int mask = (1 << 0) - 1;
+        // Configure the bit mask for the data pins.
+        int mask = state == STATE_ON ? 0x4 : 0x0;
 
-        if (state == STATE_ON)
-        {
-            mask |= 0x4;
-        }
+        // Set the group pins.
+        _centipede->DigitalWrite(PIN_GROUP_1, LOW);
+        _centipede->DigitalWrite(PIN_GROUP_2, HIGH);
 
-        _centipede->DigitalWrite(1, 0x2 & 0x1);
-        _centipede->DigitalWrite(0, (0x2 >> 1) & 0x1);
+        // Set the data pins.
+        _centipede->DigitalWrite(PIN_DATA_A, mask & 0x1);
+        _centipede->DigitalWrite(PIN_DATA_B, (mask >> 1) & 0x1);
+        _centipede->DigitalWrite(PIN_DATA_C, (mask >> 2) & 0x1);
 
-        _centipede->DigitalWrite(10, mask & 0x1);
-        _centipede->DigitalWrite(9, (mask >> 1) & 0x1);
-        _centipede->DigitalWrite(8, (mask >> 2) & 0x1);
-
-        _centipede->DigitalWrite(2, LOW);
+        // We have to quickly toggle the 'STROBE' pin, so that the changes are
+        // handled by the simulation board.
+        _centipede->DigitalWrite(PIN_STROBE, LOW);
         delay(80);
-        _centipede->DigitalWrite(2, HIGH);
+
+        _centipede->DigitalWrite(PIN_STROBE, HIGH);
         delay(10);
-        _centipede->DigitalWrite(2, LOW);
+
+        _centipede->DigitalWrite(PIN_STROBE, LOW);
         break;
     }
 }
