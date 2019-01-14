@@ -42,13 +42,14 @@ bool LaundryBasket::IsBusy()
     return busy;
 }
 
-LaundryBasket::LaundryBasket(std::vector<Type> machines, Color color, Temperature temperature)
+LaundryBasket::LaundryBasket(std::vector<Type> machines, Color color, Temperature temperature, int ID)
 {
     currentWeight = 0;
     weightLimit = MAX_WEIGHT;
     this->color = color;
     Tasks = machines;
     this->temperature = temperature;
+    this->ID = ID;
 }
 
 LaundryBasket::~LaundryBasket()
@@ -87,4 +88,9 @@ Temperature LaundryBasket::GetTemperature()
 Color LaundryBasket::GetColor()
 {
     return color;
+}
+
+int LaundryBasket::GetID()
+{
+    return ID;
 }

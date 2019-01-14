@@ -1,8 +1,8 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#define MAXPOWER 1000
-#define MAXWATER 1000
+#define MAXPOWER 100
+#define MAXWATER 100
 
 #include "client.h"
 #include "machine.h"
@@ -55,6 +55,7 @@ class Database
         //power is in Watt
         int currentPower;
         int laundryID;
+        int laundryBasketID;
 };
 
 #endif

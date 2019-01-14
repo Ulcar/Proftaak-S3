@@ -7,12 +7,12 @@
 #include <string>
 #include <vector>
 
-#define MAX_WEIGHT 5000
+#define MAX_WEIGHT 50
 
 class LaundryBasket
 {
     public:
-        LaundryBasket(std::vector<Type> machines, Color color, Temperature temperature);
+        LaundryBasket(std::vector<Type> machines, Color color, Temperature temperature, int ID);
         ~LaundryBasket();
 
         void OnLaundryFinish(std::vector<Laundry*>& laundryToRemove);
@@ -34,6 +34,7 @@ class LaundryBasket
         Temperature GetTemperature();
 
         Color GetColor();
+        int GetID();
     
 
     private:

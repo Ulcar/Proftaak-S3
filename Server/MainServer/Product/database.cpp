@@ -6,6 +6,7 @@ Database::Database()
     currentWater = 0;
     currentPower = 0;
     laundryID = 0;
+    laundryBasketID = 0;
 }
 
 Database::~Database()
@@ -133,7 +134,7 @@ void Database::HandleLaundryFinish(std::string macAdress)
     std::unique_lock<std::mutex> lock (mtxLaundry);
     std::vector<Laundry*> laundryToHandle;
     std::vector<LaundryBasket*> tmplaundry = laundryBaskets;
-    int modifier = 0;
+    int amountErased = 0;
     for (uint i = 0; i < tmplaundry.size(); i++)
     {
         LaundryBasket* laundry = tmplaundry[i];
@@ -144,8 +145,8 @@ void Database::HandleLaundryFinish(std::string macAdress)
             if(laundry->GetDone())
             {
                 Logger::Record(false, "Laundry Basket done: ", "database");
-                laundryBaskets.erase(laundryBaskets.begin() + i + modifier);
-                modifier--;
+                laundryBaskets.erase(laundryBaskets.begin() + i - amountErased);
+                amountErased++;
                 delete laundry;
             }
 
@@ -201,9 +202,10 @@ void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
 
         if(!found)
         {
-        LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo, laundry->GetColor(), laundry->GetTemperature());
-        laundryBaskets.push_back(newLaundryBasket);
-        newLaundryBasket->AddLaundryToLaundryBasket(laundry);
+            LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo, laundry->GetColor(), laundry->GetTemperature(), laundryBasketID);
+            laundryBasketID++;
+            laundryBaskets.push_back(newLaundryBasket);
+            newLaundryBasket->AddLaundryToLaundryBasket(laundry);
 
         Logger::Record(false, "Created new Laundry Basket", "Database");
         }
