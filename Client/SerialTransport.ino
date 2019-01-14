@@ -12,7 +12,7 @@ SerialTransport::~SerialTransport()
 
 bool SerialTransport::ConnectToServer()
 {
-    return false;
+    return true;
 }
 
 void SerialTransport::Send(String data)
