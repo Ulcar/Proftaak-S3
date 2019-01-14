@@ -8,7 +8,7 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
     database = tempdatabase;
     Logger::Record(false, "Console started", "consoleHandler");
 
-    while(true)
+    while (!database->AskQuit())
     {
         std::cout << "command:\n";
         std::string commando;
@@ -16,6 +16,8 @@ void ConsoleHandler::RunConsoleHandler(Database* tempdatabase)
 
         std::cout << HandleConsoleCommando(commando);
     }
+
+    Logger::Record(false, "Console stopped", "consoleHandler");
 }
 
 std::string ConsoleHandler::HandleConsoleCommando(std::string commando)

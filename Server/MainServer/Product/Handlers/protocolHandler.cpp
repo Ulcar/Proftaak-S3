@@ -11,10 +11,12 @@ void ProtocolHandler::RunProtocolHandler(Database* tempDatabase)
     start_time = std::chrono::steady_clock::now();
     Logger::Record(false, "Protocol started", "protocolHandler");
 
-    while(true)
+    while (!database->AskQuit())
     {
         Update();
     }
+
+    Logger::Record(false, "Protocol stopped", "protocolHandler");
 }
 
 void ProtocolHandler::Update()

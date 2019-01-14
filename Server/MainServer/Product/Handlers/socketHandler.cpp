@@ -14,7 +14,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
 
     Logger::Record(false, "Sockets started", "socketHandler");
 
-    while (true)
+    while (!database->AskQuit())
     {        
 //is dit echt nodig?     
         fd_set readFds;
@@ -91,6 +91,8 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
             }
         }
     }
+    
+    Logger::Record(false, "Sockets stopped", "socketHandler");
 }
 
 void SocketHandler::Setup(int *socketFd)
