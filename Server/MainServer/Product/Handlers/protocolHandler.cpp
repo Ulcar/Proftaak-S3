@@ -133,11 +133,11 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
 
             case CP_CODE_GETCLIENTS: 
             {
-                for(Client* client : clients)
+                for(Client* tmpClient : clients)
                 {
-                    if(client->GetType() == Type::Wasmachine)
+                    if(tmpClient->GetType() == Type::Wasmachine)
                     {
-                        Machine* machine = (Machine*)client;
+                        Machine* machine = (Machine*)tmpClient;
                         //send water, power, program and macAdress
                         std::vector<std::string> tmp;
                         tmp.push_back(machine->GetMacAdress());
@@ -145,7 +145,7 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                         tmp.push_back(std::to_string(machine->GetUsedPower()));
                         tmp.push_back(std::to_string(machine->GetProgram()));
                         tmp.push_back(std::to_string(machine->IsEnabled()));
-                        client->Send(CP_CODE_GETCLIENTS, tmp) ;
+                        tmpClient->Send(CP_CODE_GETCLIENTS, tmp) ;
                     }
                 }
                 break;
