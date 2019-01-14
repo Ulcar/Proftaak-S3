@@ -23,7 +23,7 @@ void Setup()
 {
     Logger::Record(true, "System startup", "main");
     Logger::LiveErrorLogging = true;
-
+    Logger::LiveHeartBeat = false;
     Logger::LiveDebugLogging = true;
     Logger::Record(false, "System startup", "main");
 

@@ -61,6 +61,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                 message += "display\n";
                 message += "live\n";
                 message += "save\n";
+                message += "heartbeat\n";
             }
             else
             {
@@ -77,6 +78,12 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                 else if((commandos.at(1) == "display") || (commandos.at(1) == "d"))
                 {
                     message += Logger::DisplayDebugLog();
+                }
+                else if((commandos.at(1) == "heartbeat") || (commandos.at(1) == "hb"))
+                {
+                    Logger::LiveHeartBeat = !Logger::LiveHeartBeat;
+                    message += "Live HeartBeat: " + Logger::LiveHeartBeat;
+                    message += "\n";
                 }
             }
         }

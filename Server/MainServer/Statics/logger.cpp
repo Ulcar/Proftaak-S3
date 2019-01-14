@@ -8,6 +8,7 @@ std::vector<Logger::Logstruct> Logger::DebugLog;
 std::vector<Logger::Logstruct> Logger::ErrorLog;
 bool Logger::LiveDebugLogging;
 bool Logger::LiveErrorLogging;
+bool Logger::LiveHeartBeat;
 std::string Logger::basePath = "loggers/";
 
 Logger::Logger()
@@ -51,7 +52,7 @@ void Logger::Record(bool isError, std::string errorMessage, std::string source)
     else
     {
         DebugLog.push_back(log);
-        if(LiveDebugLogging) 
+        if(LiveDebugLogging && !log.message.find("#6;0&")) 
         {
             std::cout << "[" << log.time << "] Source: " << log.source << " -- " << log.message << "\n";
         }
