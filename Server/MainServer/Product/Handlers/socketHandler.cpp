@@ -159,12 +159,14 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
     {
         Client* client = new Client(macAdress, type);
         Logger::Record(false, "Created new ControlPanel: " + type, "socketHandler");
+        database->AddClient(client);
         return client;
     }
     else
     {
         Client* client = new Machine(macAdress, type);
         Logger::Record(false, "Created new Machine: " + type, "socketHandler");
+        database->AddClient(client);
         return client;
     }
 }
@@ -211,7 +213,6 @@ void SocketHandler::ConnectClient(int socketFd)
 
         //    socket->TrySend();
             client->SetSocket(socket);
-            database->AddClient(client);
 
             Logger::Record(false, "Added Client with type: " + std::to_string(client->GetType()) + "with id: " + client->GetMacAdress(), "socketHandler");
             return;
@@ -239,7 +240,6 @@ void SocketHandler::ConnectClient(int socketFd)
 
         //    socket->TrySend();
             client->SetSocket(socket);
-            database->AddClient(client);
 
             Logger::Record(false, "Added ControlPanel with id: " + client->GetMacAdress(), "socketHandler");
             return;
