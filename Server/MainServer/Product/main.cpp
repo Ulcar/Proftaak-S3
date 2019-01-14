@@ -40,9 +40,9 @@ void Loop()
 
 void Shutdown()
 {    
-    socketThread.detach();
-    consoleThread.detach();
-    protocolThread.detach();
+    socketThread.join();
+    consoleThread.join();
+    protocolThread.join();
 
     delete database;
 
