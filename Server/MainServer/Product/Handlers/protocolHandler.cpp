@@ -145,7 +145,7 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                         tmp.push_back(std::to_string(machine->GetUsedPower()));
                         tmp.push_back(std::to_string(machine->GetProgram()));
                         tmp.push_back(std::to_string(machine->IsEnabled()));
-                        tmpClient->Send(CP_CODE_GETCLIENTS, tmp) ;
+                        client->Send(CP_CODE_GETCLIENTS, tmp) ;
                     }
                 }
                 break;
@@ -191,7 +191,7 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                         tmp.push_back(std::to_string(machine->GetUsedPower()));
                         tmp.push_back(std::to_string(machine->GetProgram()));
                         tmp.push_back(std::to_string(machine->IsEnabled()));
-                        tmpClient->Send(CP_CODE_GETCLIENTS, tmp) ;
+                        client->Send(CP_CODE_GETCLIENTS, tmp) ;
                     }
                 }
                 break;
