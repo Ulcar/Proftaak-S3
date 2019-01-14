@@ -11,17 +11,16 @@ typedef void (*OnProgramDoneCallback)();
 class Programs
 {
 public:
-    Programs(HardwareControl* control, IClient* client);
+    Programs(HardwareControl* control, IClient* client, OnProgramDoneCallback callback);
+    ~Programs();
 
     void Update();
 
     bool Add(String json);
     bool Start(int number);
 
-    void SetOnProgramDone(OnProgramDoneCallback callback)
-    {
-        _onProgramDone = callback;
-    }
+    void AllowTakeWater();
+    void AllowHeatUp();
 
 private:
     std::vector<Program*> _programs;
@@ -30,6 +29,9 @@ private:
     HardwareControl* _control;
     Program* _currentProgram;
     IClient* _client;
+
+    Programs(const Programs& other);
+    Programs& operator=(const Programs& other);
 };
 
 #endif

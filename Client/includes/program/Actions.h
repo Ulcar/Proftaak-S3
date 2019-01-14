@@ -2,12 +2,16 @@
 #define ACTIONS_H
 
 #include "../hardware/HardwareControl.h"
+#include "../hardware/StatusIndicator.h"
 #include "../hardware/Controls.h"
 #include "../hardware/Heater.h"
 #include "../hardware/Motor.h"
 #include "../hardware/Water.h"
 
 #include "../client/IClient.h"
+
+#define DELAY_TIME_POWER (2000)
+#define DELAY_TIME_WATER (2000)
 
 class IAction
 {
@@ -16,6 +20,16 @@ public:
 
     virtual void Handle() = 0;
     virtual bool IsDone() = 0;
+
+    void AllowTakeWater()
+    {
+        _mayTakeWater = true;
+    }
+
+    void AllowHeatUp()
+    {
+        _mayHeatUp = true;
+    }
 
     void SetHardwareControl(HardwareControl* control)
     {
@@ -30,6 +44,9 @@ public:
 protected:
     HardwareControl* _control;
     IClient* _client;
+
+    bool _mayTakeWater;
+    bool _mayHeatUp;
 };
 
 class SoapAction : public IAction
@@ -99,8 +116,8 @@ public:
     bool IsDone();
 
 private:
+    unsigned long _startMs;
     int _watt;
-    bool _mayUsePower;
 };
 
 class RequestWaterAction : public IAction
@@ -112,8 +129,8 @@ public:
     bool IsDone();
 
 private:
+    unsigned long _startMs;
     int _liters;
-    bool _mayTakeWater;
 };
 
 class MotorRotateAction : public IAction

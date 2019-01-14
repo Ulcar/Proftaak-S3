@@ -1,11 +1,20 @@
 #include "includes/program/Programs.h"
 
-Programs::Programs(HardwareControl* control, IClient* client)
-    : _currentProgram(NULL)
+Programs::Programs(HardwareControl* control, IClient* client, OnProgramDoneCallback callback)
+    : _onProgramDone(callback)
+    , _currentProgram(NULL)
     , _control(control)
     , _client(client)
 {
     // ...
+}
+
+Programs::~Programs()
+{
+    for (int i = 0; i < _programs.size(); ++i)
+    {
+        delete _programs[i];
+    }
 }
 
 void Programs::Update()
@@ -47,4 +56,20 @@ bool Programs::Start(int number)
     }
 
     return false;
+}
+
+void Programs::AllowTakeWater()
+{
+    if (_currentProgram != NULL)
+    {
+        _currentProgram->AllowTakeWater();
+    }
+}
+
+void Programs::AllowHeatUp()
+{
+    if (_currentProgram != NULL)
+    {
+        _currentProgram->AllowHeatUp();
+    }
 }

@@ -9,22 +9,17 @@
 class Program
 {
 public:
-    Program(HardwareControl* control, IClient* client);
+    Program(int number, HardwareControl* control, IClient* client);
 
     bool Load(String json);
     void Start();
     bool Update();
     void AddAction(IAction* action);
 
-    void SetNumber(int number)
-    {
-        _number = number;
-    }
+    void AllowTakeWater();
+    void AllowHeatUp();
 
-    int Program::GetNumber()
-    {
-        return _number;
-    }
+    int Program::GetNumber();
 
 private:
     std::vector<IAction*> _actions;
@@ -35,7 +30,7 @@ private:
 
     bool _started;
     int _number;
-    int _currentActionIndex;
+    int _nextActionIndex;
 
     IAction* CreateAction(int nr, JsonObject& args);
     bool SetNextAction();

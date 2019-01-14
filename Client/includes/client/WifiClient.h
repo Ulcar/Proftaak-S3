@@ -9,7 +9,7 @@
 class WifiClient : public IClient
 {
 public:
-    WifiClient(String ssid, String ipAddress, int port);
+    WifiClient(String ssid, String password, String ipAddress, int port, OnMessageReceivedCallback onMessageReceived);
     ~WifiClient();
 
     bool ConnectToServer(MachineType type);
@@ -21,15 +21,7 @@ public:
 
     String GetMacAddress();
 
-    bool IsConnectedToServer()
-    {
-        return _isConnectedToServer;
-    }
-
-    bool IsDataAvailable()
-    {
-        return _client.available() > 0;
-    }
+    bool IsConnectedToServer();
 
     void Update();
 
@@ -37,13 +29,15 @@ private:
     WiFiClient _client;
 
     String _message;
-    String _ssid;
     String _ipAddress;
 
     bool _isConnectedToServer;
 
     int _status;
     int _port;
+
+    WifiClient(const WifiClient& other);
+    WifiClient& operator=(const WifiClient& other);
 
     bool IsConnectedToNetwork();
 };

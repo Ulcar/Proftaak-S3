@@ -8,7 +8,7 @@
 class SerialClient : public IClient
 {
 public:
-    SerialClient();
+    SerialClient(OnMessageReceivedCallback onMessageReceived);
     ~SerialClient();
 
     bool ConnectToServer(MachineType type);
@@ -20,21 +20,16 @@ public:
 
     String GetMacAddress();
 
-    bool IsConnectedToServer()
-    {
-        return _isConnectedToServer;
-    }
-
-    bool IsDataAvailable()
-    {
-        return Serial.available() > 0;
-    }
+    bool IsConnectedToServer();
 
     void Update();
 
 private:
     bool _isConnectedToServer;
     String _message;
+
+    SerialClient(const SerialClient& other);
+    SerialClient& operator=(const SerialClient& other);
 };
 
 #endif

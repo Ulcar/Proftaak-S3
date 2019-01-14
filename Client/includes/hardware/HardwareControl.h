@@ -34,30 +34,11 @@ public:
 
     ~HardwareControl();
 
-    IStatusIndicator* GetStatusIndicator()
-    {
-        return _statusIndicator;
-    }
-
-    IControls* GetControls()
-    {
-        return _controls;
-    }
-
-    IHeater* GetHeater()
-    {
-        return _heater;
-    }
-
-    IMotor* GetMotor()
-    {
-        return _motor;
-    }
-
-    IWater* GetWater()
-    {
-        return _water;
-    }
+    IStatusIndicator* GetStatusIndicator();
+    IControls* GetControls();
+    IHeater* GetHeater();
+    IMotor* GetMotor();
+    IWater* GetWater();
 
 private:
     ICentipedeShield* _centipede;
@@ -67,6 +48,9 @@ private:
     IHeater* _heater;
     IMotor* _motor;
     IWater* _water;
+
+    HardwareControl(const HardwareControl& other);
+    HardwareControl& operator=(const HardwareControl& other);
 };
 
 #endif

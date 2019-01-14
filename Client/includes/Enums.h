@@ -67,7 +67,17 @@ enum ProgramAction
     A_REQUEST_POWER,
     A_REQUEST_WATER,
     A_MOTOR_ROTATE,
-    A_DELAY
+    A_DELAY,
+};
+
+enum Status
+{
+    S_DECOUPLED,
+    S_MALFUNCTION,
+    S_NO_POWER,
+    S_NO_WATER,
+    S_BUSY,
+    S_DONE,
 };
 
 #endif

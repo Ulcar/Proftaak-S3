@@ -22,3 +22,8 @@ void pinMode(int pin, int mode)
 {
     // ...
 }
+
+void analogWrite(int pin, int value)
+{
+    // ...
+}

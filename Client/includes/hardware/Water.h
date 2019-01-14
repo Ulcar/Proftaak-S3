@@ -24,19 +24,15 @@ public:
     void SetSink(HardwareState state);
     void SetDrain(HardwareState state);
 
-    HardwareState GetSinkState()
-    {
-        return _sinkState;
-    }
-
-    HardwareState GetDrainState()
-    {
-        return _drainState;
-    }
+    HardwareState GetSinkState();
+    HardwareState GetDrainState();
 
 private:
     HardwareState _sinkState;
     HardwareState _drainState;
+
+    Water(const Water& other);
+    Water& operator=(const Water& other);
 };
 
 #endif

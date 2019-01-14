@@ -8,7 +8,8 @@ SoapAction::SoapAction(HardwareState state, int dispenser)
     : _state(state)
     , _dispenser(dispenser)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void SoapAction::Handle()
@@ -30,7 +31,8 @@ bool SoapAction::IsDone()
 BuzzerAction::BuzzerAction(HardwareState state)
     : _state(state)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void BuzzerAction::Handle()
@@ -51,7 +53,8 @@ bool BuzzerAction::IsDone()
 
 DrainWaterAction::DrainWaterAction()
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void DrainWaterAction::Handle()
@@ -85,7 +88,8 @@ bool DrainWaterAction::IsDone()
 HeatAction::HeatAction(Temperature temp)
     : _temp(temp)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void HeatAction::Handle()
@@ -104,6 +108,8 @@ bool HeatAction::IsDone()
 
     if (heater->GetTemperature() == _temp)
     {
+        heater->Set(STATE_OFF);
+
         _client->SendMessage(M_STOP_HEAT_UP, { "0" });
 
         return true;
@@ -119,7 +125,8 @@ bool HeatAction::IsDone()
 FillWaterAction::FillWaterAction(WaterLevel level)
     : _level(level)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void FillWaterAction::Handle()
@@ -154,37 +161,38 @@ bool FillWaterAction::IsDone()
 
 RequestPowerAction::RequestPowerAction(int watt)
     : _watt(watt)
-    , _mayUsePower(false)
 {
-    // ...
+    _mayHeatUp = false;
+    _control = NULL;
+    _client = NULL;
 }
 
 void RequestPowerAction::Handle()
 {
-    while (!_mayUsePower)
+    StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+    statusIndicator->SetStatus(S_NO_POWER);
+
+    unsigned long currentMs = millis();
+
+    if (_startMs == 0 || currentMs - _startMs > DELAY_TIME_POWER)
     {
+        _startMs = currentMs;
+
         _client->SendMessage(M_MAY_HEAT_UP, { String(_watt) });
-
-        std::vector<String> response = _client->ReadMessage(true);
-
-        if (response[0] == String(M_MAY_HEAT_UP) && response[1] == "0")
-        {
-            _mayUsePower = true;
-        }
-        else
-        {
-            delay(500);
-        }
     }
 }
 
 bool RequestPowerAction::IsDone()
 {
-    bool result = _mayUsePower;
+    bool result = _mayHeatUp;
 
     if (result)
     {
-        _mayUsePower = false;
+        StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+        statusIndicator->SetStatus(S_BUSY);
+
+        _mayHeatUp = false;
+        _startMs = 0;
     }
 
     return result;
@@ -195,28 +203,26 @@ bool RequestPowerAction::IsDone()
 //==================
 
 RequestWaterAction::RequestWaterAction(int liters)
-    : _liters(liters)
-    , _mayTakeWater(false)
+    : _startMs(0)
+    , _liters(liters)
 {
-    // ...
+    _mayTakeWater = false;
+    _control = NULL;
+    _client = NULL;
 }
 
 void RequestWaterAction::Handle()
 {
-    while (!_mayTakeWater)
+    StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+    statusIndicator->SetStatus(S_NO_WATER);
+
+    unsigned long currentMs = millis();
+
+    if (_startMs == 0 || currentMs - _startMs > DELAY_TIME_WATER)
     {
+        _startMs = currentMs;
+
         _client->SendMessage(M_MAY_TAKE_WATER, { String(_liters) });
-
-        std::vector<String> response = _client->ReadMessage(true);
-
-        if (response[0] == String(M_MAY_TAKE_WATER) && response[1] == "0")
-        {
-            _mayTakeWater = true;
-        }
-        else
-        {
-            delay(500);
-        }
     }
 }
 
@@ -226,7 +232,11 @@ bool RequestWaterAction::IsDone()
 
     if (result)
     {
+        StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+        statusIndicator->SetStatus(S_BUSY);
+
         _mayTakeWater = false;
+        _startMs = 0;
     }
 
     return result;
@@ -240,7 +250,8 @@ MotorRotateAction::MotorRotateAction(MotorDirection direction, MotorSpeed speed)
     : _direction(direction)
     , _speed(speed)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void MotorRotateAction::Handle()
@@ -266,7 +277,8 @@ DelayAction::DelayAction(unsigned long ms)
     : _ms(ms)
     , _startMs(0)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void DelayAction::Handle()

@@ -13,6 +13,8 @@ typedef void (*OnMessageReceivedCallback)(std::vector<String>);
 class IClient
 {
 public:
+    virtual ~IClient() { };
+
     virtual bool ConnectToServer(MachineType type) = 0;
 
     virtual void SendMessage(MessageCode code) = 0;
@@ -23,14 +25,8 @@ public:
     virtual String GetMacAddress() = 0;
 
     virtual bool IsConnectedToServer() = 0;
-    virtual bool IsDataAvailable() = 0;
 
     virtual void Update() = 0;
-
-    virtual void SetOnMessageReceived(OnMessageReceivedCallback callback)
-    {
-        _onMessageReceived = callback;
-    }
 
 protected:
     OnMessageReceivedCallback _onMessageReceived;

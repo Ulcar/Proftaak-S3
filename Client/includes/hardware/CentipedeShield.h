@@ -19,6 +19,9 @@ public:
 
 private:
     Centipede _centipede;
+
+    CentipedeShield(const CentipedeShield& other);
+    CentipedeShield& operator=(const CentipedeShield& other);
 };
 
 #endif
