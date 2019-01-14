@@ -103,6 +103,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
             client->GetSocket()->TrySend();
         }
     }
+    close(masterFd);
     
     Logger::Record(false, "Sockets stopped", "socketHandler");
 }
