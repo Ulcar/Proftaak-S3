@@ -127,7 +127,7 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
         {
             case CP_CODE_CONSOLE:
             {
-                client->Send(CP_CODE_CONSOLE, ConsoleHandler::HandleConsoleCommando(messageVector[1]));           
+                client->Send(CP_CODE_CONSOLE, Translator::RemoveChars(ConsoleHandler::HandleConsoleCommando(messageVector[1])));
                 break;
             }
 
@@ -285,7 +285,6 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
                         {
                             Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()),"ProtocolHandler");
                             laundry->SetBusy(false);
-                            machine->SetRequestingInProgress(false);
                         }
                     }
                 }

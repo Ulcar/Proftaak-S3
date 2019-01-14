@@ -93,6 +93,11 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
         }
         else if((commandos.at(0) == "laundry") || (commandos.at(0) == "l"))
         {
+            if(commandos.size() == 1)
+            {
+                message += "add <kg> <color> <list machines>\n";
+                message += "display\n";
+            }
             if(commandos.at(1) == "add")
             {
                 Laundry* laundry = new Laundry(stoi(commandos.at(2)));
@@ -102,6 +107,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                     laundry->TasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
                 }
                 database->AddLaundry(laundry);
+                message += "Laundry added\n";
             }
             else if((commandos.at(1) == "display") || (commandos.at(1) == "d"))
             {
@@ -110,7 +116,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
         }
         else if((commandos.at(0) == "clear") || (commandos.at(0) == "c") || (commandos.at(0) == "clr"))
         {
-            message += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+            message += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
             Logger::Record(false, "Cleared terminalscreen", "ConsoleHandler");
         }
         else
