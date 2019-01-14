@@ -37,6 +37,8 @@ void Controls::SetSoap(HardwareState state, int dispenser)
         _centipede->DigitalWrite(OUTPUT_SOAP_1, state == STATE_ON);
         break;
 
+    // Credit: HardwareControl.ino in the ExampleProject_withTestSetup.zip file
+    // from the supplied files on Canvas.
     case 2:
         // Configure the bit mask for the data pins.
         int mask = state == STATE_ON ? 0x4 : 0x0;
