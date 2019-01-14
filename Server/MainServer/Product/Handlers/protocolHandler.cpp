@@ -165,11 +165,11 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
 
             case CP_CODE_DISABLEALLCLIENTS:
             {
-                for(Client* client : clients)
+                for(Client* tmpClient : clients)
                 {
-                    if(client->GetType() != Type::ControlPanel)
+                    if(tmpClient->GetType() != Type::ControlPanel)
                     {
-                        client->SetEnable(false);
+                        tmpClient->SetEnable(false);
                     }
                 }
                 break;
@@ -177,13 +177,13 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
 
             case CP_CODE_SETCLIENT:
             {
-                for(Client* client : clients)
+                for(Client* tmpClient : clients)
                 {
-                    if((client->GetType() != Type::ControlPanel) && (client->GetMacAdress() == messageVector[1]))
+                    if((tmpClient->GetType() != Type::ControlPanel) && (tmpClient->GetMacAdress() == messageVector[1]))
                     {
-                        client->SetEnable(stoi(messageVector[2]));
+                        tmpClient->SetEnable(stoi(messageVector[2]));
 
-                        Machine* machine = (Machine*)client;
+                        Machine* machine = (Machine*)tmpClient;
                         //send macAdress, water, power, program and enabled
                         std::vector<std::string> tmp;
                         tmp.push_back(machine->GetMacAdress());
@@ -191,7 +191,7 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                         tmp.push_back(std::to_string(machine->GetUsedPower()));
                         tmp.push_back(std::to_string(machine->GetProgram()));
                         tmp.push_back(std::to_string(machine->IsEnabled()));
-                        client->Send(CP_CODE_GETCLIENTS, tmp) ;
+                        tmpClient->Send(CP_CODE_GETCLIENTS, tmp) ;
                     }
                 }
                 break;
@@ -255,7 +255,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
 
         case M_CODE_DONE:
         {
-            Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
+            Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()),"ProtocolHandler");
             machine->SetProgram(Program::PROGRAM_NONE); 
             break;
         }
@@ -272,7 +272,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
                 {
                     machine->SetRequestingInProgress(false);
                     machine->SetInProgress(true);
-                     Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is In progress on" + std::to_string(machine->GetProgram()), "Algorithm");
+                     Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is In progress on" + std::to_string(machine->GetProgram()),"ProtocolHandler");
                 }
 
                 else
@@ -281,7 +281,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
                     {
                         if(machine->GetMacAdress() == laundry->GetMacAdress())
                         {
-                            Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()), "Algorithm");
+                            Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()),"ProtocolHandler");
                             laundry->SetBusy(false);
                             machine->SetRequestingInProgress(false);
                         }
@@ -290,7 +290,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             }
             else
             {
-                Logger::Record(true, "Machine" + machine->GetMacAdress() + "Is Responding a SendProgram when we're not requesting it?", "Algorithm");
+                Logger::Record(true, "Machine" + machine->GetMacAdress() + "Is Responding a SendProgram when we're not requesting it?","ProtocolHandler");
             }
         break;
 
@@ -348,7 +348,7 @@ void ProtocolHandler::HandleStomer(Machine* machine, std::vector<std::string> me
 
         case M_CODE_DONE:
         {
-            Logger::Record(false, "Stomer " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()), "Algorithm");
+            Logger::Record(false, "Stomer " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()),"ProtocolHandler");
             machine->SetProgram(Program::PROGRAM_NONE);   
             break;
         }
