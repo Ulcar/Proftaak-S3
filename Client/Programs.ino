@@ -33,13 +33,34 @@ void Programs::Update()
     }
 }
 
-bool Programs::Add(String json)
+void Programs::Load(File dir)
 {
-    Program* program = new Program(_control, _client);
+    while (1)
+    {
+        File entry = dir.openNextFile();
 
-    program->Load(json);
+        if (!entry)
+        {
+            break;
+        }
 
-    _programs.push_back(program);
+        if (entry.isDirectory())
+        {
+            continue;
+        }
+
+        String filename(entry.name());
+
+        if (filename.startsWith("PROC"))
+        {
+            Serial.println("Reading " + filename);
+
+            Add(entry);
+        }
+
+        entry.close();
+    }
+
 }
 
 bool Programs::Start(int number)
@@ -72,4 +93,13 @@ void Programs::AllowHeatUp()
     {
         _currentProgram->AllowHeatUp();
     }
+}
+
+bool Programs::Add(Stream& file)
+{
+    Program* program = new Program(_control, _client);
+
+    program->Load(file);
+
+    _programs.push_back(program);
 }

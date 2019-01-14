@@ -1,3 +1,6 @@
+#include <SPI.h>
+#include <SD.h>
+
 #include "includes/hardware/HardwareControl.h"
 #include "includes/hardware/CentipedeShield.h"
 #include "includes/hardware/StatusIndicator.h"
@@ -6,6 +9,7 @@
 #include "includes/hardware/Motor.h"
 #include "includes/hardware/Water.h"
 
+#include "includes/client/SerialTransport.h"
 #include "includes/client/WifiTransport.h"
 #include "includes/client/MainClient.h"
 
@@ -17,6 +21,7 @@
 
 #define WATER_TANK_SIZE (20)
 #define HEATER_WATT     (500)
+#define SD_SHIELD       (4)
 
 // Because we need to be able to access these variables in both the 'setup' and
 // 'loop' methods we made these variables global. While we could have created a
@@ -143,7 +148,8 @@ void setup()
     // Connect to the remote server.
     Serial.println("Connecting to the Wi-Fi network...");
 
-    client = new MainClient(new WifiTransport("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863), onMessageReceived);
+    //client = new MainClient(new WifiTransport("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863), onMessageReceived);
+    client = new MainClient(new SerialTransport(), onMessageReceived);
 
     Serial.println("Connected to the Wi-Fi network.");
 
@@ -169,11 +175,18 @@ void setup()
     // Initialize the program manager.
     programs = new Programs(hardwareControl, client, onProgramDone);
 
+    Serial.println("Initializing SD card...");
+
+    if (!SD.begin(SD_SHIELD))
+    {
+        Serial.println("Initialization failed.");
+    }
+
+    File root = SD.open("/");
+
     Serial.println("Loading programs...");
 
-    String json = "{\"program\":0,\"actions\":[{\"action\":7,\"args\":{\"direction\":0,\"speed\":1}},{\"action\":8,\"args\":{\"ms\":5000}},{\"action\":7,\"args\":{\"direction\":0,\"speed\":1}},{\"action\":8,\"args\":{\"ms\":5000}}]}";
-
-    programs->Add(json);
+    programs->Load(root);
 
     Serial.println("Done loading programs.");
 }

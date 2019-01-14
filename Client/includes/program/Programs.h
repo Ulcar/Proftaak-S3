@@ -2,6 +2,7 @@
 #define PROGRAMS_H
 
 #include <ArduinoSTL.h>
+#include <SD.h>
 
 #include "../client/MainClient.h"
 #include "Actions.h"
@@ -17,7 +18,7 @@ public:
 
     void Update();
 
-    bool Add(String json);
+    void Load(File dir);
     bool Start(int number);
 
     void AllowTakeWater();
@@ -30,6 +31,8 @@ private:
     HardwareControl* _control;
     Program* _currentProgram;
     MainClient* _client;
+
+    bool Add(Stream& json);
 
     Programs(const Programs& other);
     Programs& operator=(const Programs& other);

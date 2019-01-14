@@ -108,7 +108,7 @@ IAction* Program::CreateAction(int number, JsonObject& args)
 }
 
 
-bool Program::Load(String json)
+bool Program::Load(Stream& json)
 {
     DynamicJsonBuffer buffer(512);
     JsonObject& root = buffer.parseObject(json);

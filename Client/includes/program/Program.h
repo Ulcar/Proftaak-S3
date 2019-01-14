@@ -13,7 +13,7 @@ class Program
 public:
     Program(HardwareControl* control, MainClient* client);
 
-    bool Load(String json);
+    bool Load(Stream& json);
     void Start();
     bool Update();
     void AddAction(IAction* action);
