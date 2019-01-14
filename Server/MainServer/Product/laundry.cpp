@@ -6,9 +6,10 @@ int Laundry::GetWeight()
     return weight;
 }
 
-Laundry::Laundry(int weight)
+Laundry::Laundry(int weight, int id)
 {
     this->weight = weight;
+    this->id = id;
     done = false;
 }
 

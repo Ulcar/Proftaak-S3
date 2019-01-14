@@ -8,7 +8,7 @@
 class Laundry
 {
     public:
-        Laundry(int weight);
+        Laundry(int weight, int id);
 
         Color ColorType;
         std::vector<Type> TasksToDo;

@@ -95,14 +95,14 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
         {
             if(commandos.size() == 1)
             {
-                message += "add <kg> <color> <list machines>\n";
+                message += "add <kg> <id> <color> <list machines>\n";
                 message += "display\n";
             }
             if(commandos.at(1) == "add")
             {
-                Laundry* laundry = new Laundry(stoi(commandos.at(2)));
-                laundry->ColorType = static_cast<Color>(stoi(commandos.at(3)));
-                for(uint i = 4; i < commandos.size(); i++)
+                Laundry* laundry = new Laundry(stoi(commandos.at(2)), stoi(commandos.at(3)));
+                laundry->ColorType = static_cast<Color>(stoi(commandos.at(4)));
+                for(uint i = 5; i < commandos.size(); i++)
                 {
                     laundry->TasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
                 }
