@@ -9,7 +9,7 @@
 class Program
 {
 public:
-    Program(int number, HardwareControl* control, IClient* client);
+    Program(HardwareControl* control, IClient* client);
 
     bool Load(String json);
     void Start();

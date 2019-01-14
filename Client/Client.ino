@@ -120,8 +120,6 @@ void setup()
 {
     Serial.begin(9600);
 
-    Serial.println("helloworld");
-
     // Initialize the hardware control and program manager.
     //  We pass these objects as pointers to the HardwareControl because we use
     //  interfaces (ICentipedeShield, etc.). If we don't do this we get an error:

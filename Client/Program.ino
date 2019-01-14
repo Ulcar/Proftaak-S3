@@ -1,11 +1,10 @@
 #include "includes/program/Program.h"
 
-Program::Program(int number, HardwareControl* control, IClient* client)
+Program::Program(HardwareControl* control, IClient* client)
     : _currentAction(NULL)
     , _control(control)
     , _client(client)
     , _nextActionIndex(0)
-    , _number(number)
 {
     // ...
 }
@@ -131,7 +130,7 @@ bool Program::Load(String json)
 
     int program = root["program"];
 
-    SetNumber(program);
+    _number = program;
 
     for (JsonObject& elem : root["actions"].as<JsonArray>())
     {
