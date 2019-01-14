@@ -46,6 +46,14 @@ LaundryBasket::LaundryBasket(std::vector<Type> machines)
     temperature = Temperature::Medium;
 }
 
+LaundryBasket::~LaundryBasket()
+{
+    for(Laundry* laundry : LaundryVector)
+    {
+        delete laundry;
+    }
+}
+
 std::string LaundryBasket::GetMacAdress()
 {
     return usedClientId;
@@ -59,6 +67,11 @@ bool LaundryBasket::GetDone()
 void LaundryBasket::SetBusy(bool busy)
 {
     this->busy = busy;
+}
+
+void LaundryBasket::SetMacAdress(std::string macAdress)
+{
+    usedClientId = macAdress;
 }
 
 Temperature LaundryBasket::GetTemperature()

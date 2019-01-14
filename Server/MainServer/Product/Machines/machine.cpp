@@ -4,6 +4,10 @@ Machine::Machine(std::string macAdress, Type type)
     : Client(macAdress, type)
 {
     ReplyCount = 0;
+    usedPower = 0;
+    usedWater = 0;
+    inProgress = false;
+    requestingInProgress = false;
 }
 
 Machine::~Machine()
