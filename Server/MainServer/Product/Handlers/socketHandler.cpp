@@ -91,6 +91,18 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
             }
         }
     }
+
+    
+    Logger::Record(false, "Sending all ControlPanels stopping command", "socketHandler");
+    for(Client* client : database->GetClients())
+    {
+        std::vector<std::string> temp = {std::to_string(1)};
+        if(client->GetType() == Type::ControlPanel)
+        {
+            client->GetSocket()->NewSendMessage(Translator::ToControlPanel(CP_CODE_CONNECT, temp));
+            client->GetSocket()->TrySend();
+        }
+    }
     
     Logger::Record(false, "Sockets stopped", "socketHandler");
 }

@@ -40,11 +40,11 @@ void Loop()
 
 void Shutdown()
 {    
-    socketThread.join();
-    consoleThread.join();
-    protocolThread.join();
+    consoleThread.detach();         //Stop reading console
+    socketThread.join();            //Wait untill all sockets are handled
+    protocolThread.join();          //Wait untill everything is handled
 
-    delete database;
+    delete database;                //Remove database safely
 
     Logger::Record(true, "System shutdown", "main");
     Logger::Record(false, "System shutdown", "main");
