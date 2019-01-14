@@ -61,6 +61,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                 message += "display\n";
                 message += "live\n";
                 message += "save\n";
+                message += "heartbeat\n";
             }
             else
             {
@@ -78,6 +79,12 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                 {
                     message += Logger::DisplayDebugLog();
                 }
+                else if((commandos.at(1) == "heartbeat") || (commandos.at(1) == "hb"))
+                {
+                    Logger::LiveHeartBeat = !Logger::LiveHeartBeat;
+                    message += "Live HeartBeat: " + Logger::LiveHeartBeat;
+                    message += "\n";
+                }
             }
         }
         else if((commandos.at(0) == "ping") || (commandos.at(0) == "p"))
@@ -86,13 +93,20 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
         }
         else if((commandos.at(0) == "laundry") || (commandos.at(0) == "l"))
         {
-            Laundry* laundry = new Laundry(stoi(commandos.at(1)));
-            laundry->ColorType = static_cast<Color>(stoi(commandos.at(2)));
-            for(uint i = 3; i < commandos.size(); i++)
+            if(commandos.at(1) == "add")
             {
-                laundry->TasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
+                Laundry* laundry = new Laundry(stoi(commandos.at(2)));
+                laundry->ColorType = static_cast<Color>(stoi(commandos.at(3)));
+                for(uint i = 4; i < commandos.size(); i++)
+                {
+                    laundry->TasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
+                }
+                database->AddLaundry(laundry);
             }
-            database->AddLaundry(laundry);
+            else if((commandos.at(1) == "display") || (commandos.at(1) == "d"))
+            {
+                
+            }
         }
         else if((commandos.at(0) == "clear") || (commandos.at(0) == "c") || (commandos.at(0) == "clr"))
         {

@@ -16,6 +16,7 @@ class Logger
 
         static bool LiveDebugLogging;
         static bool LiveErrorLogging;
+        static bool LiveHeartBeat;
         static void Record(bool isError, std::string errorMessage, std::string source);
         static std::string DisplayErrorLog();
         static std::string DisplayDebugLog();
