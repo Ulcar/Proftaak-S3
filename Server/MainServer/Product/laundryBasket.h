@@ -13,6 +13,7 @@ class LaundryBasket
 {
     public:
         LaundryBasket(std::vector<Type> machines);
+        ~LaundryBasket();
 
         void OnLaundryFinish(std::vector<Laundry*>& laundryToRemove);
         bool AddLaundryToLaundryBasket(Laundry* laundry);
@@ -22,6 +23,7 @@ class LaundryBasket
         std::vector<Type> Tasks;
 
         std::string GetMacAdress();
+        void SetMacAdress(std::string macAdress);
 
         bool IsBusy();
         void SetBusy(bool busy);    

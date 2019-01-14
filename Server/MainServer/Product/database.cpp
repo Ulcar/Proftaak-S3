@@ -223,9 +223,7 @@ void Database::HandleLaundryBaskets()
                         //add checks to make sure machine isn't doing anything
                         if(!machine->IsInProgress() && !machine->IsRequestingInProgress() && machine->GetSocket() != nullptr)
                         {
-                          
-                            
-
+                            bak->SetMacAdress(machine->GetMacAdress());
                             switch(bak->GetTemperature())
                             {
                                 case Cold:

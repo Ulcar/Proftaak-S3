@@ -283,6 +283,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
                         {
                             Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()), "Algorithm");
                             laundry->SetBusy(false);
+                            machine->SetRequestingInProgress(false);
                         }
                     }
                 }
