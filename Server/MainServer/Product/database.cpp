@@ -133,6 +133,7 @@ void Database::HandleLaundryFinish(std::string macAdress)
     std::unique_lock<std::mutex> lock (mtxLaundry);
     std::vector<Laundry*> laundryToHandle;
     std::vector<LaundryBasket*> tmplaundry = laundryBaskets;
+    int modifier = 0;
     for (uint i = 0; i < tmplaundry.size(); i++)
     {
         LaundryBasket* laundry = tmplaundry[i];
@@ -143,7 +144,8 @@ void Database::HandleLaundryFinish(std::string macAdress)
             if(laundry->GetDone())
             {
                 Logger::Record(false, "Laundry Basket done: ", "database");
-                laundryBaskets.erase(laundryBaskets.begin() + i);
+                laundryBaskets.erase(laundryBaskets.begin() + i + modifier);
+                modifier--;
                 delete laundry;
             }
 
@@ -188,7 +190,7 @@ void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
         bool found = false;
          for(LaundryBasket* bak : laundryBaskets)
         {
-            if(!bak->IsBusy() && (bak->Tasks[0] == laundry->TasksToDo[0]) && !bak->GetDone() && bak->GetTemperature() == laundry->temperature && bak->GetColor() == laundry->ColorType)
+            if(!bak->IsBusy() && (bak->Tasks[0] == laundry->TasksToDo[0]) && !bak->GetDone() && bak->GetTemperature() == laundry->GetTemperature() && bak->GetColor() == laundry->GetColor())
             {
                 bak->AddLaundryToLaundryBasket(laundry);
                 found = true;
@@ -199,7 +201,7 @@ void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
 
         if(!found)
         {
-        LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo, laundry->ColorType, laundry->temperature);
+        LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo, laundry->GetColor(), laundry->GetTemperature());
         laundryBaskets.push_back(newLaundryBasket);
         newLaundryBasket->AddLaundryToLaundryBasket(laundry);
 

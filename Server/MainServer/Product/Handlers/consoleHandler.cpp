@@ -102,9 +102,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
             }
             if(commandos.at(1) == "add")
             {
-                Laundry* laundry = new Laundry(stoi(commandos.at(2)));
-                laundry->temperature= static_cast<Temperature>(stoi(commandos.at(3)));
-                laundry->ColorType = static_cast<Color>(stoi(commandos.at(4)));
+                Laundry* laundry = new Laundry(stoi(commandos.at(2)), static_cast<Temperature>(stoi(commandos.at(3))),  static_cast<Color>(stoi(commandos.at(4))));
                 for(uint i = 5; i < commandos.size(); i++)
                 {
                     laundry->TasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
@@ -118,7 +116,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                 {
                     for(Laundry* laundry : basket->LaundryVector)
                     {
-                       message += std::to_string(laundry->GetID()) + std::to_string(laundry->temperature) + std::to_string(laundry->ColorType) +  basket->GetMacAdress();
+                       message += "ID: " + std::to_string(laundry->GetID()) + "Temperature: "+ std::to_string(laundry->GetTemperature()) + "Color: "+ std::to_string(laundry->GetColor()) +  basket->GetMacAdress();
                     }
                 }
             }
