@@ -52,7 +52,8 @@ void Logger::Record(bool isError, std::string errorMessage, std::string source)
     else
     {
         DebugLog.push_back(log);
-        if(LiveDebugLogging && !log.message.find("#6;0&")) 
+        int indexHeartBeat = log.message.find("#6;0&");
+        if(LiveDebugLogging && (indexHeartBeat == -1)) 
         {
             std::cout << "[" << log.time << "] Source: " << log.source << " -- " << log.message << "\n";
         }
