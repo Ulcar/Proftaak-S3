@@ -14,7 +14,7 @@ namespace Server_Interface
         public string CurrProgram { get; private set; }
         public int Enabled { get; private set; }
 
-        public Client(string macAdress, int elecUsage, int waterUsage, string currProgram, int enabled)
+        public Client(string macAdress, int waterUsage, int elecUsage, string currProgram, int enabled)
         {
             MacAdress = macAdress;
             ElecUsage = elecUsage;

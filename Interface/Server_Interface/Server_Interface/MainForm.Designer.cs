@@ -52,6 +52,7 @@
             this.ConsoleGroupbox = new System.Windows.Forms.GroupBox();
             this.DisconnectBtn = new System.Windows.Forms.Button();
             this.ToolbarGroupbox = new System.Windows.Forms.GroupBox();
+            this.DisableClientsBtn = new System.Windows.Forms.Button();
             this.ReloadBtn = new System.Windows.Forms.Button();
             this.ClientGroupbox.SuspendLayout();
             this.DataGroupbox.SuspendLayout();
@@ -116,6 +117,7 @@
             // ConsoleList
             // 
             this.ConsoleList.FormattingEnabled = true;
+            this.ConsoleList.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.ConsoleList.Location = new System.Drawing.Point(6, 19);
             this.ConsoleList.Name = "ConsoleList";
             this.ConsoleList.ScrollAlwaysVisible = true;
@@ -289,6 +291,7 @@
             // ToolbarGroupbox
             // 
             this.ToolbarGroupbox.Controls.Add(this.ReloadBtn);
+            this.ToolbarGroupbox.Controls.Add(this.DisableClientsBtn);
             this.ToolbarGroupbox.Controls.Add(this.DisconnectBtn);
             this.ToolbarGroupbox.Controls.Add(this.label4);
             this.ToolbarGroupbox.Controls.Add(this.label5);
@@ -301,12 +304,22 @@
             this.ToolbarGroupbox.TabStop = false;
             this.ToolbarGroupbox.Text = "Toolbar";
             // 
+            // DisableClientsBtn
+            // 
+            this.DisableClientsBtn.Location = new System.Drawing.Point(640, 11);
+            this.DisableClientsBtn.Name = "DisableClientsBtn";
+            this.DisableClientsBtn.Size = new System.Drawing.Size(105, 23);
+            this.DisableClientsBtn.TabIndex = 21;
+            this.DisableClientsBtn.Text = "Disable all Clients";
+            this.DisableClientsBtn.UseVisualStyleBackColor = true;
+            this.DisableClientsBtn.Click += new System.EventHandler(this.DisableClientsBtn_Click);
+            // 
             // ReloadBtn
             // 
-            this.ReloadBtn.Location = new System.Drawing.Point(306, 11);
+            this.ReloadBtn.Location = new System.Drawing.Point(751, 12);
             this.ReloadBtn.Name = "ReloadBtn";
-            this.ReloadBtn.Size = new System.Drawing.Size(75, 23);
-            this.ReloadBtn.TabIndex = 21;
+            this.ReloadBtn.Size = new System.Drawing.Size(80, 23);
+            this.ReloadBtn.TabIndex = 22;
             this.ReloadBtn.Text = "Reload";
             this.ReloadBtn.UseVisualStyleBackColor = true;
             this.ReloadBtn.Click += new System.EventHandler(this.ReloadBtn_Click);
@@ -358,6 +371,7 @@
         private System.Windows.Forms.GroupBox DataGroupbox;
         private System.Windows.Forms.Button DisconnectBtn;
         private System.Windows.Forms.GroupBox ToolbarGroupbox;
+        private System.Windows.Forms.Button DisableClientsBtn;
         private System.Windows.Forms.Button ReloadBtn;
     }
 }
