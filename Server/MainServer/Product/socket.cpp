@@ -21,11 +21,11 @@ bool Socket::Read()
     if (nrBytesSend > 0)
     {
         buffer[nrBytesSend] = '\0';
-        DebugLogger::Record("Received from " + std::to_string(this->getSocketFd()) + " a new message: " + buffer, "socket");
+        Logger::Record(false, "Received from " + std::to_string(this->GetSocketFd()) + " a new message: " + buffer, "socket");
     }
     else if(nrBytesSend == 0)
     {
-        DebugLogger::Record("Socket " + std::to_string(this->getSocketFd()) + " is shutdown. Disconnected", "socket");
+        Logger::Record(false, "Socket " + std::to_string(this->GetSocketFd()) + " is shutdown. Disconnected", "socket");
         return false;
     }
 
@@ -43,17 +43,20 @@ void Socket::Send(std::string text)
     size_t nrBytesRec = send(socketFd, text.c_str(), text.length(), 0);
     if (nrBytesRec != text.length())
     {
-        DebugLogger::Record("Socket " + std::to_string(this->getSocketFd()) + " has not send everything (" + std::to_string(nrBytesRec) + "/" + std::to_string(text.length()) + ")", "socket");
+        Logger::Record(false, "Socket " + std::to_string(this->GetSocketFd()) + " has not send everything (" + std::to_string(nrBytesRec) + "/" + std::to_string(text.length()) + ")", "socket");
     }
-    DebugLogger::Record("Socket: " + std::to_string(this->getSocketFd()) + " Send message: " + text, "socket");
+    Logger::Record(false, "Socket: " + std::to_string(this->GetSocketFd()) + " Send message: " + text, "socket");
 }
 
 void Socket::TrySend()
 {
     if(!waitingForClient && bufferOut.size() != 0)
     {
+
         Send(GetMessageToSend());
     }
+
+    
 }
 
 
@@ -81,14 +84,14 @@ std::string Socket::ReadLastMessage()
 
 void Socket::NewSendMessage(std::string message)
 {
-    std::unique_lock<std::mutex> lock (mtxBufferIn);
+    std::unique_lock<std::mutex> lock (mtxBufferOut);
     bufferOut.push_back(message);
-    DebugLogger::Record("Socket: " + std::to_string(this->getSocketFd()) + " Added message to buffer: " + message, "Socket");
+    Logger::Record(false, "Socket: " + std::to_string(this->GetSocketFd()) + " Added message to buffer: " + message, "Socket");
 }
 
 std::string Socket::GetMessageToSend()
 {
-    std::unique_lock<std::mutex> lock (mtxBufferIn);
+    std::unique_lock<std::mutex> lock (mtxBufferOut);
     if(bufferOut.size() == 0)
     {
         return "";

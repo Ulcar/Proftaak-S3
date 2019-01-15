@@ -2,7 +2,7 @@
 #define CONSOLEHANDLER_H
 
 #include "database.h"
-#include "errorlogger.h"
+#include "logger.h"
 
 class ConsoleHandler
 {

@@ -5,13 +5,10 @@
 #define MAXWATER 1000
 
 #include "client.h"
+#include "machine.h"
 #include "socket.h"
 
-#include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
+
 #include <mutex>
 #include <unistd.h>
 #include <vector>
@@ -22,30 +19,42 @@ class Database
         Database();
         ~Database();
         std::vector<Client*> GetClients();
+        std::vector<LaundryBasket*> GetLaundryBaskets();
+        void AddLaundry(Laundry* laundry);
         void AddClient(Client* client);
         bool AskQuit();
         void SetQuit(bool quit);
         
         int AskCurrentWater();
-        bool RemoveCurrentWater(int removeCurrentWater);
-        void AddCurrentWater(int addCurrentWater);
+        bool UpdateWater(int amountWater);
+        void ResetWater(int amountWater);
         int AskCurrentPower();
-        bool RemoveCurrentPower(int removeCurrentPower);
-        void AddCurrentPower(int addCurrentPower);
+        bool UpdatePower(int amountPower);
+        void ResetPower(int amountPower);
+
+        void HandleLaundryFinish(std::string macAdress);
+        void HandleLaundry(std::vector<Laundry*>& laundryToHandle);
+        void HandleLaundry();
+        void HandleLaundryBaskets();
+        void Update();
 
     private:
         bool quit;
         std::vector<Client*> clients;
+        std::vector<LaundryBasket*> laundryBaskets;
+        std::vector<Laundry*> unhandledLaundry;
 
         std::mutex mtxClient;
         std::mutex mtxQuit;
         std::mutex mtxPower;
         std::mutex mtxWater;
+        std::mutex mtxLaundry;
 
         //Water is in Liters
         int currentWater;
         //power is in Watt
         int currentPower;
+        int laundryID;
 };
 
 #endif

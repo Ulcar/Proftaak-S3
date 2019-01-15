@@ -3,6 +3,9 @@
 Database::Database()
 {
     quit = false;
+    currentWater = 0;
+    currentPower = 0;
+    laundryID = 0;
 }
 
 Database::~Database()
@@ -21,10 +24,24 @@ std::vector<Client*> Database::GetClients()
     return clients;
 }
 
+std::vector<LaundryBasket*> Database::GetLaundryBaskets()
+{
+    std::unique_lock<std::mutex> lock (mtxLaundry);
+    return laundryBaskets;
+}
+
 void Database::AddClient(Client* client)
 {
     std::unique_lock<std::mutex> lock (mtxClient);
     clients.push_back(client);
+}
+
+void Database::AddLaundry(Laundry* laundry)
+{
+      std::unique_lock<std::mutex> lock (mtxLaundry);
+      laundry->setID(laundryID);
+      laundryID++;
+      unhandledLaundry.push_back(laundry);
 }
 
 bool Database::AskQuit()
@@ -45,34 +62,33 @@ int Database::AskCurrentPower()
     return currentPower;
 }
 
-void Database::AddCurrentPower(int addCurrentPower)
+void Database::ResetPower(int amountPower)
 {
-    if(addCurrentPower <= 0)
+    if(amountPower <= 0)
     {
         return;
     }
     std::unique_lock<std::mutex> lock (mtxPower);
-    if(currentPower + addCurrentPower > MAXPOWER)
+    if(currentPower + amountPower < 0)
     {
-        currentPower = MAXPOWER;
+        currentPower = 0;
         return;
     }
-    currentPower += addCurrentPower;
+    currentPower -= amountPower;
 }
 
-bool Database::RemoveCurrentPower(int removeCurrentPower)
+bool Database::UpdatePower(int amountPower)
 {
-    if(removeCurrentPower <= 0)
+    if(amountPower <= 0)
     {
         return false;
     }
     std::unique_lock<std::mutex> lock (mtxPower);
-    if(currentPower - removeCurrentPower < 0)
+    if(currentPower + amountPower > MAXPOWER)
     {
-        currentPower = MAXPOWER;
         return false;
     }
-    currentPower += removeCurrentPower;
+    currentPower += amountPower;
     return true;
 }
 
@@ -82,33 +98,180 @@ int Database::AskCurrentWater()
     return currentWater;
 }
 
-void Database::AddCurrentWater(int addCurrentWater)
+void Database::ResetWater(int amountWater)
 {
-    if(addCurrentWater <= 0)
+    if(amountWater <= 0)
     {
         return;
     }
     std::unique_lock<std::mutex> lock (mtxWater);
-    if(currentWater + addCurrentWater > MAXPOWER)
+    if(currentWater + amountWater < 0)
     {
-        currentWater = MAXPOWER;
+        currentWater = 0;
         return;
     }
-    currentWater += addCurrentWater;
+    currentWater -= amountWater;
 }
 
-bool Database::RemoveCurrentWater(int removeCurrentWater)
+bool Database::UpdateWater(int amountWater)
 {
-    if(removeCurrentWater <= 0)
+    if(amountWater <= 0)
     {
         return false;
     }
     std::unique_lock<std::mutex> lock (mtxWater);
-    if(currentWater - removeCurrentWater < 0)
+    if(currentWater + amountWater > MAXWATER)
     {
-        currentWater = MAXPOWER;
         return false;
     }
-    currentWater += removeCurrentWater;
+    currentWater += amountWater;
     return true;
+}
+
+void Database::HandleLaundryFinish(std::string macAdress)
+{
+    std::unique_lock<std::mutex> lock (mtxLaundry);
+    std::vector<Laundry*> laundryToHandle;
+    std::vector<LaundryBasket*> tmplaundry = laundryBaskets;
+    for (uint i = 0; i < tmplaundry.size(); i++)
+    {
+        LaundryBasket* laundry = tmplaundry[i];
+        if(laundry->GetMacAdress() == macAdress)
+        {
+            laundry->OnLaundryFinish(laundryToHandle);
+
+            if(laundry->GetDone())
+            {
+                Logger::Record(false, "Laundry Basket done: ", "database");
+                laundryBaskets.erase(laundryBaskets.begin() + i);
+                delete laundry;
+            }
+
+            else
+            {
+                laundry->SetBusy(false);
+            }
+        }
+    }
+
+    for(Laundry* laundry : laundryToHandle)
+    {
+        if(laundry->TasksToDo.size() <= 0)
+        {
+            laundry->SetDone(true);
+            Logger::Record(false, "Laundry done: ", "database");
+            continue;
+        }
+
+        unhandledLaundry.push_back(laundry);
+        
+    }
+}
+
+void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
+{
+     std::unique_lock<std::mutex> lock (mtxLaundry);
+     std::vector<Laundry*> tmpLaundryVector = laundryToHandle;
+     
+    int i = 0;
+    for(Laundry* laundry : tmpLaundryVector)
+    {
+        if(laundry->GetDone())
+        {
+            Logger::Record(false, "Erasing Finished Laundry", "Database");
+            laundryToHandle.erase(laundryToHandle.begin(), laundryToHandle.begin() + i);
+            i++;
+            delete laundry;
+        }
+        
+        
+        bool found = false;
+         for(LaundryBasket* bak : laundryBaskets)
+        {
+            if(!bak->IsBusy() && (bak->Tasks[0] == laundry->TasksToDo[0]) && !bak->GetDone() && bak->GetTemperature() == laundry->temperature && bak->GetColor() == laundry->ColorType)
+            {
+                bak->AddLaundryToLaundryBasket(laundry);
+                found = true;
+                 Logger::Record(false, "Adding Laundry to Laundry Basket", "Database");
+                break;
+            }
+        }
+
+        if(!found)
+        {
+        LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo, laundry->ColorType, laundry->temperature);
+        laundryBaskets.push_back(newLaundryBasket);
+        newLaundryBasket->AddLaundryToLaundryBasket(laundry);
+
+        Logger::Record(false, "Created new Laundry Basket", "Database");
+        }
+    i++;
+    }
+
+    laundryToHandle.clear();
+
+
+}
+
+void Database::HandleLaundry()
+{
+   
+    HandleLaundry(unhandledLaundry);
+}
+
+void Database::Update()
+{
+    
+}
+
+void Database::HandleLaundryBaskets()
+{
+    
+    
+     std::unique_lock<std::mutex> lock (mtxLaundry);
+    for(LaundryBasket* bak : laundryBaskets)
+    {
+        if(!bak->IsBusy())
+        {
+            std::unique_lock<std::mutex> lock (mtxClient);
+            for(Client* client : clients)
+            {
+                if(bak->Tasks[0] == client->GetType())
+                {
+                    if(Machine* machine = dynamic_cast<Machine*>(client))
+                    {
+                        //add checks to make sure machine isn't doing anything
+                        if(!machine->IsInProgress() && !machine->IsRequestingInProgress() && machine->GetSocket() != nullptr)
+                        {
+                            bak->SetMacAdress(machine->GetMacAdress());
+                            switch(bak->GetTemperature())
+                            {
+                                case Cold:
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_COLD);
+                                machine->SetProgram(Program::PROGRAM_COLD);
+                                break;
+
+                                case Medium:
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_WARM);
+                                machine->SetProgram(Program::PROGRAM_WARM);
+                                break;
+
+                                case Hot:
+                                machine->Send(M_CODE_SENDPROGRAM, (int)Program::PROGRAM_HOT);
+                                machine->SetProgram(Program::PROGRAM_HOT);
+                                break;
+                            }
+                            // Do StartProgram on machine, and set Inprogress if you get a response  
+                            machine->SetRequestingInProgress(true);
+                            bak->SetBusy(true);
+                            break;
+
+                        }
+                    }
+                    
+                             
+                }
+            }
+        }
+    }
 }

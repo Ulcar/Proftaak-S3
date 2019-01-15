@@ -24,3 +24,24 @@ Test_Interfaces/server.o
 #Client
 Clients/bin/
 Clients/client
+
+#Control Panel
+Control_Panel_Systeem/Control_Panel_Systeem/obj/Debug/Control Panel Systeem.csproj.CoreCompileInputs.cache
+Control_Panel_Systeem/.vs/Control Panel Systeem/v15/.suo
+Control_Panel_Systeem/.vs/Control Panel Systeem/v15/Server/sqlite3/db.lock
+Control_Panel_Systeem/.vs/Control Panel Systeem/v15/Server/sqlite3/storage.ide
+Control_Panel_Systeem/Control_Panel_Systeem/App.config
+Control_Panel_Systeem/Control_Panel_Systeem/Control Panel Systeem.csproj
+Control_Panel_Systeem/Control_Panel_Systeem/Properties/Resources.resx
+Control_Panel_Systeem/Control_Panel_Systeem/Properties/Resources.Designer.cs
+Control_Panel_Systeem/Control_Panel_Systeem/Properties/Settings.settings
+Control_Panel_Systeem/Control_Panel_Systeem/Properties/Settings.Designer.cs
+Control_Panel_Systeem/Control_Panel_Systeem/obj/Debug/DesignTimeResolveAssemblyReferences.cache
+Control_Panel_Systeem/Control_Panel_Systeem/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+Control_Panel_Systeem/Control_Panel_Systeem/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+Control_Panel_Systeem/Control_Panel_Systeem/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+Control_Panel_Systeem/Control_Panel_Systeem/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+Test_Interfaces/client.o
+Test_Interfaces/client
+Test_Interfaces/client.o
+Test_Interfaces/client

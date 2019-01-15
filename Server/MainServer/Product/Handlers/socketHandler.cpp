@@ -12,9 +12,9 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
 
     Setup(&masterFd);
 
-    DebugLogger::Record("Sockets started", "socketHandler");
+    Logger::Record(false, "Sockets started", "socketHandler");
 
-    while (true)
+    while (!database->AskQuit())
     {        
 //is dit echt nodig?     
         fd_set readFds;
@@ -30,7 +30,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
                 continue;
             }
 
-            int sd = client->GetSocket()->getSocketFd();
+            int sd = client->GetSocket()->GetSocketFd();
                 //if valid socket descriptor then add to read list
             if(sd > 0)
             {
@@ -53,7 +53,7 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
 
         if (nrSockets < 0) // error situation
         {
-            Errorlogger::Record("error from calling socket", "socketHandler");
+            Logger::Record(true, "error from calling socket", "socketHandler");
         }
         else if (nrSockets == 0) // timeout
         {
@@ -80,17 +80,32 @@ void SocketHandler::RunSocketHandler(Database* tempdatabase)
             tempsocket->TrySend();
 
             //Try Reading a message
-            if (FD_ISSET(tempsocket->getSocketFd(), &readFds))
+            if (FD_ISSET(tempsocket->GetSocketFd(), &readFds))
             {
                 if(!ReadClient(tempsocket))
                 { 
                     tempClient->SetSocket(nullptr);
                     tempsocket = nullptr;
-                    DebugLogger::Record("Removed socket of " + tempClient->GetMacAdress(), "socketHandler");
+                    Logger::Record(false, "Removed socket of " + tempClient->GetMacAdress(), "socketHandler");
                 }
             }
         }
     }
+
+    
+    Logger::Record(false, "Sending all ControlPanels stopping command", "socketHandler");
+    for(Client* client : database->GetClients())
+    {
+        std::vector<std::string> temp = {std::to_string(1)};
+        if(client->GetType() == Type::ControlPanel)
+        {
+            client->GetSocket()->NewSendMessage(Translator::ToControlPanel(CP_CODE_CONNECT, temp));
+            client->GetSocket()->TrySend();
+        }
+    }
+    close(masterFd);
+    
+    Logger::Record(false, "Sockets stopped", "socketHandler");
 }
 
 void SocketHandler::Setup(int *socketFd)
@@ -98,26 +113,26 @@ void SocketHandler::Setup(int *socketFd)
     *socketFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (*socketFd < 0)
     {
-        Errorlogger::Record("Can't create socket", "socketHandler");
+        Logger::Record(true, "Can't create socket", "socketHandler");
         return;
     }
 
     struct sockaddr_in sa;
     memset(&sa, 0, sizeof sa);
     sa.sin_family = AF_INET;
-    sa.sin_port = Protocol::GetPort();
+    sa.sin_port = Translator::GetPort();
     sa.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(*socketFd, (struct sockaddr*)&sa, sizeof sa) < 0)
     {
-       Errorlogger::Record("bind failed", "socketHandler");
+        Logger::Record(true, "Port already in use", "socketHandler");
         close(*socketFd);
         exit(EXIT_FAILURE);
     }
     
     if (listen(*socketFd, SOCKET_SIZE) < 0)
     {
-        Errorlogger::Record("listen failed", "socketHandler");
+        Logger::Record(true, "listen failed", "socketHandler");
         close(*socketFd);
         exit(EXIT_FAILURE);
     }
@@ -140,7 +155,7 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
         }
         else
         {
-            Errorlogger::Record("Not a valid type: " + std::to_string(typeChar), "SocketHandler - CreateSocket");
+            Logger::Record(true, "Not a valid type: " + std::to_string(typeChar), "SocketHandler - CreateSocket");
             return nullptr;
         }
     }
@@ -150,19 +165,23 @@ Client* SocketHandler::CreateNewClient(char typeChar, std::string macAdress)
     {
         if(client->GetMacAdress() == macAdress)
         {
+            Logger::Record(false, "Found already a Client: " + type, "socketHandler");
             return client;
         }
     }
-    DebugLogger::Record("Created new Client: " + type, "socketHandler");
             
     if(type == Type::ControlPanel)
     {
         Client* client = new Client(macAdress, type);
+        Logger::Record(false, "Created new ControlPanel: " + type, "socketHandler");
+        database->AddClient(client);
         return client;
     }
     else
     {
         Client* client = new Machine(macAdress, type);
+        Logger::Record(false, "Created new Machine: " + type, "socketHandler");
+        database->AddClient(client);
         return client;
     }
 }
@@ -173,42 +192,33 @@ void SocketHandler::ConnectClient(int socketFd)
     int connectFd = accept(socketFd, NULL, NULL);
     if (connectFd < 0)
     {
-        Errorlogger::Record("Accept failed", "socketHandler");
+        Logger::Record(true, "Accept failed", "socketHandler");
         close(socketFd);
         exit(EXIT_FAILURE);
     }
     
     Socket* socket = new Socket(connectFd);
-    DebugLogger::Record("New socket connected: " + connectFd, "socketHandler");
+    Logger::Record(false, "New socket connected: " + connectFd, "socketHandler");
 
     if(!socket->Read())
     {
-        DebugLogger::Record("Removed socket: " + connectFd, "socketHandler");
+        Logger::Record(false, "Removed socket: " + connectFd, "socketHandler");
         delete socket;
         return;
     }
-
-    std::vector<std::string> message = Protocol::FromMachine(socket->ReadLastMessage());
+    std::string encodedMessage = socket->ReadLastMessage();
+    std::vector<std::vector<std::string>> message = Translator::FromMachine(encodedMessage);
     
-    if((message.size() == 2) || (message.size() == 3))
+    if(message.size() != 0)
     {
-        if(message.at(0) == "0")
+        if((message.at(0).size() == 3) && (message.at(0).at(0) == "0"))
         {
             Client* client;
             std::vector<std::string> temp = {std::to_string(0)};
 
-            if(message.size() == 2)
-            {
-                //ControlPanel
-                client = CreateNewClient('\0', message.at(1));
-                socket->NewSendMessage(Protocol::ToControlPanel(CP_CODE_CONNECT, temp));
-            }
-            else
-            {
-                //client
-                client = CreateNewClient(message.at(1).at(0), message.at(2));
-                socket->NewSendMessage(Protocol::ToMachine(M_CODE_CONNECT, 0));
-            }
+            //client
+            client = CreateNewClient(message.at(0).at(1).at(0), message.at(0).at(2));
+            socket->NewSendMessage(Translator::ToMachine(M_CODE_CONNECT, 0));
 
             if(client == nullptr)
             {
@@ -216,20 +226,41 @@ void SocketHandler::ConnectClient(int socketFd)
                 return;
             }
 
-            socket->TrySend();
+        //    socket->TrySend();
             client->SetSocket(socket);
-            database->AddClient(client);
 
-            DebugLogger::Record("Added Client with type: " + std::to_string(client->GetType()) + "with id: " + client->GetMacAdress(), "socketHandler");
+            Logger::Record(false, "Added Client with type: " + std::to_string(client->GetType()) + "with id: " + client->GetMacAdress(), "socketHandler");
+            return;
+        }        
+    }
+
+    message = Translator::FromControlPanel(encodedMessage);
+
+    if(message.size() != 0)
+    {
+        if((message.at(0).size() == 2) && (message.at(0).at(0) == "0"))
+        {
+            Client* client;
+            std::vector<std::string> temp = {std::to_string(0)};
+
+            //ControlPanel
+            client = CreateNewClient('\0', message.at(0).at(1));
+            socket->NewSendMessage(Translator::ToControlPanel(CP_CODE_CONNECT, temp));
+
+            if(client == nullptr)
+            {
+                delete socket;
+                return;
+            }
+
+        //    socket->TrySend();
+            client->SetSocket(socket);
+
+            Logger::Record(false, "Added ControlPanel with id: " + client->GetMacAdress(), "socketHandler");
             return;
         }
-
-       
-    }  
-     else
-        {
-            std::cout << "THis is not a machine";
-        }  
+    }
+    std::cout << "This is not a machine";
 }
 
 bool SocketHandler::ReadClient(Socket* socket)

@@ -7,6 +7,14 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
+#include <thread> 
+
+#define HARDBEAT "#6;0&"
+
+std::thread socketThread;
+int socketFd = 0;
+bool connected = false;
+std::string macAdress;
 
 static void showMenu()
 {
@@ -15,10 +23,11 @@ static void showMenu()
     std::cout << ("(1) Connect to server\n");
     std::cout << ("(2) Disconnect from server\n");
     std::cout << ("(3) Request to take water\n");
-    std::cout << ("(4) Stop taking waterwater\n");
+    std::cout << ("(4) Stop taking water\n");
     std::cout << ("(5) Request to heat\n");
     std::cout << ("(6) Stop heating\n");
     std::cout << ("(7) Program done\n");
+    std::cout << ("(8) program response");
     std::cout << ("-----------------------\n");
     std::cout << ("(q) QUIT\n\n");
     std::cout << ("Choice : ");
@@ -34,13 +43,8 @@ static void sendMessage(int *socketFd, std::string text)
     std::cout << "send: " + text;
 }
 
-static std::string readMessage(int *socketFd, bool *connected)
+static std::string readMessage(int *socketFd)
 {
-    if(!*connected){
-        std::cout << ("\nNot connected yet!\n");
-        return NULL;
-    }
-
     const int BufferSize = 100;
     char buffer[BufferSize];
     int nrBytesSend = read(*socketFd, buffer, BufferSize - 1);
@@ -53,8 +57,8 @@ static std::string readMessage(int *socketFd, bool *connected)
     {
         std::cout << "\nServer is shutdown. Disconnected\n";
         close(*socketFd);
-        *connected = false;
-        return NULL;
+        connected = false;
+        return "";
     }
     return buffer;
 }
@@ -65,6 +69,8 @@ static void connectToServer(int *socketFd, bool *connected)
         std::cout << ("\nAlready connected!\n");
         return;
     }
+    std::cout << "Your mac Address: ";
+    std::cin >> macAdress;
 
     *socketFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (*socketFd == -1)
@@ -78,7 +84,8 @@ static void connectToServer(int *socketFd, bool *connected)
     sa.sin_family = AF_INET;
     sa.sin_port = PortNumber;
     
-    int result = inet_pton(AF_INET, "127.0.0.1", &sa.sin_addr);
+    int result = inet_pton(AF_INET, "192.168.137.102", &sa.sin_addr);
+   // int result = inet_pton(AF_INET, "127.0.0.1", &sa.sin_addr);
     if (result != 1)
     {
         perror("could not convert ip address to network address structure");
@@ -97,8 +104,7 @@ static void connectToServer(int *socketFd, bool *connected)
     *connected = true;
 
     //message = Connect request + machine type + mac address whitout ":"
-    std::string message = "&0;0;abcdefghijkl#";
-    sendMessage(socketFd, message);
+    sendMessage(socketFd, "&0;0;" + macAdress + "#");
 
     return;
 }
@@ -127,12 +133,29 @@ static void sendMessageToServer(int *socketFd, bool *connected, std::string mess
     return;
 }
 
+static void SocketReader()
+{
+    while(true)
+    {
+        if(connected)
+        {
+            std::string reply = readMessage(&socketFd);
+            std::cout << reply;
+
+            if (reply == HARDBEAT)
+            {
+                sendMessageToServer(&socketFd, &connected, "&6;0#");
+            }
+        }
+    }
+}
+
 int main(void)
 {
-    bool quit = false;
-    bool connected = false;
+    socketThread = std::thread(SocketReader);
 
-    int socketFd = 0;
+    bool quit = false;
+
     
 
     while (!quit)
@@ -150,9 +173,6 @@ int main(void)
         {
             case '1' :
                 connectToServer(&socketFd, &connected);
-                //message from server
-                reply = readMessage(&socketFd, &connected);
-                std::cout << reply;
                 break;
 
             case '2' :
@@ -165,10 +185,6 @@ int main(void)
                 std::getline(std::cin, input);
                 message = "&1;" + input + "#";
                 sendMessageToServer(&socketFd, &connected, message);
-
-                //message from server
-                reply = readMessage(&socketFd, &connected);
-                std::cout << reply;
                 break;
 
             case '4' :
@@ -176,10 +192,6 @@ int main(void)
                 std::cout << "Stop taking water";
                 message = "&2#";
                 sendMessageToServer(&socketFd, &connected, message);
-
-                //message from server
-                reply = readMessage(&socketFd, &connected);
-                std::cout << reply;
                 break;
 
             case '5' :
@@ -188,10 +200,6 @@ int main(void)
                 std::getline(std::cin, input);
                 message = "&3;" + input + "#";
                 sendMessageToServer(&socketFd, &connected, message);
-
-                //message form server
-                reply = readMessage(&socketFd, &connected);
-                std::cout << reply;
                 break;
 
             case '6' :
@@ -199,20 +207,20 @@ int main(void)
                 std::cout << "Stop heating?";
                 message = "&4#";
                 sendMessageToServer(&socketFd, &connected, message);
-
-                //message form server
-                reply = readMessage(&socketFd, &connected);
-                std::cout << reply;
                 break;
 
             case '7' :
                 //message to server
                 message = "&5;0#";
                 sendMessageToServer(&socketFd, &connected, message);
+                break;
 
-                //message from server
-                reply = readMessage(&socketFd, &connected);
-                std::cout << reply;
+             case '8' :
+                //message to server
+                std::cout << "Response: ";
+                std::getline(std::cin, input);
+                message = "&7;" + input + "#";
+                sendMessageToServer(&socketFd, &connected, message);
                 break;
 
             case 'q' :
@@ -224,5 +232,6 @@ int main(void)
                 break;
         }
     }
+    socketThread.detach();
     return 0;
 }

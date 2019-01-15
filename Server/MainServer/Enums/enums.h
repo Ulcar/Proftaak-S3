@@ -5,14 +5,31 @@ enum Type
 {
     ControlPanel = -1,
     Wasmachine,
-    Stomer
+    Stomer,
+    Centrifuge,
+    Droogmachine
+};
+
+enum Temperature
+{
+    Cold,
+    Medium,
+    Hot
+};
+
+enum Color
+{
+    Red, 
+    Blue, 
+    White
 };
 
 enum Program
 {
-    PROGRAM_NONE = 0,
-    PROGRAM_XX,
-    PROGRAM_YY
+    PROGRAM_NONE = -1,
+    PROGRAM_COLD,
+    PROGRAM_WARM,
+    PROGRAM_HOT
 };
 //No enums
 

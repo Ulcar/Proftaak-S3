@@ -34,13 +34,13 @@ static std::string readMessageFromClient(int *connectFd)
         return "";
     }
     return buffer;
-}
-
-
-
-
-void setupServer(int *socketFd)
-{
+}  
+  
+  
+  
+  
+void setupServer  (int *socketFd)
+{  
     struct sockaddr_in sa;
     memset(&sa, 0, sizeof sa);
     sa.sin_family = AF_INET;

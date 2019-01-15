@@ -1,22 +1,21 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "codes.h"
 #include "enums.h"
 #include "socket.h"
-#include "codes.h"
-#include "protocol.h"
-#include "iClient.h"
+#include "translator.h"
 
 #include <cstring>
 
-class Client : public iClient
+class Client
 {
     public:
         Client(std::string macAdress, Type type);
         virtual ~Client();
         void Send(CP_Code code, std::vector<std::string> value);
         void Send(CP_Code code, std::string value);
-        void SetSocket(Socket* socket);
+        virtual void SetSocket(Socket* socket);
 
         bool IsEnabled();
         void SetEnable(bool enabled);

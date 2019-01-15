@@ -1,67 +1,56 @@
-#include "algorithm.h"
-#include "iAlgorithm.h"
-#include "algorithm_easy.h"
-#include "errorlogger.h"
-#include "debuglogger.h"
 #include "client.h"
-#include "socketHandler.h"
 #include "consoleHandler.h"
 #include "database.h"
+#include "logger.h"
 #include "machine.h"
-#include "protocol.h"
+#include "protocolHandler.h"
+#include "socketHandler.h"
+#include "translator.h"
 
-#include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <mutex>
-#include <unistd.h>
+#include <thread>
 #include <vector>
-#include <thread> 
+ 
 
 bool quit = false;
 Database* database;
-Algorithm* algorithm;
-iAlgorithm* iAlgorithm;
 std::mutex mtx;
 std::thread socketThread;
 std::thread consoleThread;
+std::thread protocolThread;
 
 
 void Setup()
 {
-    Errorlogger::Record("System startup", "main");
-    Errorlogger::LiveErrorLogging = true;
-
-    DebugLogger::LiveDebugLogging = true;
-    DebugLogger::Record("System startup", "main");
+    Logger::Record(true, "System startup", "main");
+    Logger::LiveErrorLogging = true;
+    Logger::LiveHeartBeat = false;
+    Logger::LiveDebugLogging = true;
+    Logger::Record(false, "System startup", "main");
 
     database = new Database();
-    iAlgorithm = new Algorithm_easy(database);
-    algorithm = new Algorithm(database, iAlgorithm);
     socketThread = std::thread(SocketHandler::RunSocketHandler, database);
     consoleThread = std::thread(ConsoleHandler::RunConsoleHandler, database);
+    protocolThread = std::thread(ProtocolHandler::RunProtocolHandler, database);
 }
 
 void Loop()
 {
-    algorithm->HandleMessages();
+
 }
 
-void ShutDown()
+void Shutdown()
 {    
-    consoleThread.detach();
-    socketThread.detach();
+    consoleThread.detach();         //Stop reading console
+    socketThread.join();            //Wait untill all sockets are handled
+    protocolThread.join();          //Wait untill everything is handled
 
-    delete database;
-    delete algorithm;
+    delete database;                //Remove database safely
 
-    Errorlogger::Record("System shutdown", "main");
-    DebugLogger::Record("System shutdown", "main");
+    Logger::Record(true, "System shutdown", "main");
+    Logger::Record(false, "System shutdown", "main");
     
-    Errorlogger::SaveAsFile();
-    DebugLogger::SaveAsFile();
+    Logger::SaveErrorAsFile();
+    Logger::SaveDebugAsFile();
 }
 
 //------------------------------------------------------------------------------//
@@ -78,7 +67,7 @@ int main( void )
         Loop();
     }
 
-    ShutDown();
+    Shutdown();
 
     return 0;
 }

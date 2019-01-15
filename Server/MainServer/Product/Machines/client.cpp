@@ -5,11 +5,15 @@ Client::Client(std::string macAdress, Type type)
     , clientType(type)
 {
     enabled = true;
+    socket = nullptr;
 }
 
 Client::~Client()
 {
-    delete socket;
+    if(socket != nullptr)
+    {
+        delete socket;
+    }
 }
 
 void Client::Send(CP_Code code, std::string value)
@@ -24,7 +28,7 @@ void Client::Send(CP_Code code, std::vector<std::string> value)
     {
         return;
     }
-    socket->NewSendMessage(Protocol::ToControlPanel(code, value));
+    socket->NewSendMessage(Translator::ToControlPanel(code, value));
 }
 
 void Client::SetSocket(Socket* tempSocket)
@@ -43,6 +47,6 @@ bool Client::IsEnabled()
 
 void Client::SetEnable(bool enabled)
 {
-    DebugLogger::Record(macAdress + " is now enabled: " + std::to_string(enabled), "client");
+    Logger::Record(false, macAdress + " is now enabled: " + std::to_string(enabled), "client");
     this->enabled = enabled;
 }

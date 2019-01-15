@@ -1,11 +1,13 @@
 #include "machine.h"
-#include "enums.h"
-
 
 Machine::Machine(std::string macAdress, Type type)
     : Client(macAdress, type)
 {
-    
+    ReplyCount = 0;
+    usedPower = 0;
+    usedWater = 0;
+    inProgress = false;
+    requestingInProgress = false;
 }
 
 Machine::~Machine()
@@ -19,7 +21,7 @@ void Machine::Send(M_Code code, int value)
     {
         return;
     }
-    socket->NewSendMessage(Protocol::ToMachine(code, value));
+    socket->NewSendMessage(Translator::ToMachine(code, value));
 }
 
 
@@ -51,4 +53,48 @@ Program Machine::GetProgram()
 void Machine::SetProgram(Program SetProgram)
 {
     currentProgram = SetProgram;
+}
+
+bool Machine::IsInProgress()
+{
+    return inProgress;
+}
+
+void Machine::SetInProgress(bool inProgress)
+{
+    this->inProgress = inProgress;
+}
+
+bool Machine::IsRequestingInProgress()
+{
+    return requestingInProgress;
+}
+
+void Machine::SetRequestingInProgress(bool requestingInProgress)
+{
+    this->requestingInProgress = requestingInProgress;
+}
+void Machine::AddToReplyCount()
+{
+    ReplyCount += 1;
+}
+
+int Machine::GetReplyCount()
+{
+    return ReplyCount;
+}
+
+void Machine::ResetReplyCount()
+{
+    ReplyCount = 0;
+}
+
+void Machine::SetSocket(Socket* tempSocket)
+{
+    if(socket != nullptr)
+    {
+        delete socket;
+    }
+    socket = tempSocket;
+    ResetReplyCount();
 }

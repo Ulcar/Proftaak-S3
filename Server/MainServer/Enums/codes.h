@@ -1,12 +1,16 @@
 #ifndef CODES_H
 #define CODES_H
-
+//volgorde erg belangrijk!!!!!!!!!
 enum M_Code
 {
     M_CODE_CONNECT = 0,
-    M_CODE_WATER,
-    M_CODE_HEATER,
-    M_CODE_DONE
+    M_CODE_REQUEST_WATER,
+    M_CODE_STOP_WATER,
+    M_CODE_REQUEST_HEATER,
+    M_CODE_STOP_HEATER,
+    M_CODE_DONE,
+    M_CODE_HEARTBEAT,
+    M_CODE_SENDPROGRAM
 };
 
 enum CP_Code

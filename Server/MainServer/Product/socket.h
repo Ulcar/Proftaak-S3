@@ -3,21 +3,15 @@
 
 #include "codes.h"
 #include "enums.h"
-#include "iSocketQueue.h"
-#include "iSocketIO.h"
-#include "errorlogger.h"
-#include "debuglogger.h"
+#include "logger.h"
 
 #include <arpa/inet.h>
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
 #include <mutex>
 #include <unistd.h>
 #include <vector>
 
-class Socket : public iSocketQueue , public iSocketIO
+class Socket
 {
     public:
         Socket(int socketFd);
@@ -28,12 +22,16 @@ class Socket : public iSocketQueue , public iSocketIO
         void NewSendMessage(std::string text);
         std::string ReadLastMessage();
 
-        int getSocketFd()
+        int GetSocketFd()
         {
             return socketFd;
         }
 
     private:
+        //Copy disabled
+        Socket(const Socket &other);
+        Socket &operator = (const Socket &other);
+
         int ETA;
         int socketFd;
         bool waitingForClient;
