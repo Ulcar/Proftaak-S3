@@ -8,11 +8,10 @@
 class Laundry
 {
     public:
-        Laundry(int weight);
+        Laundry(int weight, Temperature temperature, Color color);
 
-        Color ColorType;
+        
         std::vector<Type> TasksToDo;
-        Temperature temperature;
 
         //weight in grams
         int GetWeight();
@@ -21,10 +20,15 @@ class Laundry
         int GetID();
         void setID(int id);
 
+        Temperature GetTemperature();
+        Color GetColor();
+
     private:
         int weight;
         int id;
         bool done;
+        Temperature temperature;
+        Color ColorType;
 };
 
 #endif

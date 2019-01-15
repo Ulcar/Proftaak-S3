@@ -6,6 +6,7 @@ Database::Database()
     currentWater = 0;
     currentPower = 0;
     laundryID = 0;
+    laundryBasketID = 0;
 }
 
 Database::~Database()
@@ -133,6 +134,7 @@ void Database::HandleLaundryFinish(std::string macAdress)
     std::unique_lock<std::mutex> lock (mtxLaundry);
     std::vector<Laundry*> laundryToHandle;
     std::vector<LaundryBasket*> tmplaundry = laundryBaskets;
+    int amountErased = 0;
     for (uint i = 0; i < tmplaundry.size(); i++)
     {
         LaundryBasket* laundry = tmplaundry[i];
@@ -143,7 +145,8 @@ void Database::HandleLaundryFinish(std::string macAdress)
             if(laundry->GetDone())
             {
                 Logger::Record(false, "Laundry Basket done: ", "database");
-                laundryBaskets.erase(laundryBaskets.begin() + i);
+                laundryBaskets.erase(laundryBaskets.begin() + i - amountErased);
+                amountErased++;
                 delete laundry;
             }
 
@@ -160,6 +163,7 @@ void Database::HandleLaundryFinish(std::string macAdress)
         {
             laundry->SetDone(true);
             Logger::Record(false, "Laundry done: ", "database");
+            delete laundry;
             continue;
         }
 
@@ -176,32 +180,35 @@ void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
     int i = 0;
     for(Laundry* laundry : tmpLaundryVector)
     {
-        if(laundry->GetDone())
+     /*   if(laundry->GetDone())
         {
             Logger::Record(false, "Erasing Finished Laundry", "Database");
             laundryToHandle.erase(laundryToHandle.begin(), laundryToHandle.begin() + i);
             i++;
             delete laundry;
-        }
+        } */
         
         
         bool found = false;
          for(LaundryBasket* bak : laundryBaskets)
         {
-            if(!bak->IsBusy() && (bak->Tasks[0] == laundry->TasksToDo[0]) && !bak->GetDone() && bak->GetTemperature() == laundry->temperature && bak->GetColor() == laundry->ColorType)
+            if(!bak->IsBusy() && (bak->Tasks[0] == laundry->TasksToDo[0]) && !bak->GetDone() && bak->GetTemperature() == laundry->GetTemperature() && bak->GetColor() == laundry->GetColor())
             {
-                bak->AddLaundryToLaundryBasket(laundry);
-                found = true;
-                 Logger::Record(false, "Adding Laundry to Laundry Basket", "Database");
-                break;
+                if(bak->AddLaundryToLaundryBasket(laundry))
+                {
+                    found = true;
+                    Logger::Record(false, "Adding Laundry to Laundry Basket", "Database");
+                    break;
+                }
             }
         }
 
         if(!found)
         {
-        LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo, laundry->ColorType, laundry->temperature);
-        laundryBaskets.push_back(newLaundryBasket);
-        newLaundryBasket->AddLaundryToLaundryBasket(laundry);
+            LaundryBasket* newLaundryBasket = new LaundryBasket(laundry->TasksToDo, laundry->GetColor(), laundry->GetTemperature(), laundryBasketID);
+            laundryBasketID++;
+            laundryBaskets.push_back(newLaundryBasket);
+            newLaundryBasket->AddLaundryToLaundryBasket(laundry);
 
         Logger::Record(false, "Created new Laundry Basket", "Database");
         }

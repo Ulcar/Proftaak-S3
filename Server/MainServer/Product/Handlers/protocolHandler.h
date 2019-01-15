@@ -21,6 +21,7 @@ class ProtocolHandler
         static void HandleControlPanel(Client* client, std::vector<std::string> messageVector, std::vector<Client*> clients);
         static void HandleWasmachine(Machine* machine, std::vector<std::string> messageVector);
         static void HandleStomer(Machine* machine, std::vector<std::string> messageVector);
+        static void HandleDryer(Machine* machine, std::vector<std::string> messageVector);
         static void HandleMessages();
         static void HeartbeatClient(Client* client);
 

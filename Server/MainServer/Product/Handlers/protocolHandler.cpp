@@ -102,7 +102,7 @@ void ProtocolHandler::HandleMessages()
                 }
                 break;
             }
-            case Type::Wasmachine:
+            case Type::WashingMachine:
             {
                 Machine* machine = dynamic_cast<Machine*>(client);
                 std::vector<std::vector<std::string>> messageVector = Translator::FromMachine(message);
@@ -110,6 +110,18 @@ void ProtocolHandler::HandleMessages()
                 for(size_t i = 0; i < messageVector.size(); i++)
                 {
                     HandleWasmachine(machine, messageVector.at(i));
+                }
+                break;
+            }
+
+            case Type::Dryer:
+            {
+                 Machine* machine = dynamic_cast<Machine*>(client);
+                std::vector<std::vector<std::string>> messageVector = Translator::FromMachine(message);
+                
+                for(size_t i = 0; i < messageVector.size(); i++)
+                {
+                    HandleDryer(machine, messageVector.at(i));
                 }
                 break;
             }
@@ -137,7 +149,7 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
             {
                 for(Client* tmpClient : clients)
                 {
-                    if(tmpClient->GetType() == Type::Wasmachine)
+                    if(tmpClient->GetType() == Type::WashingMachine)
                     {
                         Machine* machine = (Machine*)tmpClient;
                         //send water, power, program and macAdress
@@ -173,6 +185,7 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                     {
                         tmpClient->SetEnable(false);
                     }
+                    client->Send(CP_CODE_DISABLEALLCLIENTS, "0");
                 }
                 break;
             }
@@ -194,6 +207,7 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
                         tmp.push_back(std::to_string(machine->GetProgram()));
                         tmp.push_back(std::to_string(machine->IsEnabled()));
                         client->Send(CP_CODE_GETCLIENTS, tmp) ;
+                        break;
                     }
                 }
                 break;
@@ -212,6 +226,103 @@ void ProtocolHandler::HandleControlPanel(Client* client, std::vector<std::string
 void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string> messageVector)
 {
     switch(static_cast<M_Code>(stoi(messageVector[0])))
+    {
+         case M_CODE_REQUEST_WATER: 
+        {
+            if(database->UpdateWater(stoi(messageVector[1])))
+            {
+                machine->SetUsedWater(stoi(messageVector[1]));
+                machine->Send(M_CODE_REQUEST_WATER, 0);
+                return;
+            }
+            machine->Send(M_CODE_REQUEST_WATER, 1);
+            break;
+        }
+
+        case M_CODE_STOP_WATER:
+        {
+            int amount = machine->GetUsedWater();
+            database->ResetWater(amount);
+            machine->SetUsedWater(0);
+            machine->Send(M_CODE_STOP_WATER, 0);
+            break;
+        }
+        
+        case M_CODE_REQUEST_HEATER:
+        {
+            if(database->UpdatePower(stoi(messageVector[1])))
+            {
+                machine->SetUsedPower(stoi(messageVector[1]));
+                machine->Send(M_CODE_REQUEST_HEATER, 0);
+                return;
+            }
+            machine->Send(M_CODE_REQUEST_HEATER, 1);
+            break;
+        }  
+
+        case M_CODE_STOP_HEATER:
+        {
+            int amount = machine->GetUsedPower();
+            database->ResetPower(amount);
+            machine->SetUsedPower(0);
+            machine->Send(M_CODE_STOP_HEATER, 0);
+            break;
+        }
+        case M_CODE_DONE:
+        {
+            Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is done with " + std::to_string(machine->GetProgram()),"ProtocolHandler");
+            machine->SetProgram(Program::PROGRAM_NONE); 
+            machine->SetInProgress(false);
+            database->HandleLaundryFinish(machine->GetMacAdress());
+            break;
+        }
+
+        
+
+        case M_CODE_HEARTBEAT:
+            machine->ResetReplyCount();
+            break;
+            
+
+        case M_CODE_SENDPROGRAM:
+            if(machine->IsRequestingInProgress())
+            {
+                if(stoi(messageVector[1]) == 0)
+                {
+                    machine->SetRequestingInProgress(false);
+                    machine->SetInProgress(true);
+                     Logger::Record(false, "Wasmachine " + machine->GetMacAdress() + " is In progress on" + std::to_string(machine->GetProgram()),"ProtocolHandler");
+                }
+
+                else
+                {
+                    for(LaundryBasket* laundry : database->GetLaundryBaskets())
+                    {
+                        if(machine->GetMacAdress() == laundry->GetMacAdress())
+                        {
+                            Logger::Record(true, "Wasmachine " + machine->GetMacAdress() + "Gave an error on: " + std::to_string(machine->GetProgram()),"ProtocolHandler");
+                            laundry->SetBusy(false);
+                            machine->SetRequestingInProgress(false);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Logger::Record(true, "Machine" + machine->GetMacAdress() + "Is Responding a SendProgram when we're not requesting it?","ProtocolHandler");
+            }
+        break;
+
+        default:
+            break;
+    }
+}
+
+
+void ProtocolHandler::HandleDryer(Machine* machine, std::vector<std::string> messageVector)
+{
+     switch(static_cast<M_Code>(stoi(messageVector[0])))
     {
         case M_CODE_REQUEST_HEATER:
         {
@@ -234,26 +345,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             break;
         }
 
-        case M_CODE_REQUEST_WATER: 
-        {
-            if(database->UpdateWater(stoi(messageVector[1])))
-            {
-                machine->SetUsedWater(stoi(messageVector[1]));
-                machine->Send(M_CODE_REQUEST_WATER, 0);
-                return;
-            }
-            machine->Send(M_CODE_REQUEST_WATER, 1);
-            break;
-        }
-
-        case M_CODE_STOP_WATER:
-        {
-            int amount = machine->GetUsedWater();
-            database->ResetWater(amount);
-            machine->SetUsedWater(0);
-            machine->Send(M_CODE_STOP_WATER, 0);
-            break;
-        }
+        
 
         case M_CODE_DONE:
         {
@@ -300,6 +392,7 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
         break;
 
         default:
+        Logger::Record(true, "Machine" + machine->GetMacAdress() + "Is using an invaild command: ","ProtocolHandler");
             break;
     }
 }

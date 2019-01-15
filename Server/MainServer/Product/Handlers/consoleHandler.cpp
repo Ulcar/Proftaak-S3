@@ -104,9 +104,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
             {
                 if(commandos.size() >= 5)
                 {
-                    Laundry* laundry = new Laundry(stoi(commandos.at(2)));
-                    laundry->temperature= static_cast<Temperature>(stoi(commandos.at(3)));
-                    laundry->ColorType = static_cast<Color>(stoi(commandos.at(4)));
+                    Laundry* laundry = new Laundry(stoi(commandos.at(2)), static_cast<Temperature>(stoi(commandos.at(3))),  static_cast<Color>(stoi(commandos.at(4))));
                     for(uint i = 5; i < commandos.size(); i++)
                     {
                         laundry->TasksToDo.push_back(static_cast<Type>(stoi(commandos.at(i))));
@@ -116,7 +114,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                 }
                 else
                 {
-                    message += "laundry add <kg> <id> <temperature> <color> <list machines>\n";
+                    message += "laundry add <kg> <temperature> <color> <list machines>\n";
                 }
             }
             else if((commandos.at(1) == "remove") || (commandos.at(1) == "r"))
@@ -126,13 +124,13 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                     for(LaundryBasket* basket : database->GetLaundryBaskets())
                     {
                         int i = 0;
-                        std::vector<LaundryBasket*> tmpVector = basket->LaundryVector;
+                        std::vector<Laundry*> tmpVector = basket->LaundryVector;
                                                 
                         for(Laundry* laundry : tmpVector)
                         {
-                            if(laundry->GetID() == std::stoi(commandos.at(2))
+                            if(laundry->GetID() == std::stoi(commandos.at(2)))
                             {
-                                basket->LaundryVector.erase(LaundryVector.begin() + i);
+                                basket->LaundryVector.erase(basket->LaundryVector.begin() + i);
                                 i--;
                             }
                             i++;
@@ -146,7 +144,7 @@ std::string ConsoleHandler::HandleConsoleCommando(std::string commando)
                 {
                     for(Laundry* laundry : basket->LaundryVector)
                     {
-                       message += "[" + std::to_string(basket->GetID()) + "] ID: " + std::to_string(laundry->GetID()) + ", " + std::to_string(laundry->temperature) + " *C, Color: " + std::to_string(laundry->ColorType) + "\n";
+                       message += "[" + std::to_string(basket->GetID()) + "] ID: " + std::to_string(laundry->GetID()) + ", " + std::to_string(laundry->GetTemperature()) + " *C, Color: " + std::to_string(laundry->GetColor()) + "\n";
                     }
                 }
             }

@@ -4,10 +4,9 @@
 enum Type
 {
     ControlPanel = -1,
-    Wasmachine,
-    Stomer,
+    WashingMachine,
+    Dryer,
     Centrifuge,
-    Droogmachine
 };
 
 enum Temperature
@@ -19,9 +18,9 @@ enum Temperature
 
 enum Color
 {
-    Red, 
-    Blue, 
-    White
+    Light,
+    Dark, 
+    Colored
 };
 
 enum Program
