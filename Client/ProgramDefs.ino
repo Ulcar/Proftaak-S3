@@ -2,7 +2,7 @@
 #include "includes/program/Actions.h"
 
 #define WATER_TANK_SIZE (20)
-#define HEATER_WATT     (500)
+#define HEATER_WATT     (50)
 
 void AddPrograms(Programs* programs)
 {
