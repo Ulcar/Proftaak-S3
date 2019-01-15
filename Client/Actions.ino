@@ -1,16 +1,6 @@
 #include "includes/program/Actions.h"
 
 //
-// IAction
-//=============
-
-IAction::IAction()
-    : _stop(false)
-{
-    // Nothing to do.
-}
-
-//
 // AddSoapAction
 //=============
 

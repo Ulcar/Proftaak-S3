@@ -36,6 +36,10 @@ void Connect()
 {
     client->Reset();
 
+    Serial.println("Connecting to the Wi-Fi network...");
+
+    client->ConnectToNetwork();
+
     while (!client->IsConnectedToNetwork())
     {
         Serial.println("Connecting to the Wi-Fi network...");

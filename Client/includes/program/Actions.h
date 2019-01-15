@@ -16,7 +16,11 @@
 class IAction
 {
 public:
-    virtual IAction();
+    IAction()
+    {
+        _stop = false;
+    }
+
     virtual ~IAction() { };
 
     virtual void Handle() = 0;
