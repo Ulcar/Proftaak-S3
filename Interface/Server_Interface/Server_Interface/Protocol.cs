@@ -12,6 +12,12 @@ namespace Server_Interface
         public static char seperatorChar = ';';
         public static char endCharToServer = '#';
 
+        public static string MakeString(CP_Code code, string text)
+        {
+            List<string> value = new List<string> { text };
+            return MakeString(CP_Code.CP_CODE_GETCLIENTS, value);
+        }
+
         public static string MakeString(CP_Code code, List<string> value)
         {
             string newString;
