@@ -11,6 +11,11 @@ Program::Program(HardwareControl* control, MainClient* client)
 
 void Program::Reset()
 {
+    if (_currentAction != NULL)
+    {
+        _currentAction->Stop();
+    }
+
     _currentAction = NULL;
     _nextActionIndex = 0;
     _started = false;

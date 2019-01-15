@@ -16,10 +16,12 @@
 class IAction
 {
 public:
+    virtual IAction();
     virtual ~IAction() { };
 
     virtual void Handle() = 0;
     virtual bool IsDone() = 0;
+    virtual void Stop() = 0;
 
     void AllowTakeWater()
     {
@@ -47,6 +49,8 @@ protected:
 
     bool _mayTakeWater;
     bool _mayHeatUp;
+
+    bool _stop;
 };
 
 class SoapAction : public IAction
@@ -56,6 +60,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     HardwareState _state;
@@ -69,6 +74,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     HardwareState _state;
@@ -81,6 +87,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 };
 
 class HeatAction : public IAction
@@ -90,6 +97,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     Temperature _temp;
@@ -102,6 +110,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     WaterLevel _level;
@@ -114,6 +123,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     unsigned long _startMs;
@@ -127,6 +137,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     unsigned long _startMs;
@@ -140,6 +151,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     MotorDirection _direction;
@@ -153,6 +165,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     unsigned long _ms;

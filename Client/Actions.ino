@@ -1,6 +1,16 @@
 #include "includes/program/Actions.h"
 
 //
+// IAction
+//=============
+
+IAction::IAction()
+    : _stop(false)
+{
+    // Nothing to do.
+}
+
+//
 // AddSoapAction
 //=============
 
@@ -24,6 +34,11 @@ bool SoapAction::IsDone()
     return true;
 }
 
+void SoapAction::Stop()
+{
+    // Nothing to do.
+}
+
 //
 // BuzzerAction
 //=============
@@ -45,6 +60,11 @@ void BuzzerAction::Handle()
 bool BuzzerAction::IsDone()
 {
     return true;
+}
+
+void BuzzerAction::Stop()
+{
+    // Nothing to do.
 }
 
 //
@@ -78,7 +98,16 @@ bool DrainWaterAction::IsDone()
         return true;
     }
 
-    return false;
+    return false || _stop;
+}
+
+void DrainWaterAction::Stop()
+{
+    Water* water = (Water *) _control->GetWater();
+
+    water->SetSink(STATE_OFF);
+
+    _stop = true;
 }
 
 //
@@ -115,7 +144,16 @@ bool HeatAction::IsDone()
         return true;
     }
 
-    return false;
+    return false || _stop;
+}
+
+void HeatAction::Stop()
+{
+    Heater* heater = (Heater *) _control->GetHeater();
+
+    heater->Set(STATE_OFF);
+
+    _stop = true;
 }
 
 //
@@ -152,7 +190,16 @@ bool FillWaterAction::IsDone()
         return true;
     }
 
-    return false;
+    return false || _stop;
+}
+
+void FillWaterAction::Stop()
+{
+    Water* water = (Water *) _control->GetWater();
+
+    water->SetDrain(STATE_OFF);
+
+    _stop = true;
 }
 
 //
@@ -195,7 +242,12 @@ bool RequestPowerAction::IsDone()
         _startMs = 0;
     }
 
-    return result;
+    return result || _stop;
+}
+
+void RequestPowerAction::Stop()
+{
+    _stop = true;
 }
 
 //
@@ -239,7 +291,12 @@ bool RequestWaterAction::IsDone()
         _startMs = 0;
     }
 
-    return result;
+    return result || _stop;
+}
+
+void RequestWaterAction::Stop()
+{
+    _stop = true;
 }
 
 //
@@ -265,6 +322,11 @@ void MotorRotateAction::Handle()
 bool MotorRotateAction::IsDone()
 {
     return true;
+}
+
+void MotorRotateAction::Stop()
+{
+    // Nothing to do.
 }
 
 //
@@ -296,5 +358,10 @@ bool DelayAction::IsDone()
         _startMs = 0;
     }
 
-    return result;
+    return result || _stop;
+}
+
+void DelayAction::Stop()
+{
+    _stop = true;
 }
