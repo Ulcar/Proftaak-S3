@@ -344,7 +344,7 @@ namespace Server_Interface
                             case CP_Code.CP_CODE_DISABLEALLCLIENTS:
                                 if (data[1] == "1")
                                     return;
-                                consoleOutput.Add("All clients disabled, refreshing...");
+                                consoleOutput.Add("~All clients disabled, refreshing...");
                                 consoleOutputEdited = true;
                                 wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, "1"));
                                 break;
