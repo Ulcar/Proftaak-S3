@@ -89,8 +89,7 @@ namespace Server_Interface
             {
                 Client temp = ClientList.SelectedItem as Client;
                 EnabledLb.Text = "xx";
-                List<string> message = new List<string> { temp.Enabled + "" };
-                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_SETCLIENT, message));
+                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_SETCLIENT, temp.Enabled + ""));
             }
         }
 
@@ -109,14 +108,80 @@ namespace Server_Interface
 
         private void DisableClientsBtn_Click(object sender, EventArgs e)
         {
-            List<string> value = new List<string> { "1" };
-            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_DISABLEALLCLIENTS, value));
+            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_DISABLEALLCLIENTS, "1"));
         }
 
         private void ReloadBtn_Click(object sender, EventArgs e)
         {
-            List<string> value = new List<string> { "1" };
-            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value));
+            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, "1"));
+        }
+
+        private void LaundryBtn_Click(object sender, EventArgs e)
+        {
+            decimal pounds = PoundsNummericUpDown.Value;
+            string machines = "";
+            int color;
+            int temperature;
+
+            if (pounds <= 0)
+            {
+                consoleOutput.Add("~Enter a valid weight");
+                consoleOutputEdited = true;
+                return;
+            }
+
+            if (ColorLightRadioButton.Checked)
+            {
+                color = 0;
+            }
+            else if (ColorDarkRadioButton.Checked)
+            {
+                color = 1;
+            }
+            else
+            {
+                color = 2;
+            }
+
+            if (TempColdRadioButton.Checked)
+            {
+                temperature = 0;
+            }
+            else if (TempWarmRadioButton.Checked)
+            {
+                temperature = 1;
+            }
+            else
+            {
+                temperature = 2;
+            }
+
+            if (WashingMachineCheckBox.Checked)
+            {
+                machines += " 0";
+            }
+            if (DryerCheckBox.Checked)
+            {
+                machines += " 1";
+            }
+            if (CentrifugeCheckBox.Checked)
+            {
+                machines += " 2";
+            }
+            if (SteamerCheckBox.Checked)
+            {
+                machines += " 3";
+            }
+
+            if(machines == "")
+            {
+                consoleOutput.Add("~Select minimal 1 machine");
+                consoleOutputEdited = true;
+                return;
+            }
+            
+            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_CONSOLE, "laundry add " + pounds + " " + temperature + " " + color + machines));
+
         }
 
 
@@ -250,9 +315,8 @@ namespace Server_Interface
                             case CP_Code.CP_CODE_CONNECT:
                                 if (data[1] == "1")
                                     Disconnect();
-
-                                List<string> value = new List<string> { "1" };
-                                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value));
+                                
+                                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, "1"));
                                 break;
 
                             case CP_Code.CP_CODE_CONSOLE:
@@ -264,8 +328,7 @@ namespace Server_Interface
                                     return;
                                 consoleOutput.Add("All clients disabled, refreshing...");
                                 consoleOutputEdited = true;
-                                List<string> value2 = new List<string> { "1" };
-                                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, value2));
+                                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, "1"));
                                 break;
 
                             case CP_Code.CP_CODE_GETCLIENTS:
@@ -311,8 +374,7 @@ namespace Server_Interface
             }
             else
             {
-                List<string> message = new List<string> { ConsoleInputTb.Text };
-                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_CONSOLE, message));
+                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_CONSOLE, ConsoleInputTb.Text));
             }
             ConsoleInputTb.Clear();
         }

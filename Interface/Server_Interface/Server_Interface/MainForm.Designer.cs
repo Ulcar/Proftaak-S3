@@ -52,12 +52,34 @@
             this.ConsoleGroupbox = new System.Windows.Forms.GroupBox();
             this.DisconnectBtn = new System.Windows.Forms.Button();
             this.ToolbarGroupbox = new System.Windows.Forms.GroupBox();
-            this.DisableClientsBtn = new System.Windows.Forms.Button();
             this.ReloadBtn = new System.Windows.Forms.Button();
+            this.DisableClientsBtn = new System.Windows.Forms.Button();
+            this.LaundryGroupBox = new System.Windows.Forms.GroupBox();
+            this.PoundsNummericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
+            this.ColorGroupBox = new System.Windows.Forms.GroupBox();
+            this.TemperatureGroupBox = new System.Windows.Forms.GroupBox();
+            this.ColorLightRadioButton = new System.Windows.Forms.RadioButton();
+            this.ColorDarkRadioButton = new System.Windows.Forms.RadioButton();
+            this.ColorColorRadioButton = new System.Windows.Forms.RadioButton();
+            this.TempHotRadioButton = new System.Windows.Forms.RadioButton();
+            this.TempWarmRadioButton = new System.Windows.Forms.RadioButton();
+            this.TempColdRadioButton = new System.Windows.Forms.RadioButton();
+            this.LaundryBtn = new System.Windows.Forms.Button();
+            this.MachinesGroupBox = new System.Windows.Forms.GroupBox();
+            this.WashingMachineCheckBox = new System.Windows.Forms.CheckBox();
+            this.DryerCheckBox = new System.Windows.Forms.CheckBox();
+            this.CentrifugeCheckBox = new System.Windows.Forms.CheckBox();
+            this.SteamerCheckBox = new System.Windows.Forms.CheckBox();
             this.ClientGroupbox.SuspendLayout();
             this.DataGroupbox.SuspendLayout();
             this.ConsoleGroupbox.SuspendLayout();
             this.ToolbarGroupbox.SuspendLayout();
+            this.LaundryGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PoundsNummericUpDown)).BeginInit();
+            this.ColorGroupBox.SuspendLayout();
+            this.TemperatureGroupBox.SuspendLayout();
+            this.MachinesGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // ClientList
@@ -117,12 +139,13 @@
             // ConsoleList
             // 
             this.ConsoleList.FormattingEnabled = true;
+            this.ConsoleList.HorizontalScrollbar = true;
             this.ConsoleList.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.ConsoleList.Location = new System.Drawing.Point(6, 19);
             this.ConsoleList.Name = "ConsoleList";
             this.ConsoleList.ScrollAlwaysVisible = true;
             this.ConsoleList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.ConsoleList.Size = new System.Drawing.Size(334, 290);
+            this.ConsoleList.Size = new System.Drawing.Size(532, 537);
             this.ConsoleList.TabIndex = 9;
             // 
             // TotalWaterLb
@@ -136,9 +159,9 @@
             // 
             // SendCmdBtn
             // 
-            this.SendCmdBtn.Location = new System.Drawing.Point(274, 313);
+            this.SendCmdBtn.Location = new System.Drawing.Point(413, 562);
             this.SendCmdBtn.Name = "SendCmdBtn";
-            this.SendCmdBtn.Size = new System.Drawing.Size(66, 20);
+            this.SendCmdBtn.Size = new System.Drawing.Size(125, 20);
             this.SendCmdBtn.TabIndex = 11;
             this.SendCmdBtn.Text = "Send";
             this.SendCmdBtn.UseVisualStyleBackColor = true;
@@ -147,9 +170,9 @@
             // 
             // ConsoleInputTb
             // 
-            this.ConsoleInputTb.Location = new System.Drawing.Point(6, 313);
+            this.ConsoleInputTb.Location = new System.Drawing.Point(6, 563);
             this.ConsoleInputTb.Name = "ConsoleInputTb";
-            this.ConsoleInputTb.Size = new System.Drawing.Size(262, 20);
+            this.ConsoleInputTb.Size = new System.Drawing.Size(401, 20);
             this.ConsoleInputTb.TabIndex = 12;
             this.ConsoleInputTb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SendCmdBtn_KeyDown);
             // 
@@ -204,7 +227,7 @@
             this.ClientGroupbox.Controls.Add(this.ClientList);
             this.ClientGroupbox.Location = new System.Drawing.Point(12, 59);
             this.ClientGroupbox.Name = "ClientGroupbox";
-            this.ClientGroupbox.Size = new System.Drawing.Size(566, 339);
+            this.ClientGroupbox.Size = new System.Drawing.Size(566, 291);
             this.ClientGroupbox.TabIndex = 18;
             this.ClientGroupbox.TabStop = false;
             this.ClientGroupbox.Text = "Clients";
@@ -273,7 +296,7 @@
             this.ConsoleGroupbox.Controls.Add(this.SendCmdBtn);
             this.ConsoleGroupbox.Location = new System.Drawing.Point(584, 59);
             this.ConsoleGroupbox.Name = "ConsoleGroupbox";
-            this.ConsoleGroupbox.Size = new System.Drawing.Size(348, 339);
+            this.ConsoleGroupbox.Size = new System.Drawing.Size(544, 589);
             this.ConsoleGroupbox.TabIndex = 19;
             this.ConsoleGroupbox.TabStop = false;
             this.ConsoleGroupbox.Text = "Console";
@@ -304,16 +327,6 @@
             this.ToolbarGroupbox.TabStop = false;
             this.ToolbarGroupbox.Text = "Toolbar";
             // 
-            // DisableClientsBtn
-            // 
-            this.DisableClientsBtn.Location = new System.Drawing.Point(640, 11);
-            this.DisableClientsBtn.Name = "DisableClientsBtn";
-            this.DisableClientsBtn.Size = new System.Drawing.Size(105, 23);
-            this.DisableClientsBtn.TabIndex = 21;
-            this.DisableClientsBtn.Text = "Disable all Clients";
-            this.DisableClientsBtn.UseVisualStyleBackColor = true;
-            this.DisableClientsBtn.Click += new System.EventHandler(this.DisableClientsBtn_Click);
-            // 
             // ReloadBtn
             // 
             this.ReloadBtn.Location = new System.Drawing.Point(751, 12);
@@ -324,11 +337,204 @@
             this.ReloadBtn.UseVisualStyleBackColor = true;
             this.ReloadBtn.Click += new System.EventHandler(this.ReloadBtn_Click);
             // 
+            // DisableClientsBtn
+            // 
+            this.DisableClientsBtn.Location = new System.Drawing.Point(640, 11);
+            this.DisableClientsBtn.Name = "DisableClientsBtn";
+            this.DisableClientsBtn.Size = new System.Drawing.Size(105, 23);
+            this.DisableClientsBtn.TabIndex = 21;
+            this.DisableClientsBtn.Text = "Disable all Clients";
+            this.DisableClientsBtn.UseVisualStyleBackColor = true;
+            this.DisableClientsBtn.Click += new System.EventHandler(this.DisableClientsBtn_Click);
+            // 
+            // LaundryGroupBox
+            // 
+            this.LaundryGroupBox.Controls.Add(this.MachinesGroupBox);
+            this.LaundryGroupBox.Controls.Add(this.LaundryBtn);
+            this.LaundryGroupBox.Controls.Add(this.TemperatureGroupBox);
+            this.LaundryGroupBox.Controls.Add(this.ColorGroupBox);
+            this.LaundryGroupBox.Controls.Add(this.label8);
+            this.LaundryGroupBox.Controls.Add(this.PoundsNummericUpDown);
+            this.LaundryGroupBox.Location = new System.Drawing.Point(12, 356);
+            this.LaundryGroupBox.Name = "LaundryGroupBox";
+            this.LaundryGroupBox.Size = new System.Drawing.Size(566, 292);
+            this.LaundryGroupBox.TabIndex = 22;
+            this.LaundryGroupBox.TabStop = false;
+            this.LaundryGroupBox.Text = "Laundry";
+            // 
+            // PoundsNummericUpDown
+            // 
+            this.PoundsNummericUpDown.Location = new System.Drawing.Point(261, 19);
+            this.PoundsNummericUpDown.Name = "PoundsNummericUpDown";
+            this.PoundsNummericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.PoundsNummericUpDown.TabIndex = 0;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(152, 21);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(46, 13);
+            this.label8.TabIndex = 21;
+            this.label8.Text = "Pounds:";
+            // 
+            // ColorGroupBox
+            // 
+            this.ColorGroupBox.Controls.Add(this.ColorColorRadioButton);
+            this.ColorGroupBox.Controls.Add(this.ColorDarkRadioButton);
+            this.ColorGroupBox.Controls.Add(this.ColorLightRadioButton);
+            this.ColorGroupBox.Location = new System.Drawing.Point(46, 48);
+            this.ColorGroupBox.Name = "ColorGroupBox";
+            this.ColorGroupBox.Size = new System.Drawing.Size(202, 95);
+            this.ColorGroupBox.TabIndex = 24;
+            this.ColorGroupBox.TabStop = false;
+            this.ColorGroupBox.Text = "Select Color";
+            // 
+            // TemperatureGroupBox
+            // 
+            this.TemperatureGroupBox.Controls.Add(this.TempHotRadioButton);
+            this.TemperatureGroupBox.Controls.Add(this.TempColdRadioButton);
+            this.TemperatureGroupBox.Controls.Add(this.TempWarmRadioButton);
+            this.TemperatureGroupBox.Location = new System.Drawing.Point(276, 48);
+            this.TemperatureGroupBox.Name = "TemperatureGroupBox";
+            this.TemperatureGroupBox.Size = new System.Drawing.Size(202, 95);
+            this.TemperatureGroupBox.TabIndex = 25;
+            this.TemperatureGroupBox.TabStop = false;
+            this.TemperatureGroupBox.Text = "Select Temperature";
+            // 
+            // ColorLightRadioButton
+            // 
+            this.ColorLightRadioButton.AutoSize = true;
+            this.ColorLightRadioButton.Checked = true;
+            this.ColorLightRadioButton.Location = new System.Drawing.Point(72, 19);
+            this.ColorLightRadioButton.Name = "ColorLightRadioButton";
+            this.ColorLightRadioButton.Size = new System.Drawing.Size(48, 17);
+            this.ColorLightRadioButton.TabIndex = 0;
+            this.ColorLightRadioButton.TabStop = true;
+            this.ColorLightRadioButton.Text = "Light";
+            this.ColorLightRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // ColorDarkRadioButton
+            // 
+            this.ColorDarkRadioButton.AutoSize = true;
+            this.ColorDarkRadioButton.Location = new System.Drawing.Point(72, 42);
+            this.ColorDarkRadioButton.Name = "ColorDarkRadioButton";
+            this.ColorDarkRadioButton.Size = new System.Drawing.Size(48, 17);
+            this.ColorDarkRadioButton.TabIndex = 1;
+            this.ColorDarkRadioButton.Text = "Dark";
+            this.ColorDarkRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // ColorColorRadioButton
+            // 
+            this.ColorColorRadioButton.AutoSize = true;
+            this.ColorColorRadioButton.Location = new System.Drawing.Point(72, 65);
+            this.ColorColorRadioButton.Name = "ColorColorRadioButton";
+            this.ColorColorRadioButton.Size = new System.Drawing.Size(49, 17);
+            this.ColorColorRadioButton.TabIndex = 2;
+            this.ColorColorRadioButton.Text = "Color";
+            this.ColorColorRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // TempHotRadioButton
+            // 
+            this.TempHotRadioButton.AutoSize = true;
+            this.TempHotRadioButton.Location = new System.Drawing.Point(72, 65);
+            this.TempHotRadioButton.Name = "TempHotRadioButton";
+            this.TempHotRadioButton.Size = new System.Drawing.Size(48, 17);
+            this.TempHotRadioButton.TabIndex = 5;
+            this.TempHotRadioButton.Text = "60*C";
+            this.TempHotRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // TempWarmRadioButton
+            // 
+            this.TempWarmRadioButton.AutoSize = true;
+            this.TempWarmRadioButton.Location = new System.Drawing.Point(72, 42);
+            this.TempWarmRadioButton.Name = "TempWarmRadioButton";
+            this.TempWarmRadioButton.Size = new System.Drawing.Size(51, 17);
+            this.TempWarmRadioButton.TabIndex = 4;
+            this.TempWarmRadioButton.Text = "40 *C";
+            this.TempWarmRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // TempColdRadioButton
+            // 
+            this.TempColdRadioButton.AutoSize = true;
+            this.TempColdRadioButton.Checked = true;
+            this.TempColdRadioButton.Location = new System.Drawing.Point(72, 19);
+            this.TempColdRadioButton.Name = "TempColdRadioButton";
+            this.TempColdRadioButton.Size = new System.Drawing.Size(51, 17);
+            this.TempColdRadioButton.TabIndex = 3;
+            this.TempColdRadioButton.TabStop = true;
+            this.TempColdRadioButton.Text = "30 *C";
+            this.TempColdRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // LaundryBtn
+            // 
+            this.LaundryBtn.Location = new System.Drawing.Point(276, 171);
+            this.LaundryBtn.Name = "LaundryBtn";
+            this.LaundryBtn.Size = new System.Drawing.Size(202, 97);
+            this.LaundryBtn.TabIndex = 21;
+            this.LaundryBtn.Text = "Send Laundry";
+            this.LaundryBtn.UseVisualStyleBackColor = true;
+            this.LaundryBtn.Click += new System.EventHandler(this.LaundryBtn_Click);
+            // 
+            // MachinesGroupBox
+            // 
+            this.MachinesGroupBox.Controls.Add(this.SteamerCheckBox);
+            this.MachinesGroupBox.Controls.Add(this.CentrifugeCheckBox);
+            this.MachinesGroupBox.Controls.Add(this.DryerCheckBox);
+            this.MachinesGroupBox.Controls.Add(this.WashingMachineCheckBox);
+            this.MachinesGroupBox.Location = new System.Drawing.Point(46, 164);
+            this.MachinesGroupBox.Name = "MachinesGroupBox";
+            this.MachinesGroupBox.Size = new System.Drawing.Size(202, 108);
+            this.MachinesGroupBox.TabIndex = 26;
+            this.MachinesGroupBox.TabStop = false;
+            this.MachinesGroupBox.Text = "Select Machines";
+            // 
+            // WashingMachineCheckBox
+            // 
+            this.WashingMachineCheckBox.AutoSize = true;
+            this.WashingMachineCheckBox.Location = new System.Drawing.Point(48, 19);
+            this.WashingMachineCheckBox.Name = "WashingMachineCheckBox";
+            this.WashingMachineCheckBox.Size = new System.Drawing.Size(109, 17);
+            this.WashingMachineCheckBox.TabIndex = 0;
+            this.WashingMachineCheckBox.Text = "WashingMachine";
+            this.WashingMachineCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // DryerCheckBox
+            // 
+            this.DryerCheckBox.AutoSize = true;
+            this.DryerCheckBox.Location = new System.Drawing.Point(48, 42);
+            this.DryerCheckBox.Name = "DryerCheckBox";
+            this.DryerCheckBox.Size = new System.Drawing.Size(51, 17);
+            this.DryerCheckBox.TabIndex = 1;
+            this.DryerCheckBox.Text = "Dryer";
+            this.DryerCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // CentrifugeCheckBox
+            // 
+            this.CentrifugeCheckBox.AutoSize = true;
+            this.CentrifugeCheckBox.Location = new System.Drawing.Point(48, 65);
+            this.CentrifugeCheckBox.Name = "CentrifugeCheckBox";
+            this.CentrifugeCheckBox.Size = new System.Drawing.Size(74, 17);
+            this.CentrifugeCheckBox.TabIndex = 2;
+            this.CentrifugeCheckBox.Text = "Centrifuge";
+            this.CentrifugeCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // SteamerCheckBox
+            // 
+            this.SteamerCheckBox.AutoSize = true;
+            this.SteamerCheckBox.Location = new System.Drawing.Point(48, 87);
+            this.SteamerCheckBox.Name = "SteamerCheckBox";
+            this.SteamerCheckBox.Size = new System.Drawing.Size(65, 17);
+            this.SteamerCheckBox.TabIndex = 3;
+            this.SteamerCheckBox.Text = "Steamer";
+            this.SteamerCheckBox.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(948, 408);
+            this.ClientSize = new System.Drawing.Size(1142, 660);
+            this.Controls.Add(this.LaundryGroupBox);
             this.Controls.Add(this.ToolbarGroupbox);
             this.Controls.Add(this.ConsoleGroupbox);
             this.Controls.Add(this.ClientGroupbox);
@@ -342,6 +548,15 @@
             this.ConsoleGroupbox.PerformLayout();
             this.ToolbarGroupbox.ResumeLayout(false);
             this.ToolbarGroupbox.PerformLayout();
+            this.LaundryGroupBox.ResumeLayout(false);
+            this.LaundryGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PoundsNummericUpDown)).EndInit();
+            this.ColorGroupBox.ResumeLayout(false);
+            this.ColorGroupBox.PerformLayout();
+            this.TemperatureGroupBox.ResumeLayout(false);
+            this.TemperatureGroupBox.PerformLayout();
+            this.MachinesGroupBox.ResumeLayout(false);
+            this.MachinesGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -373,6 +588,23 @@
         private System.Windows.Forms.GroupBox ToolbarGroupbox;
         private System.Windows.Forms.Button DisableClientsBtn;
         private System.Windows.Forms.Button ReloadBtn;
+        private System.Windows.Forms.GroupBox LaundryGroupBox;
+        private System.Windows.Forms.Button LaundryBtn;
+        private System.Windows.Forms.GroupBox TemperatureGroupBox;
+        private System.Windows.Forms.RadioButton TempHotRadioButton;
+        private System.Windows.Forms.RadioButton TempColdRadioButton;
+        private System.Windows.Forms.RadioButton TempWarmRadioButton;
+        private System.Windows.Forms.GroupBox ColorGroupBox;
+        private System.Windows.Forms.RadioButton ColorColorRadioButton;
+        private System.Windows.Forms.RadioButton ColorDarkRadioButton;
+        private System.Windows.Forms.RadioButton ColorLightRadioButton;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.NumericUpDown PoundsNummericUpDown;
+        private System.Windows.Forms.GroupBox MachinesGroupBox;
+        private System.Windows.Forms.CheckBox SteamerCheckBox;
+        private System.Windows.Forms.CheckBox CentrifugeCheckBox;
+        private System.Windows.Forms.CheckBox DryerCheckBox;
+        private System.Windows.Forms.CheckBox WashingMachineCheckBox;
     }
 }
 
