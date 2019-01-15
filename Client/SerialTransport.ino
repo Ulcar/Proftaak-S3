@@ -10,6 +10,11 @@ SerialTransport::~SerialTransport()
     // ...
 }
 
+bool SerialTransport::ConnectToNetwork()
+{
+    return true;
+}
+
 bool SerialTransport::ConnectToServer()
 {
     return true;
@@ -49,4 +54,9 @@ String SerialTransport::Read(bool shouldBlock = false)
 String SerialTransport::GetMacAddress()
 {
     return "AABBCCDDEEFF";
+}
+
+bool SerialTransport::IsConnectedToNetwork()
+{
+    return true;
 }

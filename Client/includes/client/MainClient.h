@@ -25,11 +25,14 @@ class MainClient
 public:
     MainClient(ITransport* transport, OnMessageReceivedCallback callback);
 
+    bool ConnectToNetwork();
     bool ConnectToServer(MachineType type);
 
     void Send(MessageCode code, std::vector<String> parameters);
     void Update();
+    void Reset();
 
+    bool IsConnectedToNetwork();
     bool IsConnectedToServer();
 
 protected:

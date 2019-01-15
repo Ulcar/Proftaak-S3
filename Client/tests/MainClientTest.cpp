@@ -1,17 +1,33 @@
 #include <gtest/gtest.h>
 
 #include "harnass/ArduinoWrapper.h"
+#include "mock/MTransport.h"
 
-#include "Protocol.ino"
+#include "MainClient.ino"
 
-TEST(ProtocolTest, TestToServerGeneratesCorrectMessage)
+class MainClientTest : public ::testing::Test
 {
-    String result = Protocol::ToServer(M_PROGRAM_DONE, { "1" });
+protected:
+    MainClient* client;
+    MTransport* transport;
 
-    EXPECT_EQ(String("&5;1#"), result);
+    MainClientTest()
+    {
+        client = new MainClient(transport, NULL);
+    }
+};
+
+TEST_F(MainClientTest, TestSendCorrectlyEncodesTheMessage)
+{
+    EXPECT_CALL(transport, Send("&5;1#"));
+
+    client->Send(M_PROGRAM_DONE, { "1" });
+    /*String result = Protocol::ToServer(M_PROGRAM_DONE, { "1" });
+
+    EXPECT_EQ(String("&5;1#"), result);*/
 }
 
-TEST(ProtocolTest, TestFromServerDecodesCorrectlyWithoutStartAndEndChars)
+/*TEST_F(ProtocolTest, TestFromServerDecodesCorrectlyWithoutStartAndEndChars)
 {
     String message = String("6;0");
 
@@ -29,4 +45,4 @@ TEST(ProtocolTest, TestFromServerDecodesCorrectlyWithStartAndEndChars)
     std::vector<String> parameters = Protocol::FromServer(message);
 
     EXPECT_EQ(expectedParameters, parameters);
-}
+}*/

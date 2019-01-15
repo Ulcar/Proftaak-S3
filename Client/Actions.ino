@@ -174,7 +174,7 @@ void RequestPowerAction::Handle()
 
     unsigned long currentMs = millis();
 
-    if (_startMs == 0 || currentMs - _startMs > DELAY_TIME_POWER)
+    if (_startMs == 0 || currentMs - _startMs > (DELAY_TIME_POWER * 1000L))
     {
         _startMs = currentMs;
 
@@ -218,7 +218,7 @@ void RequestWaterAction::Handle()
 
     unsigned long currentMs = millis();
 
-    if (_startMs == 0 || currentMs - _startMs > DELAY_TIME_WATER)
+    if (_startMs == 0 || currentMs - _startMs > (DELAY_TIME_WATER * 1000L))
     {
         _startMs = currentMs;
 

@@ -18,6 +18,7 @@ public:
 
     void Update();
 
+    void Add(int number, std::vector<IAction*> actions);
     void Load(File dir);
     bool Start(int number);
 

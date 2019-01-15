@@ -107,7 +107,6 @@ IAction* Program::CreateAction(int number, JsonObject& args)
     return action;
 }
 
-
 bool Program::Load(Stream& json)
 {
     DynamicJsonBuffer buffer(512);
@@ -213,4 +212,9 @@ void Program::AllowHeatUp()
 int Program::GetNumber()
 {
     return _number;
+}
+
+void Program::SetNumber(int number)
+{
+    _number = number;
 }

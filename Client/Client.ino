@@ -1,5 +1,5 @@
-#include <SPI.h>
-#include <SD.h>
+/*#include <SPI.h>
+#include <SD.h>*/
 
 #include "includes/hardware/HardwareControl.h"
 #include "includes/hardware/CentipedeShield.h"
@@ -9,18 +9,19 @@
 #include "includes/hardware/Motor.h"
 #include "includes/hardware/Water.h"
 
+#include "includes/client/SerialTransport.h"
 #include "includes/client/WifiTransport.h"
 #include "includes/client/MainClient.h"
 
-#include "includes/program/Actions.h"
 #include "includes/program/Program.h"
 #include "includes/program/Programs.h"
 
 #include "includes/Enums.h"
 
-#define WATER_TANK_SIZE (20)
-#define HEATER_WATT     (500)
-#define SD_SHIELD       (4)
+#define CONNECTION_LOST_TIMEOUT (30)
+#define RETRY_TIMEOUT           (5)
+
+#define SD_SHIELD               (4)
 
 // Because we need to be able to access these variables in both the 'setup' and
 // 'loop' methods we made these variables global. While we could have created a
@@ -30,21 +31,63 @@ HardwareControl* hardwareControl;
 MainClient* client;
 Programs* programs;
 
-void onMessageReceived(std::vector<String> message)
-{
-    bool isValid = true;
+unsigned long lastPing = 0;
 
-    // Verify that the first part of the message (the message code) is an
-    // integer.
-    for (int i = 0; i < message[0].length(); ++i)
+void Connect()
+{
+    client->Reset();
+
+    while (!client->IsConnectedToNetwork())
     {
-        if (!isDigit(message[0][i]))
+        Serial.println("Connecting to the Wi-Fi network...");
+
+        if (!client->ConnectToNetwork())
         {
-            isValid = false;
+            Serial.println("Could not connect to the Wi-Fi network.");
+
+            delay(RETRY_TIMEOUT * 1000L);
+
+            Serial.println("Retrying connection...");
         }
     }
 
-    if (!isValid)
+    Serial.println("Connected to the Wi-Fi network.");
+
+    while (!client->IsConnectedToServer())
+    {
+        Serial.println("Connecting to the server...");
+
+        if (!client->ConnectToServer(MT_WASMACHINE))
+        {
+            Serial.println("Could not connect to the server.");
+
+            delay(RETRY_TIMEOUT * 1000L);
+
+            Serial.println("Retrying connection...");
+        }
+    }
+
+    Serial.println("Connected to the server.");
+
+    lastPing = millis();
+}
+
+bool IsNumber(String message)
+{
+    for (int i = 0; i < message.length(); ++i)
+    {
+        if (!isDigit(message[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void OnMessageReceived(std::vector<String> message)
+{
+    if (!IsNumber(message[0]))
     {
         Serial.println("Invalid message code received (" + message[0] + ")");
 
@@ -56,13 +99,15 @@ void onMessageReceived(std::vector<String> message)
     switch (command)
     {
     case M_PING:
+        lastPing = millis();
+
         client->Send(M_PING, { "0" });
         break;
 
     case M_PROGRAM_START:
     {
-        // If we don't have two parameters, we know that the command is invalid.
-        if (message.size() < 2)
+        // Test if the parameters are valid.
+        if (message.size() < 2 || !IsNumber(message[1]))
         {
             client->Send(M_PROGRAM_START, { "1" });
 
@@ -73,13 +118,13 @@ void onMessageReceived(std::vector<String> message)
 
         if (programs->Start(program))
         {
-            Serial.println("Starting program #" + String(program));
+            Serial.println("Starting program #" + message[1]);
 
             client->Send(M_PROGRAM_START, { "0" });
         }
         else
         {
-            Serial.println("Unknown program (" + String(program) + ")");
+            Serial.println("Unknown program (" + message[1] + ")");
 
             client->Send(M_PROGRAM_START, { "1" });
         }
@@ -87,8 +132,8 @@ void onMessageReceived(std::vector<String> message)
     }
 
     case M_MAY_TAKE_WATER:
-        // If we don't have two parameters, we know that the command is invalid.
-        if (message.size() < 2)
+        // Test if the parameters are valid.
+        if (message.size() < 2 || !IsNumber(message[1]))
         {
             return;
         }
@@ -100,8 +145,8 @@ void onMessageReceived(std::vector<String> message)
         break;
 
     case M_MAY_HEAT_UP:
-        // If we don't have two parameters, we know that the command is invalid.
-        if (message.size() < 2)
+        // Test if the parameters are valid.
+        if (message.size() < 2 || !IsNumber(message[1]))
         {
             return;
         }
@@ -118,7 +163,7 @@ void onMessageReceived(std::vector<String> message)
     }
 }
 
-void onProgramDone()
+void OnProgramDone()
 {
     StatusIndicator* statusIndicator = hardwareControl->GetStatusIndicator();
     statusIndicator->SetStatus(S_DONE);
@@ -145,55 +190,49 @@ void setup()
     );
 
     // Connect to the remote server.
-    Serial.println("Connecting to the Wi-Fi network...");
+    //client = new MainClient(new WifiTransport("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863), OnMessageReceived);
+    client = new MainClient(new SerialTransport(), OnMessageReceived);
 
-    client = new MainClient(new WifiTransport("TP-LINK_Proftaak", "wasserete", "192.168.137.102", 57863), onMessageReceived);
-
-    Serial.println("Connected to the Wi-Fi network.");
-
-    while (!client->IsConnectedToServer())
-    {
-        Serial.println("Connecting to the server...");
-
-        if (!client->ConnectToServer(MT_WASMACHINE))
-        {
-            Serial.println("Could not connect to the server.");
-
-            delay(5000);
-
-            Serial.println("Retrying connection...");
-        }
-    }
-
-    Serial.println("Connected to the server.");
+    Connect();
 
     StatusIndicator* statusIndicator = hardwareControl->GetStatusIndicator();
     statusIndicator->SetStatus(S_DONE);
 
     // Initialize the program manager.
-    programs = new Programs(hardwareControl, client, onProgramDone);
+    programs = new Programs(hardwareControl, client, OnProgramDone);
 
-    Serial.println("Initializing SD card...");
+    /*Serial.println("Initializing SD card...");
 
     if (!SD.begin(SD_SHIELD))
     {
         Serial.println("Initialization failed.");
     }
 
-    File root = SD.open("/");
+    File root = SD.open("/");*/
 
     Serial.println("Loading programs...");
 
-    programs->Load(root);
+    //programs->Load(root);
+    AddPrograms(programs);
 
     Serial.println("Done loading programs.");
 }
 
 void loop()
 {
+    StatusIndicator* statusIndicator = hardwareControl->GetStatusIndicator();
+
+    if (millis() - lastPing > CONNECTION_LOST_TIMEOUT * 1000L)
+    {
+        Serial.println("Lost connection to server, reconnecting...");
+
+        statusIndicator->SetStatus(S_DECOUPLED);
+        Connect();
+        statusIndicator->SetStatus(S_DONE);
+    }
+
     programs->Update();
     client->Update();
 
-    StatusIndicator* statusIndicator = hardwareControl->GetStatusIndicator();
     statusIndicator->Update();
 }

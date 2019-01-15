@@ -21,7 +21,8 @@ public:
     void AllowTakeWater();
     void AllowHeatUp();
 
-    int Program::GetNumber();
+    void SetNumber(int number);
+    int GetNumber();
 
 private:
     std::vector<IAction*> _actions;

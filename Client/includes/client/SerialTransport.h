@@ -11,7 +11,10 @@ public:
     SerialTransport();
     ~SerialTransport();
 
+    bool ConnectToNetwork();
     bool ConnectToServer();
+
+    bool IsConnectedToNetwork();
 
     void Send(String data);
     String Read(bool shouldBlock = false);

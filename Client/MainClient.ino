@@ -8,6 +8,11 @@ MainClient::MainClient(ITransport* transport, OnMessageReceivedCallback callback
     // ...
 }
 
+bool MainClient::ConnectToNetwork()
+{
+    return _transport->ConnectToNetwork();
+}
+
 bool MainClient::ConnectToServer(MachineType type)
 {
     if (!_transport->ConnectToServer())
@@ -34,12 +39,15 @@ void MainClient::Send(MessageCode code, std::vector<String> parameters)
 {
     String data = EncodeMessage(code, parameters);
 
+// We only want to enable this Serial.println when compiling on the Arduino.
+#ifdef __AVR__
     // Filter out the PING messages, because these are rather annoying due to
     // their frequency.
     if (code != M_PING)
     {
         Serial.println(" > Sending: " + data);
     }
+#endif
 
     _transport->Send(data);
 }
@@ -52,15 +60,28 @@ void MainClient::Update()
     {
         std::vector<String> decoded = DecodeMessage(data);
 
+// We only want to enable this Serial.println when compiling on the Arduino.
+#ifdef __AVR__
         // Filter out the PING messages, because these are rather annoying due to
         // their frequency.
         if (decoded[0] != String(M_PING))
         {
             Serial.println(" < Received: " + data);
         }
+#endif
 
         _callback(DecodeMessage(data));
     }
+}
+
+void MainClient::Reset()
+{
+    _isConnectedToServer = false;
+}
+
+bool MainClient::IsConnectedToNetwork()
+{
+    return _transport->IsConnectedToNetwork();
 }
 
 bool MainClient::IsConnectedToServer()

@@ -2,9 +2,11 @@
 
 WifiTransport::WifiTransport(String ssid, String password, String ipAddress, int port)
     : _ipAddress(ipAddress)
+    , _password(password)
     , _port(port)
+    , _ssid(ssid)
 {
-    _status = WiFi.begin(ssid.c_str(), password.c_str());
+    // ...
 }
 
 WifiTransport::~WifiTransport()
@@ -13,6 +15,13 @@ WifiTransport::~WifiTransport()
     {
         _client.stop();
     }
+}
+
+bool WifiTransport::ConnectToNetwork()
+{
+    _status = WiFi.begin(_ssid.c_str(), _password.c_str());
+
+    return _status == WL_CONNECTED;
 }
 
 bool WifiTransport::ConnectToServer()

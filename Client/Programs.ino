@@ -17,6 +17,19 @@ Programs::~Programs()
     }
 }
 
+void Programs::Add(int number, std::vector<IAction*> actions)
+{
+    Program* program = new Program(_control, _client);
+    program->SetNumber(number);
+
+    for (int i = 0; i < actions.size(); ++i)
+    {
+        program->AddAction(actions[i]);
+    }
+
+    _programs.push_back(program);
+}
+
 void Programs::Update()
 {
     if (_currentProgram != NULL)
@@ -51,7 +64,7 @@ void Programs::Load(File dir)
 
         String filename(entry.name());
 
-        if (filename.startsWith("PROC"))
+        if (filename.startsWith("PROG"))
         {
             Serial.println("Reading " + filename);
 
