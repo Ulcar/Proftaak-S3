@@ -94,7 +94,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(47, 26);
+            this.label1.Location = new System.Drawing.Point(8, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(36, 13);
             this.label1.TabIndex = 2;
@@ -103,7 +103,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(45, 78);
+            this.label2.Location = new System.Drawing.Point(6, 74);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(70, 13);
             this.label2.TabIndex = 3;
@@ -112,7 +112,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(47, 49);
+            this.label3.Location = new System.Drawing.Point(8, 45);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(60, 13);
             this.label3.TabIndex = 4;
@@ -188,7 +188,7 @@
             // ElecUsageLb
             // 
             this.ElecUsageLb.AutoSize = true;
-            this.ElecUsageLb.Location = new System.Drawing.Point(141, 49);
+            this.ElecUsageLb.Location = new System.Drawing.Point(102, 45);
             this.ElecUsageLb.Name = "ElecUsageLb";
             this.ElecUsageLb.Size = new System.Drawing.Size(17, 13);
             this.ElecUsageLb.TabIndex = 14;
@@ -197,7 +197,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(45, 105);
+            this.label7.Location = new System.Drawing.Point(6, 101);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(86, 13);
             this.label7.TabIndex = 15;
@@ -206,7 +206,7 @@
             // WaterUsageLb
             // 
             this.WaterUsageLb.AutoSize = true;
-            this.WaterUsageLb.Location = new System.Drawing.Point(141, 78);
+            this.WaterUsageLb.Location = new System.Drawing.Point(102, 74);
             this.WaterUsageLb.Name = "WaterUsageLb";
             this.WaterUsageLb.Size = new System.Drawing.Size(17, 13);
             this.WaterUsageLb.TabIndex = 16;
@@ -215,7 +215,7 @@
             // CurrentProgramLb
             // 
             this.CurrentProgramLb.AutoSize = true;
-            this.CurrentProgramLb.Location = new System.Drawing.Point(141, 105);
+            this.CurrentProgramLb.Location = new System.Drawing.Point(102, 101);
             this.CurrentProgramLb.Name = "CurrentProgramLb";
             this.CurrentProgramLb.Size = new System.Drawing.Size(17, 13);
             this.CurrentProgramLb.TabIndex = 17;
@@ -265,7 +265,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(45, 134);
+            this.label6.Location = new System.Drawing.Point(6, 130);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(49, 13);
             this.label6.TabIndex = 20;
@@ -274,7 +274,7 @@
             // EnabledLb
             // 
             this.EnabledLb.AutoSize = true;
-            this.EnabledLb.Location = new System.Drawing.Point(141, 134);
+            this.EnabledLb.Location = new System.Drawing.Point(102, 130);
             this.EnabledLb.Name = "EnabledLb";
             this.EnabledLb.Size = new System.Drawing.Size(17, 13);
             this.EnabledLb.TabIndex = 19;
@@ -283,7 +283,7 @@
             // CurrentClientLb
             // 
             this.CurrentClientLb.AutoSize = true;
-            this.CurrentClientLb.Location = new System.Drawing.Point(141, 26);
+            this.CurrentClientLb.Location = new System.Drawing.Point(102, 22);
             this.CurrentClientLb.Name = "CurrentClientLb";
             this.CurrentClientLb.Size = new System.Drawing.Size(17, 13);
             this.CurrentClientLb.TabIndex = 18;

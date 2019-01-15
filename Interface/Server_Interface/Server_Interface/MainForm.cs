@@ -23,6 +23,7 @@ namespace Server_Interface
         private int power;
         private bool consoleOutputEdited;
         private bool clientsEdited;
+        private bool disconnect;
         private System.Windows.Forms.Timer timer;
 
         public MainForm()
@@ -38,6 +39,7 @@ namespace Server_Interface
             consoleOutputEdited = false;
             clientsEdited = false;
             DataGroupbox.Visible = false;
+            disconnect = false;
 
             timer.Tick += new EventHandler(Timer_Tick);
             timer.Interval = 1000;              // Timer will tick evert second
@@ -89,7 +91,17 @@ namespace Server_Interface
             {
                 Client temp = ClientList.SelectedItem as Client;
                 EnabledLb.Text = "xx";
-                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_SETCLIENT, temp.Enabled + ""));
+                string fu;
+                if(temp.Enabled == 1)
+                {
+                    fu = 0 + "";
+                }
+                else
+                {
+                    fu = 1 + "";
+                }
+                List<string> list = new List<string> { temp.MacAdress, fu };
+                wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_SETCLIENT, list));
             }
         }
 
@@ -108,7 +120,7 @@ namespace Server_Interface
 
         private void DisableClientsBtn_Click(object sender, EventArgs e)
         {
-            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_DISABLEALLCLIENTS, "1"));
+            wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_DISABLEALLCLIENTS, "0"));
         }
 
         private void ReloadBtn_Click(object sender, EventArgs e)
@@ -206,6 +218,12 @@ namespace Server_Interface
                 ConsoleList.DataSource = consoleOutput;
                 consoleOutputEdited = false;
                 ConsoleList.SelectedIndex = ConsoleList.Items.Count - 1;
+            }
+
+            if(disconnect)
+            {
+                disconnect = false;
+                Disconnect();
             }
         }
 
@@ -314,7 +332,7 @@ namespace Server_Interface
                         {
                             case CP_Code.CP_CODE_CONNECT:
                                 if (data[1] == "1")
-                                    Disconnect();
+                                    disconnect = true;
                                 
                                 wiFiHandler.Sendmessage(Protocol.MakeString(CP_Code.CP_CODE_GETCLIENTS, "1"));
                                 break;
