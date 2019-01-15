@@ -227,6 +227,27 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
 {
     switch(static_cast<M_Code>(stoi(messageVector[0])))
     {
+         case M_CODE_REQUEST_WATER: 
+        {
+            if(database->UpdateWater(stoi(messageVector[1])))
+            {
+                machine->SetUsedWater(stoi(messageVector[1]));
+                machine->Send(M_CODE_REQUEST_WATER, 0);
+                return;
+            }
+            machine->Send(M_CODE_REQUEST_WATER, 1);
+            break;
+        }
+
+        case M_CODE_STOP_WATER:
+        {
+            int amount = machine->GetUsedWater();
+            database->ResetWater(amount);
+            machine->SetUsedWater(0);
+            machine->Send(M_CODE_STOP_WATER, 0);
+            break;
+        }
+        
         case M_CODE_REQUEST_HEATER:
         {
             if(database->UpdatePower(stoi(messageVector[1])))
@@ -255,6 +276,8 @@ void ProtocolHandler::HandleWasmachine(Machine* machine, std::vector<std::string
             database->HandleLaundryFinish(machine->GetMacAdress());
             break;
         }
+
+        
 
         case M_CODE_HEARTBEAT:
             machine->ResetReplyCount();
@@ -322,26 +345,7 @@ void ProtocolHandler::HandleDryer(Machine* machine, std::vector<std::string> mes
             break;
         }
 
-        case M_CODE_REQUEST_WATER: 
-        {
-            if(database->UpdateWater(stoi(messageVector[1])))
-            {
-                machine->SetUsedWater(stoi(messageVector[1]));
-                machine->Send(M_CODE_REQUEST_WATER, 0);
-                return;
-            }
-            machine->Send(M_CODE_REQUEST_WATER, 1);
-            break;
-        }
-
-        case M_CODE_STOP_WATER:
-        {
-            int amount = machine->GetUsedWater();
-            database->ResetWater(amount);
-            machine->SetUsedWater(0);
-            machine->Send(M_CODE_STOP_WATER, 0);
-            break;
-        }
+        
 
         case M_CODE_DONE:
         {
