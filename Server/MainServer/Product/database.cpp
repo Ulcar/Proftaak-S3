@@ -194,10 +194,12 @@ void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
         {
             if(!bak->IsBusy() && (bak->Tasks[0] == laundry->TasksToDo[0]) && !bak->GetDone() && bak->GetTemperature() == laundry->GetTemperature() && bak->GetColor() == laundry->GetColor())
             {
-                bak->AddLaundryToLaundryBasket(laundry);
-                found = true;
-                 Logger::Record(false, "Adding Laundry to Laundry Basket", "Database");
-                break;
+                if(bak->AddLaundryToLaundryBasket(laundry))
+                {
+                    found = true;
+                    Logger::Record(false, "Adding Laundry to Laundry Basket", "Database");
+                    break;
+                }
             }
         }
 
