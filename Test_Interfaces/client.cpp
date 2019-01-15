@@ -85,7 +85,7 @@ static void connectToServer(int *socketFd, bool *connected)
     sa.sin_port = PortNumber;
     
     int result = inet_pton(AF_INET, "192.168.137.102", &sa.sin_addr);
-   // int result = inet_pton(AF_INET, "127.0.0.1", &sa.sin_addr);
+    //int result = inet_pton(AF_INET, "127.0.0.1", &sa.sin_addr);
     if (result != 1)
     {
         perror("could not convert ip address to network address structure");
@@ -104,7 +104,7 @@ static void connectToServer(int *socketFd, bool *connected)
     *connected = true;
 
     //message = Connect request + machine type + mac address whitout ":"
-    sendMessage(socketFd, "&0;0;" + macAdress + "#");
+    sendMessage(socketFd, "&0;1;" + macAdress + "#");
 
     return;
 }

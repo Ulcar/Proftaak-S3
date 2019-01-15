@@ -8,12 +8,15 @@ void LaundryBasket::OnLaundryFinish(std::vector<Laundry*> &laundryToRemove)
         done = true;
            for(Laundry* laundry : LaundryVector)
     {
+         laundry->TasksToDo.erase(laundry->TasksToDo.begin());
         laundryToRemove.push_back(laundry);
 
     }
     }
 
-    for(Laundry* laundry : LaundryVector)
+    else
+    {
+          for(Laundry* laundry : LaundryVector)
     {
         laundry->TasksToDo.erase(laundry->TasksToDo.begin());
         //Check if clothing piece needs to do the next program, if not, return to database
@@ -23,6 +26,9 @@ void LaundryBasket::OnLaundryFinish(std::vector<Laundry*> &laundryToRemove)
             laundryToRemove.push_back(laundry);
         }
     }
+    }
+
+  
 }
 
 
@@ -54,10 +60,6 @@ LaundryBasket::LaundryBasket(std::vector<Type> machines, Color color, Temperatur
 
 LaundryBasket::~LaundryBasket()
 {
-    for(Laundry* laundry : LaundryVector)
-    {
-        delete laundry;
-    }
 }
 
 std::string LaundryBasket::GetMacAdress()

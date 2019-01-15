@@ -163,6 +163,7 @@ void Database::HandleLaundryFinish(std::string macAdress)
         {
             laundry->SetDone(true);
             Logger::Record(false, "Laundry done: ", "database");
+            delete laundry;
             continue;
         }
 
@@ -179,13 +180,13 @@ void Database::HandleLaundry(std::vector<Laundry*>& laundryToHandle)
     int i = 0;
     for(Laundry* laundry : tmpLaundryVector)
     {
-        if(laundry->GetDone())
+     /*   if(laundry->GetDone())
         {
             Logger::Record(false, "Erasing Finished Laundry", "Database");
             laundryToHandle.erase(laundryToHandle.begin(), laundryToHandle.begin() + i);
             i++;
             delete laundry;
-        }
+        } */
         
         
         bool found = false;
