@@ -34,6 +34,8 @@ public:
 
     ~HardwareControl();
 
+    void Initialize();
+
     IStatusIndicator* GetStatusIndicator();
     IControls* GetControls();
     IHeater* GetHeater();

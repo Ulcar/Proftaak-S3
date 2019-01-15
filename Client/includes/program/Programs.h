@@ -16,6 +16,7 @@ public:
     Programs(HardwareControl* control, MainClient* client, OnProgramDoneCallback callback);
     ~Programs();
 
+    void Reset();
     void Update();
 
     void Add(int number, std::vector<IAction*> actions);

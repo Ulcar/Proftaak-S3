@@ -13,6 +13,7 @@ class Program
 public:
     Program(HardwareControl* control, MainClient* client);
 
+    void Reset();
     bool Load(Stream& json);
     void Start();
     bool Update();

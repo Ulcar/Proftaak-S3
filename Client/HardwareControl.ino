@@ -22,6 +22,23 @@ HardwareControl::HardwareControl(
         _centipede->PinMode(i, OUTPUT);
     }
 
+    Initialize();
+}
+
+HardwareControl::~HardwareControl()
+{
+    delete _statusIndicator;
+
+    delete _controls;
+    delete _heater;
+    delete _motor;
+    delete _water;
+
+    delete _centipede;
+}
+
+void HardwareControl::Initialize()
+{
     _centipede->DigitalWrite(OUTPUT_KEYSELECT, HIGH);
     _centipede->DigitalWrite(OUTPUT_GROUP_2, LOW);
     _centipede->DigitalWrite(OUTPUT_GROUP_1, LOW);
@@ -37,18 +54,6 @@ HardwareControl::HardwareControl(
     _water->Initialize(_centipede);
 
     _statusIndicator->SetStatus(S_DECOUPLED);
-}
-
-HardwareControl::~HardwareControl()
-{
-    delete _statusIndicator;
-
-    delete _controls;
-    delete _heater;
-    delete _motor;
-    delete _water;
-
-    delete _centipede;
 }
 
 IStatusIndicator* HardwareControl::GetStatusIndicator()

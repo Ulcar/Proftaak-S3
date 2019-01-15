@@ -17,6 +17,14 @@ Programs::~Programs()
     }
 }
 
+void Programs::Reset()
+{
+    if (_currentProgram != NULL)
+    {
+        _currentProgram->Reset();
+    }
+}
+
 void Programs::Add(int number, std::vector<IAction*> actions)
 {
     Program* program = new Program(_control, _client);

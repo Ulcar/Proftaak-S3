@@ -9,6 +9,13 @@ Program::Program(HardwareControl* control, MainClient* client)
     // ...
 }
 
+void Program::Reset()
+{
+    _currentAction = NULL;
+    _nextActionIndex = 0;
+    _started = false;
+}
+
 IAction* Program::CreateAction(int number, JsonObject& args)
 {
     IAction* action = NULL;
