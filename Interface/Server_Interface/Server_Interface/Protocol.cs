@@ -15,7 +15,7 @@ namespace Server_Interface
         public static string MakeString(CP_Code code, string text)
         {
             List<string> value = new List<string> { text };
-            return MakeString(CP_Code.CP_CODE_GETCLIENTS, value);
+            return MakeString(code, value);
         }
 
         public static string MakeString(CP_Code code, List<string> value)
