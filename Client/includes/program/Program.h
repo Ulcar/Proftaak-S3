@@ -1,40 +1,43 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
+#include <ArduinoJson.h>
 #include <ArduinoSTL.h>
+
+#include "../client/MainClient.h"
 
 #include "Actions.h"
 
 class Program
 {
 public:
-    Program(HardwareControl* control, IClient* client);
+    Program(HardwareControl* control, MainClient* client);
 
+    void Reset();
+    bool Load(Stream& json);
     void Start();
     bool Update();
-    bool SetNextAction();
     void AddAction(IAction* action);
 
-    void SetNumber(int number)
-    {
-        _number = number;
-    }
+    void AllowTakeWater();
+    void AllowHeatUp();
 
-    int Program::GetNumber()
-    {
-        return _number;
-    }
+    void SetNumber(int number);
+    int GetNumber();
 
 private:
     std::vector<IAction*> _actions;
 
     HardwareControl* _control;
     IAction* _currentAction;
-    IClient* _client;
+    MainClient* _client;
 
     bool _started;
     int _number;
-    int _currentActionIndex;
+    int _nextActionIndex;
+
+    IAction* CreateAction(int nr, JsonObject& args);
+    bool SetNextAction();
 };
 
 #endif

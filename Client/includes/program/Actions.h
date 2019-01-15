@@ -2,39 +2,72 @@
 #define ACTIONS_H
 
 #include "../hardware/HardwareControl.h"
+#include "../hardware/StatusIndicator.h"
+#include "../hardware/Controls.h"
+#include "../hardware/Heater.h"
+#include "../hardware/Motor.h"
+#include "../hardware/Water.h"
+
+#include "../client/MainClient.h"
+
+#define DELAY_TIME_POWER (5)
+#define DELAY_TIME_WATER (5)
 
 class IAction
 {
 public:
+    IAction()
+    {
+        _stop = false;
+    }
+
     virtual ~IAction() { };
 
     virtual void Handle() = 0;
     virtual bool IsDone() = 0;
+    virtual void Stop() = 0;
+
+    void AllowTakeWater()
+    {
+        _mayTakeWater = true;
+    }
+
+    void AllowHeatUp()
+    {
+        _mayHeatUp = true;
+    }
 
     void SetHardwareControl(HardwareControl* control)
     {
         _control = control;
     }
 
-    void SetClient(IClient* client)
+    void SetClient(MainClient* client)
     {
         _client = client;
     }
 
 protected:
     HardwareControl* _control;
-    IClient* _client;
+    MainClient* _client;
+
+    bool _mayTakeWater;
+    bool _mayHeatUp;
+
+    bool _stop;
 };
 
-class AddSoapAction : public IAction
+class SoapAction : public IAction
 {
 public:
-    AddSoapAction(int dispenser);
+    SoapAction(HardwareState state, int dispenser);
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
+    HardwareState _state;
     int _dispenser;
 };
 
@@ -45,6 +78,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     HardwareState _state;
@@ -57,6 +91,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 };
 
 class HeatAction : public IAction
@@ -66,6 +101,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     Temperature _temp;
@@ -78,6 +114,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     WaterLevel _level;
@@ -90,10 +127,11 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
+    unsigned long _startMs;
     int _watt;
-    bool _mayUsePower;
 };
 
 class RequestWaterAction : public IAction
@@ -103,10 +141,11 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
+    unsigned long _startMs;
     int _liters;
-    bool _mayTakeWater;
 };
 
 class MotorRotateAction : public IAction
@@ -116,6 +155,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     MotorDirection _direction;
@@ -129,6 +169,7 @@ public:
 
     void Handle();
     bool IsDone();
+    void Stop();
 
 private:
     unsigned long _ms;

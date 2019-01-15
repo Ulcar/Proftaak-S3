@@ -1,6 +1,7 @@
 #ifndef HARDWARECONTROL_H
 #define HARDWARECONTROL_H
 
+#include "interface/IStatusIndicator.h"
 #include "interface/ICentipedeShield.h"
 #include "interface/IControls.h"
 #include "interface/IHeater.h"
@@ -22,36 +23,36 @@
 class HardwareControl
 {
 public:
-    HardwareControl(ICentipedeShield* centipede, IControls* controls, IHeater* heater, IMotor* motor, IWater* water);
+    HardwareControl(
+        ICentipedeShield* centipede,
+        IStatusIndicator* statusIndicator,
+        IControls* controls,
+        IHeater* heater,
+        IMotor* motor,
+        IWater* water
+    );
+
     ~HardwareControl();
 
-    IControls* GetControls()
-    {
-        return _controls;
-    }
+    void Initialize();
 
-    IHeater* GetHeater()
-    {
-        return _heater;
-    }
-
-    IMotor* GetMotor()
-    {
-        return _motor;
-    }
-
-    IWater* GetWater()
-    {
-        return _water;
-    }
+    IStatusIndicator* GetStatusIndicator();
+    IControls* GetControls();
+    IHeater* GetHeater();
+    IMotor* GetMotor();
+    IWater* GetWater();
 
 private:
     ICentipedeShield* _centipede;
 
+    IStatusIndicator* _statusIndicator;
     IControls* _controls;
     IHeater* _heater;
     IMotor* _motor;
     IWater* _water;
+
+    HardwareControl(const HardwareControl& other);
+    HardwareControl& operator=(const HardwareControl& other);
 };
 
 #endif

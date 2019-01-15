@@ -4,22 +4,29 @@
 // AddSoapAction
 //=============
 
-AddSoapAction::AddSoapAction(int dispenser)
-    : _dispenser(dispenser)
+SoapAction::SoapAction(HardwareState state, int dispenser)
+    : _state(state)
+    , _dispenser(dispenser)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
-void AddSoapAction::Handle()
+void SoapAction::Handle()
 {
-    Controls* controls = _control->GetControls();
+    Controls* controls = (Controls *) _control->GetControls();
 
-    controls->SetSoap(STATE_ON, _dispenser);
+    controls->SetSoap(_state, _dispenser);
 }
 
-bool AddSoapAction::IsDone()
+bool SoapAction::IsDone()
 {
     return true;
+}
+
+void SoapAction::Stop()
+{
+    // Nothing to do.
 }
 
 //
@@ -29,12 +36,13 @@ bool AddSoapAction::IsDone()
 BuzzerAction::BuzzerAction(HardwareState state)
     : _state(state)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void BuzzerAction::Handle()
 {
-    Controls* controls = _control->GetControls();
+    Controls* controls = (Controls *) _control->GetControls();
 
     controls->SetBuzzer(_state);
 }
@@ -44,18 +52,24 @@ bool BuzzerAction::IsDone()
     return true;
 }
 
+void BuzzerAction::Stop()
+{
+    // Nothing to do.
+}
+
 //
 // DrainWaterAction
 //=============
 
 DrainWaterAction::DrainWaterAction()
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void DrainWaterAction::Handle()
 {
-    Water* water = _control->GetWater();
+    Water* water = (Water *) _control->GetWater();
 
     if (water->GetSinkState() != STATE_ON)
     {
@@ -65,7 +79,7 @@ void DrainWaterAction::Handle()
 
 bool DrainWaterAction::IsDone()
 {
-    Water* water = _control->GetWater();
+    Water* water = (Water *) _control->GetWater();
 
     if (water->GetLevel() == WL_EMPTY)
     {
@@ -74,7 +88,16 @@ bool DrainWaterAction::IsDone()
         return true;
     }
 
-    return false;
+    return false || _stop;
+}
+
+void DrainWaterAction::Stop()
+{
+    Water* water = (Water *) _control->GetWater();
+
+    water->SetSink(STATE_OFF);
+
+    _stop = true;
 }
 
 //
@@ -84,12 +107,13 @@ bool DrainWaterAction::IsDone()
 HeatAction::HeatAction(Temperature temp)
     : _temp(temp)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void HeatAction::Handle()
 {
-    Heater* heater = _control->GetHeater();
+    Heater* heater = (Heater *) _control->GetHeater();
 
     if (heater->GetState() != STATE_ON)
     {
@@ -99,9 +123,27 @@ void HeatAction::Handle()
 
 bool HeatAction::IsDone()
 {
-    Heater* heater = _control->GetHeater();
+    Heater* heater = (Heater *) _control->GetHeater();
 
-    return heater->GetTemperature() == _temp;
+    if (heater->GetTemperature() == _temp)
+    {
+        heater->Set(STATE_OFF);
+
+        _client->Send(M_STOP_HEAT_UP, { "0" });
+
+        return true;
+    }
+
+    return false || _stop;
+}
+
+void HeatAction::Stop()
+{
+    Heater* heater = (Heater *) _control->GetHeater();
+
+    heater->Set(STATE_OFF);
+
+    _stop = true;
 }
 
 //
@@ -111,12 +153,13 @@ bool HeatAction::IsDone()
 FillWaterAction::FillWaterAction(WaterLevel level)
     : _level(level)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void FillWaterAction::Handle()
 {
-    Water* water = _control->GetWater();
+    Water* water = (Water *) _control->GetWater();
 
     if (water->GetDrainState() != STATE_ON)
     {
@@ -126,16 +169,27 @@ void FillWaterAction::Handle()
 
 bool FillWaterAction::IsDone()
 {
-    Water* water = _control->GetWater();
+    Water* water = (Water *) _control->GetWater();
 
     if (water->GetLevel() == _level)
     {
+        _client->Send(M_STOP_TAKE_WATER, { "0" });
+
         water->SetDrain(STATE_OFF);
 
         return true;
     }
 
-    return false;
+    return false || _stop;
+}
+
+void FillWaterAction::Stop()
+{
+    Water* water = (Water *) _control->GetWater();
+
+    water->SetDrain(STATE_OFF);
+
+    _stop = true;
 }
 
 //
@@ -144,33 +198,46 @@ bool FillWaterAction::IsDone()
 
 RequestPowerAction::RequestPowerAction(int watt)
     : _watt(watt)
-    , _mayUsePower(false)
 {
-    // ...
+    _mayHeatUp = false;
+    _control = NULL;
+    _client = NULL;
 }
 
 void RequestPowerAction::Handle()
 {
-    while (!_mayUsePower)
+    StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+    statusIndicator->SetStatus(S_NO_POWER);
+
+    unsigned long currentMs = millis();
+
+    if (_startMs == 0 || currentMs - _startMs > (DELAY_TIME_POWER * 1000L))
     {
-        _client->SendMessage(M_MAY_HEAT_UP, { String(_watt) });
+        _startMs = currentMs;
 
-        std::vector<String> response = _client->ReadMessage(true);
-
-        if (response[0] == String(M_MAY_HEAT_UP) && response[1] == "0")
-        {
-            _mayUsePower = true;
-        }
-        else
-        {
-            delay(500);
-        }
+        _client->Send(M_MAY_HEAT_UP, { String(_watt) });
     }
 }
 
 bool RequestPowerAction::IsDone()
 {
-    return _mayUsePower;
+    bool result = _mayHeatUp;
+
+    if (result)
+    {
+        StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+        statusIndicator->SetStatus(S_BUSY);
+
+        _mayHeatUp = false;
+        _startMs = 0;
+    }
+
+    return result || _stop;
+}
+
+void RequestPowerAction::Stop()
+{
+    _stop = true;
 }
 
 //
@@ -178,34 +245,48 @@ bool RequestPowerAction::IsDone()
 //==================
 
 RequestWaterAction::RequestWaterAction(int liters)
-    : _liters(liters)
-    , _mayTakeWater(false)
+    : _startMs(0)
+    , _liters(liters)
 {
-    // ...
+    _mayTakeWater = false;
+    _control = NULL;
+    _client = NULL;
 }
 
 void RequestWaterAction::Handle()
 {
-    while (!_mayTakeWater)
+    StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+    statusIndicator->SetStatus(S_NO_WATER);
+
+    unsigned long currentMs = millis();
+
+    if (_startMs == 0 || currentMs - _startMs > (DELAY_TIME_WATER * 1000L))
     {
-        _client->SendMessage(M_MAY_TAKE_WATER, { String(_liters) });
+        _startMs = currentMs;
 
-        std::vector<String> response = _client->ReadMessage(true);
-
-        if (response[0] == String(M_MAY_TAKE_WATER) && response[1] == "0")
-        {
-            _mayTakeWater = true;
-        }
-        else
-        {
-            delay(500);
-        }
+        _client->Send(M_MAY_TAKE_WATER, { String(_liters) });
     }
 }
 
 bool RequestWaterAction::IsDone()
 {
-    return _mayTakeWater;
+    bool result = _mayTakeWater;
+
+    if (result)
+    {
+        StatusIndicator* statusIndicator = (StatusIndicator *) _control->GetStatusIndicator();
+        statusIndicator->SetStatus(S_BUSY);
+
+        _mayTakeWater = false;
+        _startMs = 0;
+    }
+
+    return result || _stop;
+}
+
+void RequestWaterAction::Stop()
+{
+    _stop = true;
 }
 
 //
@@ -216,12 +297,13 @@ MotorRotateAction::MotorRotateAction(MotorDirection direction, MotorSpeed speed)
     : _direction(direction)
     , _speed(speed)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void MotorRotateAction::Handle()
 {
-    Motor* motor = _control->GetMotor();
+    Motor* motor = (Motor *) _control->GetMotor();
 
     motor->SetDirection(_direction);
     motor->SetSpeed(_speed);
@@ -232,6 +314,11 @@ bool MotorRotateAction::IsDone()
     return true;
 }
 
+void MotorRotateAction::Stop()
+{
+    // Nothing to do.
+}
+
 //
 // DelayAction
 //==================
@@ -240,7 +327,8 @@ DelayAction::DelayAction(unsigned long ms)
     : _ms(ms)
     , _startMs(0)
 {
-    // ...
+    _control = NULL;
+    _client = NULL;
 }
 
 void DelayAction::Handle()
@@ -260,5 +348,10 @@ bool DelayAction::IsDone()
         _startMs = 0;
     }
 
-    return result;
+    return result || _stop;
+}
+
+void DelayAction::Stop()
+{
+    _stop = true;
 }

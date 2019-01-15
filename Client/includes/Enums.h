@@ -57,4 +57,27 @@ enum WaterLevel
     WL_FULL
 };
 
+enum ProgramAction
+{
+    A_SOAP,
+    A_BUZZER,
+    A_DRAIN_WATER,
+    A_HEAT,
+    A_FILL_WATER,
+    A_REQUEST_POWER,
+    A_REQUEST_WATER,
+    A_MOTOR_ROTATE,
+    A_DELAY,
+};
+
+enum Status
+{
+    S_DECOUPLED,
+    S_MALFUNCTION,
+    S_NO_POWER,
+    S_NO_WATER,
+    S_BUSY,
+    S_DONE,
+};
+
 #endif

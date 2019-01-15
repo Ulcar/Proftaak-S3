@@ -1,11 +1,41 @@
 #include "includes/program/Programs.h"
 
-Programs::Programs(HardwareControl* control, IClient* client)
-    : _currentProgram(NULL)
+Programs::Programs(HardwareControl* control, MainClient* client, OnProgramDoneCallback callback)
+    : _onProgramDone(callback)
+    , _currentProgram(NULL)
     , _control(control)
     , _client(client)
 {
     // ...
+}
+
+Programs::~Programs()
+{
+    for (int i = 0; i < _programs.size(); ++i)
+    {
+        delete _programs[i];
+    }
+}
+
+void Programs::Reset()
+{
+    if (_currentProgram != NULL)
+    {
+        _currentProgram->Reset();
+    }
+}
+
+void Programs::Add(int number, std::vector<IAction*> actions)
+{
+    Program* program = new Program(_control, _client);
+    program->SetNumber(number);
+
+    for (int i = 0; i < actions.size(); ++i)
+    {
+        program->AddAction(actions[i]);
+    }
+
+    _programs.push_back(program);
 }
 
 void Programs::Update()
@@ -24,17 +54,34 @@ void Programs::Update()
     }
 }
 
-void Programs::Add(int number, std::vector<IAction*> actions)
+void Programs::Load(File dir)
 {
-    Program* program = new Program(_control, _client);
-    program->SetNumber(number);
-
-    for (int i = 0; i < actions.size(); ++i)
+    while (1)
     {
-        program->AddAction(actions[i]);
+        File entry = dir.openNextFile();
+
+        if (!entry)
+        {
+            break;
+        }
+
+        if (entry.isDirectory())
+        {
+            continue;
+        }
+
+        String filename(entry.name());
+
+        if (filename.startsWith("PROG"))
+        {
+            Serial.println("Reading " + filename);
+
+            Add(entry);
+        }
+
+        entry.close();
     }
 
-    _programs.push_back(program);
 }
 
 bool Programs::Start(int number)
@@ -51,4 +98,29 @@ bool Programs::Start(int number)
     }
 
     return false;
+}
+
+void Programs::AllowTakeWater()
+{
+    if (_currentProgram != NULL)
+    {
+        _currentProgram->AllowTakeWater();
+    }
+}
+
+void Programs::AllowHeatUp()
+{
+    if (_currentProgram != NULL)
+    {
+        _currentProgram->AllowHeatUp();
+    }
+}
+
+bool Programs::Add(Stream& file)
+{
+    Program* program = new Program(_control, _client);
+
+    program->Load(file);
+
+    _programs.push_back(program);
 }

@@ -17,6 +17,10 @@ public:
 
     void SetDirection(MotorDirection direction);
     void SetSpeed(MotorSpeed speed);
+
+private:
+    Motor(const Motor& other);
+    Motor& operator=(const Motor& other);
 };
 
 #endif
