@@ -1,8 +1,10 @@
-
 # Wash&Go
 ## Proftaak Semester 3 Technology
 
 Hieronder worden de verschillende programma's in dit project uitgelegd.
+
+
+
 
 ## Server
 
@@ -10,6 +12,7 @@ Deze is te vinden in de map [Server/Mainserver](Server/Mainserver).
 
 ### Beschrijving
 
+Deze code is te compileren met het bijgeleverde Makefile en in gesschreven in C++.
 De Server is **het** belangrijkste onderdeel van dit project. 
 Hierin worden alle logica afgehandeld met betrekking tot verbindingen, berichten en bijhouden van statussen.
 
@@ -53,22 +56,28 @@ Standaard wordt elke message die wordt opgeslagen uitgeprint in de terminal, maa
 Hieronder een lijst met de beschikbare commando's die de server begrijpt.
 Als er meerdere commando's op een regel staan zijn is dat een alias voor de eerste.
 
-* `quit`, `exit`, `q`      | Stop de Server
-* `ping`, `p`              | Pong
-* `clear`, ,`clr`, `c`     | Maakt het scherm leeg
-* `errorlogger`, `el`      |
-  * `display`, `d`         | Laat de 20 laatste Error-berichten zien
-  * `save`, `s`            | Sla het alle Error-berichten op als bestand
-  * `live`, `l`            | Toggle het live schrijven van Error messages in de terminal
-* `debuglogger`, `dl`      | 
-  * `display`, `d`         | Laat de 20 laatste Error-berichten zien
-  * `save`, `s`            | Sla het alle Debug-berichten op als bestand
-  * `live`, `l`            | Toggle het live schrijven van Debug messages in de terminal
-  * `heartbeat`, `hb`      | Toggle het live schrijven van de verzonden en ontvangen HeartBeats in de terminal
-* `laundry`, `l`           | 
-  * `add`, `a`             | Voeg niewe was toe aan de server **FORMAT:** `laundry add <kg> <temperature> <color> <list machines>`
-  * `remove`, `r`          | Verwijder bepaalde was uit de server **FORMAT:** `laundry remove <ID>`
-  * `display`, `d`         | Laat alle was zien die zich in het systeem bevind
+| commando | Subcommando | alias | Parameters | Beschrijving |
+|--------|------|------|------------|------------|
+| `quit` | | `exit`, `q` | | Stop de Server |
+| `ping` | | `p` | | Pong |
+| `clear` | | `clr`, `c` | | Maakt het scherm leeg |
+| `errorlogger`| | `el` | | Laat alle subcommando's zien |
+| `errorlogger`| `display` | `d`| | Laat de 20 laatste Error-berichten zien |
+| `errorlogger`| `save` | `s` | | Sla het alle Error-berichten op als bestand |
+| `errorlogger`| `live` | `l` | | Toggle het live schrijven van Error messages in de terminal |
+| `debuglogger`| | `dl` | | Laat alle subcommando's zien |
+| `debuglogger`| `display` | `d`| | Laat de 20 laatste Debug-berichten zien |
+| `debuglogger`| `save` | `s` | | Sla het alle Debug-berichten op als bestand |
+| `debuglogger`| `live` | `l` | | Toggle het live schrijven van Debug messages in de terminal |
+| `debuglogger`| `heartbeat` | `hb` | | Toggle het live schrijven van de verzonden en ontvangen HeartBeats in de terminal |
+| `laundry`| | `l` | | Laat alle subcommando's zien |
+| `laundry`| `add` | `a`| `<kg> <temperature> <color> <list machines>` | Voeg niewe was toe aan de server |
+| `laundry`| `remove` | `r`| `<ID>` | Verwijder bepaalde was uit de server |
+| `laundry`| `display` | `d`| | Laat alle was zien die zich in het systeem bevind |
+
+
+
+
 
 
 ## ControlPanel
@@ -77,6 +86,8 @@ Deze is te vinden in de map [Interface/Server_Interface](Interface/Server_Interf
 
 ### Beschrijving
 
+Deze code is te compileren met Visual Studio en in gesschreven in C#.
+De keuze voor C# is omdat het in C++ erg mogelijk om een mooite GUI te maken.
 Het Controlpanel is **DE** grafische omgeving van de server om alle data te zien en aan te passen op afstand.
 
 #### Startup
@@ -113,6 +124,9 @@ Je moet hiervoor wel een gewicht invullen, een kleur en een temperatuur selecter
 
 Het laatste onderdeel is de console, hierin kan je servercommando's uitvoeren en krijg je ook de feedback van de server te zien in de output.
 Een lijst met beschikbare commando's is te zien onder het kopje **Server**.
+
+
+
 
 
 ## Client
@@ -211,12 +225,17 @@ Er zitten nog een aantal (kleine) foutjes in de code van de client, deze staan h
 
 We willen graag nog een __watchdog__ toevoegen, die kan merken wanneer of de Arduino of de wasmachine vastloopt zodat deze automatisch herstart kan worden.
 
+
+
+
+
 ## Test_Interfaces
 
 Deze is te vinden in de map [Test_Interfaces](Test_Interfaces).
 
 ### Beschrijving
 
+Deze code is te compileren met het bijgeleverde Makefile en in gesschreven in C++.
 Met de Test-Interfaces is het mogelijk om de Server en Clients af te testen en ook foutberichten te kunnen versturen.
 
 ### Client Acties
@@ -237,6 +256,6 @@ Waar '`x`' staat wordt je om een variabele gevraagt.
 
 ### Server Acties
 
-Leest berichten uit en hier ka je op antwoorden.
+Leest berichten uit en hier kan je op antwoorden.
 
 _End Of File_
