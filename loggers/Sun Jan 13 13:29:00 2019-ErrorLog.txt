@@ -1,2 +1,0 @@
-Sun Jan 13 13:21:09 2019 Source: main -- System startup
-Sun Jan 13 13:29:00 2019 Source: main -- System shutdown
